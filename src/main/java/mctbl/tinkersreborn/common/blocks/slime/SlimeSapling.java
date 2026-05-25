@@ -32,7 +32,7 @@ public class SlimeSapling extends BlockSapling {
         setBlockBounds(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, f * 2.0F, 0.5F + f);
         setHardness(0.0F);
         setStepSound(Block.soundTypeGrass);
-        setCreativeTab(TinkersRebornRegistry.block);
+        setCreativeTab(TinkersRebornRegistry.blockTab);
         setStepSound(TinkersRebornGeneral.slimeStep);
         setBlockName("tinkersreborn.slime.sapling");
     }

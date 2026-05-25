@@ -24,7 +24,7 @@ public class MetalOre extends TinkersRebornBlock {
         this.setHarvestLevel("pickaxe", 1, 4); // tin
         this.setHarvestLevel("pickaxe", 1, 5); // aluminum
 
-        this.setCreativeTab(TinkersRebornRegistry.block);
+        this.setCreativeTab(TinkersRebornRegistry.blockTab);
     }
 
     @Override

@@ -6,6 +6,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.items.CraftingItem;
+import mctbl.tinkersreborn.library.tools.IMaterialPart;
 import mctbl.tinkersreborn.library.tools.IToolPart;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -13,7 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
-public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
+public class TinkersRebornToolPart extends CraftingItem implements IToolPart, IMaterialPart {
 
 	public String partName;
 	public String texture;
@@ -24,11 +25,11 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
 	public TinkersRebornToolPart(String texture, String name, String allowListName) {
 		// texture -> pickaxe_head for texture
 		// name -> PickaxeHead for localization
-		super(null, null, "tools/parts/" + texture, TinkersRebornRegistry.parts);
-		this.setUnlocalizedName("tinkersreborn." + name); // tinkersreborn.PickaxeHead
-		this.partName = name;
+		super(null, null, "tools/parts/" + texture, TinkersRebornRegistry.partsTab);
 		this.texture = texture;
+		this.partName = name;
 		this.allowMaterialListName = allowListName;
+		this.setUnlocalizedName("tinkersreborn." + name); // tinkersreborn.PickaxeHead
 	}
 
 	public TinkersRebornToolPart(String texture, String name) {
@@ -36,9 +37,9 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
 	}
 
 	@Override
-	public String getItemStackDisplayName(ItemStack p_77653_1_) {
+	public String getItemStackDisplayName(ItemStack stack) {
 		// TODO Auto-generated method stub
-		return super.getItemStackDisplayName(p_77653_1_);
+		return super.getItemStackDisplayName(stack);
 	}
 
 	@Override
@@ -77,4 +78,10 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
 		return super.getColorFromItemStack(stack, renderpass);
 	}
 
+	@Override
+	public int getMaterialId() {
+		// TODO Auto-generated method stub
+		return -1;
+	}
+	
 }

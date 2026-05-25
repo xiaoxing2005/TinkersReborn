@@ -24,7 +24,7 @@ public class TinkersRebornMetalBlock extends TinkersRebornBlock {
                 .toArray(new String[0]));
         this.setStepSound(Block.soundTypeMetal);
         this.setBlockName("tinkersreborn.metalblock");
-        this.setCreativeTab(TinkersRebornRegistry.block);
+        this.setCreativeTab(TinkersRebornRegistry.blockTab);
     }
 
     @Override

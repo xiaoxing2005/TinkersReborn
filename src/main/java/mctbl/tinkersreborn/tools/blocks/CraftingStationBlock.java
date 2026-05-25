@@ -24,7 +24,7 @@ public class CraftingStationBlock extends TinkersRebornInventoryBlock {
         this.setHardness(2f);
         this.setStepSound(Block.soundTypeWood);
         this.setBlockName("tinkersreborn.CraftingStation");
-        this.setCreativeTab(TinkersRebornRegistry.block);
+        this.setCreativeTab(TinkersRebornRegistry.blockTab);
         this.TEXTURENAMES = new String[] { "tools/craftingstation_top", "tools/craftingstation_bottom",
             "tools/craftingstation_side" };
     }

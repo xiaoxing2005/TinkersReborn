@@ -20,7 +20,7 @@ public class StoneTorch extends Block {
 
     public StoneTorch() {
         super(Material.circuits);
-        this.setCreativeTab(TinkersRebornRegistry.block);
+        this.setCreativeTab(TinkersRebornRegistry.blockTab);
         this.setLightLevel(0.9375F);
         this.setBlockName("tinkersreborn.decoration.stonetorch");
     }

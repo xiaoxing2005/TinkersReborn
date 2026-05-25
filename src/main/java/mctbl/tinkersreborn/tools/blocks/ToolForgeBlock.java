@@ -34,7 +34,7 @@ public class ToolForgeBlock extends ToolStationBlock {
         this.setHardness(2f);
         this.setStepSound(Block.soundTypeMetal);
         this.setBlockName("tinkersreborn.ToolFroge");
-        this.setCreativeTab(TinkersRebornRegistry.block);
+        this.setCreativeTab(TinkersRebornRegistry.blockTab);
         this.TEXTURENAMES = new String[] { "tools/toolforge_top", "tools/toolforge_%s" };
     }
 

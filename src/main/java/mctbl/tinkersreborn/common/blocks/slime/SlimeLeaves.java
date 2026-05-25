@@ -27,7 +27,7 @@ public class SlimeLeaves extends BlockLeaves {
         super();
         setStepSound(TinkersRebornGeneral.slimeStep);
         setBlockName("tinkersreborn.slime.leaves");
-        setCreativeTab(TinkersRebornRegistry.block);
+        setCreativeTab(TinkersRebornRegistry.blockTab);
         setHardness(0.3f);
     }
 

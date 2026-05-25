@@ -30,7 +30,7 @@ public class PartChestBlock extends TinkersRebornInventoryBlock implements ITink
         this.setHardness(2f);
         this.setStepSound(Block.soundTypeWood);
         this.setBlockName("tinkersreborn.PartChest");
-        this.setCreativeTab(TinkersRebornRegistry.block);
+        this.setCreativeTab(TinkersRebornRegistry.blockTab);
         this.TEXTURENAMES = new String[] { "tools/partchest_top", "tools/partchest_bottom", "tools/partchest_side" };
     }
 

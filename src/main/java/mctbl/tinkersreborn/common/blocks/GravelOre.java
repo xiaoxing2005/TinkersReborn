@@ -34,7 +34,7 @@ public class GravelOre extends BlockSand {
         this.setHarvestLevel("shovel", 1, 4);// aluminum
         this.setHarvestLevel("shovel", 4, 5);// cobalt
 
-        this.setCreativeTab(TinkersRebornRegistry.block);
+        this.setCreativeTab(TinkersRebornRegistry.blockTab);
     }
 
     @Override

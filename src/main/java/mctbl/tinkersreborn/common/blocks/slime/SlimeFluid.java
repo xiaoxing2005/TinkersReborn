@@ -23,7 +23,7 @@ public class SlimeFluid extends BlockFluidClassic {
 
     public SlimeFluid(Fluid fluid, Material material) {
         super(fluid, material);
-        setCreativeTab(TinkersRebornRegistry.block);
+        setCreativeTab(TinkersRebornRegistry.blockTab);
         setStepSound(TinkersRebornGeneral.slimeStep);
         setBlockName("tinkersreborn.liquid.slime");
     }

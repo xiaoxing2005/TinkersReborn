@@ -27,7 +27,7 @@ public class ToolStationBlock extends TinkersRebornInventoryBlock implements ITi
         this.setHardness(2f);
         this.setStepSound(Block.soundTypeWood);
         this.setBlockName("tinkersreborn.ToolStation");
-        this.setCreativeTab(TinkersRebornRegistry.block);
+        this.setCreativeTab(TinkersRebornRegistry.blockTab);
         this.TEXTURENAMES = new String[] { "tools/toolstation_top", "tools/toolstation_bottom",
             "tools/toolstation_side" };
     }

@@ -32,7 +32,7 @@ public class SlimeTallGrass extends BlockBush implements IShearable {
         super(Material.vine);
         float f = 0.4F;
         this.setBlockBounds(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, 0.8F, 0.5F + f);
-        setCreativeTab(TinkersRebornRegistry.block);
+        setCreativeTab(TinkersRebornRegistry.blockTab);
         setBlockName("tinkersreborn.slime.grass.tall");
         setStepSound(Block.soundTypeGrass);
     }

@@ -35,7 +35,7 @@ public class PartBuilderBlock extends TinkersRebornInventoryBlock implements ITi
         this.setHardness(2f);
         this.setStepSound(Block.soundTypeWood);
         this.setBlockName("tinkersreborn.PartBuilder");
-        this.setCreativeTab(TinkersRebornRegistry.block);
+        this.setCreativeTab(TinkersRebornRegistry.blockTab);
         this.TEXTURENAMES = new String[] { "tools/partbuilder_top", "tools/partbuilder_%s_bottom",
             "tools/partbuilder_%s_side" };
     }

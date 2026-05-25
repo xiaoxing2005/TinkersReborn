@@ -23,7 +23,7 @@ public class GoldenHead extends ItemFood {
 
     public GoldenHead(int healAmount, float saturationModifier, boolean isWolfsFavoriteMeat) {
         super(healAmount, saturationModifier, isWolfsFavoriteMeat);
-        this.setCreativeTab(TinkersRebornRegistry.block);
+        this.setCreativeTab(TinkersRebornRegistry.blockTab);
         this.setHasSubtypes(true);
         this.setAlwaysEdible();
         this.setPotionEffect(Potion.regeneration.id, 10, 0, 1.0F);
