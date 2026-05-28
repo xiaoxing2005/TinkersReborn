@@ -1,6 +1,5 @@
 package mctbl.tinkersreborn.library.tools;
 
-
 /**
  * If a part has material info need implement this interface
  * Author MCTBL
@@ -8,6 +7,6 @@ package mctbl.tinkersreborn.library.tools;
  */
 public interface IMaterialPart {
 
-	public int getMaterialId();
-	
+    public int getMaterialId();
+
 }

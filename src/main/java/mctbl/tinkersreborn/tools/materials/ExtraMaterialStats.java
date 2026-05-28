@@ -1,0 +1,58 @@
+package mctbl.tinkersreborn.tools.materials;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import mctbl.tinkersreborn.library.materials.AbstractMaterialStats;
+import mctbl.tinkersreborn.library.materials.MaterialStatusType;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
+
+public class ExtraMaterialStats extends AbstractMaterialStats {
+
+    public final static String LOC_Durability = "stat.extra.durability.name";
+    public final static String LOC_DurabilityDesc = "stat.extra.durability.desc";
+
+    public final static String formatBase = "%s: <#%s>%s</#>";
+
+    public final int extraDurability; // usually between 0 and 500
+
+    /**
+     * @param extraDurability
+     */
+    public ExtraMaterialStats(int extraDurability) {
+        this.extraDurability = extraDurability;
+    }
+
+    @Override
+    public MaterialStatusType getIdentifier() {
+        return MaterialStatusType.EXTRA;
+    }
+
+    @Override
+    public String getLocalizedName() {
+        return TinkersRebornUtils.translate("stat.extra.name");
+    }
+
+    @Override
+    public List<String> getLocalizedInfo() {
+        List<String> info = new ArrayList<>();
+
+        if (this.extraDurability != 0) info.add(this.formatDurability());
+
+        return info;
+    }
+
+    @Override
+    public List<String> getLocalizedDesc() {
+        List<String> info = new ArrayList<>();
+
+        if (this.extraDurability != 0) info.add(TinkersRebornUtils.translate(LOC_DurabilityDesc));
+
+        return info;
+    }
+
+    public String formatDurability() {
+        return format(LOC_Durability, COLOR_Durability, this.extraDurability);
+    }
+
+}

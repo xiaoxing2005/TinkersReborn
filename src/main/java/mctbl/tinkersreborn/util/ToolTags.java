@@ -4,37 +4,36 @@ package mctbl.tinkersreborn.util;
  * Holds all the NBT Tag keys used by the standard tinkers stuff.
  */
 public final class ToolTags {
-	
-	public static final String TOOLBASETAG = "TinkersRebornTool";
 
-	// tools
-	public static final String DURABILITY = "Durability";
-	public static final String ATTACK = "Attack";
-	public static final String ATTACKSPEEDMULTIPLIER = "AttackSpeedMultiplier";
-	public static final String MININGSPEED = "MiningSpeed";
-	public static final String HARVESTLEVEL = "HarvestLevel";
+    public static final String TOOLBASETAG = "TinkersRebornTool";
 
-	// bows
-	public static final String DRAWSPEED = "DrawSpeed";
-	public static final String RANGE = "Range";
-	public static final String PROJECTILE_BONUS_DAMAGE = "ProjectileBonusDamage";
+    // tools
+    public static final String DURABILITY = "Durability";
+    public static final String ATTACK = "Attack";
+    public static final String ATTACKSPEEDMULTIPLIER = "AttackSpeedMultiplier";
+    public static final String MININGSPEED = "MiningSpeed";
+    public static final String HARVESTLEVEL = "HarvestLevel";
 
-	// projectile
-	public static final String ACCURACY = "Accuracy";
+    // bows
+    public static final String DRAWSPEED = "DrawSpeed";
+    public static final String RANGE = "Range";
+    public static final String PROJECTILE_BONUS_DAMAGE = "ProjectileBonusDamage";
 
-	// misc. tool info
-	public static final String FREE_MODIFIERS = "FreeModifiers";
-	public static final String BROKEN = "Broken";
+    // projectile
+    public static final String ACCURACY = "Accuracy";
 
-	// Extra
-	public static final String REPAIR_COUNT = "RepairCount";
+    // misc. tool info
+    public static final String FREE_MODIFIERS = "FreeModifiers";
+    public static final String BROKEN = "Broken";
 
-	public static final String ENCHANT_EFFECT = "EnchantEffect";
-	public static final String RESET_FLAG = "ResetFlag";
+    // Extra
+    public static final String REPAIR_COUNT = "RepairCount";
 
-	public static final String NO_RENAME = "NoRename";
+    public static final String ENCHANT_EFFECT = "EnchantEffect";
+    public static final String RESET_FLAG = "ResetFlag";
 
-	private ToolTags() {
-	}
+    public static final String NO_RENAME = "NoRename";
+
+    private ToolTags() {}
 
 }

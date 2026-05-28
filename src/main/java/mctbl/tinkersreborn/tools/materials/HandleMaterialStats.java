@@ -1,0 +1,68 @@
+package mctbl.tinkersreborn.tools.materials;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import mctbl.tinkersreborn.library.materials.AbstractMaterialStats;
+import mctbl.tinkersreborn.library.materials.MaterialStatusType;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
+
+public class HandleMaterialStats extends AbstractMaterialStats {
+
+    public final static String LOC_Multiplier = "stat.handle.modifier.name";
+    public final static String LOC_Durability = "stat.handle.durability.name";
+
+    public final static String LOC_MultiplierDesc = "stat.handle.modifier.desc";
+    public final static String LOC_DurabilityDesc = "stat.handle.durability.desc";
+
+    public final float multiplier; // how good the material is for handles. 0.0 - 1.0
+    public final int durability; // usually between -500 and 500
+
+    /**
+     * @param multiplier
+     * @param durability
+     */
+    public HandleMaterialStats(float modifier, int durability) {
+        this.multiplier = modifier;
+        this.durability = durability;
+    }
+
+    @Override
+    public MaterialStatusType getIdentifier() {
+        return MaterialStatusType.HANDLE;
+    }
+
+    @Override
+    public String getLocalizedName() {
+        return TinkersRebornUtils.translate("stat.handle.name");
+    }
+
+    @Override
+    public List<String> getLocalizedInfo() {
+        List<String> info = new ArrayList<>();
+
+        if (this.multiplier != 0) info.add(this.formatMultiplier());
+        if (this.durability != 0) info.add(this.formatDurability());
+
+        return info;
+    }
+
+    @Override
+    public List<String> getLocalizedDesc() {
+        List<String> info = new ArrayList<>();
+
+        if (this.multiplier != 0) info.add(TinkersRebornUtils.translate(LOC_MultiplierDesc));
+        if (this.durability != 0) info.add(TinkersRebornUtils.translate(LOC_DurabilityDesc));
+
+        return info;
+    }
+
+    public String formatMultiplier() {
+        return format(LOC_MultiplierDesc, COLOR_Multiplier, this.multiplier);
+    }
+
+    public String formatDurability() {
+        return format(LOC_Durability, COLOR_Durability, this.durability);
+    }
+
+}

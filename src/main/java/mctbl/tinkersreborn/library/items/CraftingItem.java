@@ -18,7 +18,7 @@ public class CraftingItem extends Item {
     public String[] unlocalizedNames;
     public String folder;
     public IIcon[] icons;
-    
+
     private boolean hidden = false;
 
     public CraftingItem(String[] names, String[] tex, String folder, CreativeTabs tab) {
@@ -43,10 +43,10 @@ public class CraftingItem extends Item {
         this.unlocalizedNames = names;
         this.folder = folder;
     }
-    
+
     public CraftingItem setHiddenInCreativeTabs(boolean isHidden) {
-    	this.hidden = isHidden;
-    	return this;
+        this.hidden = isHidden;
+        return this;
     }
 
     // public void updateData(String[] names, String[] tex, String folder, String modTexturePrefix) {
@@ -56,6 +56,7 @@ public class CraftingItem extends Item {
     // this.folder = folder;
     // }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int meta) {
         int arr = MathHelper.clamp_int(meta, 0, unlocalizedNames.length);
@@ -74,16 +75,18 @@ public class CraftingItem extends Item {
         }
     }
 
+    @Override
     public String getUnlocalizedName(ItemStack stack) {
         int arr = MathHelper.clamp_int(stack.getItemDamage(), 0, unlocalizedNames.length - 1);
         return getUnlocalizedName() + "." + unlocalizedNames[arr];
     }
 
+    @Override
     public void getSubItems(Item b, CreativeTabs tab, List<ItemStack> list) {
-    	if(!this.hidden) {
-    		for (int i = 0; i < unlocalizedNames.length; i++)
-    			if (!(textureNames[i].equals(""))) list.add(new ItemStack(b, 1, i));    		
-    	}
+        if (!this.hidden) {
+            for (int i = 0; i < unlocalizedNames.length; i++)
+                if (!(textureNames[i].equals(""))) list.add(new ItemStack(b, 1, i));
+        }
     }
 
 }

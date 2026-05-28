@@ -1,0 +1,87 @@
+package mctbl.tinkersreborn.tools.materials;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import mctbl.tinkersreborn.library.materials.AbstractMaterialStats;
+import mctbl.tinkersreborn.library.materials.MaterialStatusType;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
+
+public class BowMaterialStats extends AbstractMaterialStats {
+
+    public final static String LOC_Drawspeed = "stat.bow.drawspeed.name";
+    public final static String LOC_Range = "stat.bow.range.name";
+    public final static String LOC_Damage = "stat.bow.damage.name";
+
+    public final static String LOC_DrawspeedDesc = "stat.bow.drawspeed.desc";
+    public final static String LOC_RangeDesc = "stat.bow.range.desc";
+    public final static String LOC_DamageDesc = "stat.bow.damage.desc";
+
+    /**
+     * Ok, here is where things get complicated. Think about the bonus damage as the
+     * extra damage the arrow has because the force he was shot with was so great
+     * Usually this is higher, the higher the range. But it can't scale directly
+     * because that leads to problems with how it interacts. Think of the bonus
+     * damage as a flat damage-reward for using materials that are slower, but
+     * flexible, like metals.
+     */
+    public final float bonusDamage;
+    public final float drawspeed;
+    public final float range;
+
+    /**
+     * @param bonusDamage
+     * @param drawspeed
+     * @param range
+     */
+    public BowMaterialStats(float bonusDamage, float drawspeed, float range) {
+        this.bonusDamage = bonusDamage;
+        this.drawspeed = drawspeed;
+        this.range = range;
+    }
+
+    @Override
+    public MaterialStatusType getIdentifier() {
+        return MaterialStatusType.BOW;
+    }
+
+    @Override
+    public String getLocalizedName() {
+        return TinkersRebornUtils.translate("stat.bow.name");
+    }
+
+    @Override
+    public List<String> getLocalizedInfo() {
+        List<String> info = new ArrayList<>();
+
+        if (1f / drawspeed != 0) info.add(this.formatDrawspeed());
+        if (range != 0) info.add(this.formatRange());
+        if (bonusDamage != 0) info.add(this.formatDamage());
+
+        return info;
+    }
+
+    @Override
+    public List<String> getLocalizedDesc() {
+        List<String> info = new ArrayList<>();
+
+        if (1f / drawspeed != 0) info.add(TinkersRebornUtils.translate(LOC_DrawspeedDesc));
+        if (range != 0) info.add(TinkersRebornUtils.translate(LOC_RangeDesc));
+        if (bonusDamage != 0) info.add(TinkersRebornUtils.translate(LOC_DamageDesc));
+
+        return info;
+    }
+
+    public String formatDrawspeed() {
+        return format(LOC_Drawspeed, COLOR_Drawspeed, 1f / this.drawspeed);
+    }
+
+    public String formatRange() {
+        return format(LOC_Range, COLOR_Range, this.range);
+    }
+
+    public String formatDamage() {
+        return format(LOC_Damage, COLOR_Damage, this.bonusDamage);
+    }
+
+}

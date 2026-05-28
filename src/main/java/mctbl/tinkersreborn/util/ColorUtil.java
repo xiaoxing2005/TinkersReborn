@@ -89,53 +89,54 @@ public class ColorUtil {
     public static String addItalic(String str) {
         return EnumChatFormatting.ITALIC + str + EnumChatFormatting.RESET;
     }
-    
+
     /**
      * Returns the actual color value for a chatformatting
+     * 
      * @param color EnumChatFormatting
      * @return RGB color
      */
     public static int enumChatFormattingToColor(EnumChatFormatting color) {
-    	// only for EnumChatFormatting.BLACK to WHITE
-    	int i = Integer.parseInt(color.toString(), 16);
+        // only for EnumChatFormatting.BLACK to WHITE
+        int i = Integer.parseInt(String.valueOf(color.getFormattingCode()), 16);
         int j = (i >> 3 & 1) * 85;
         int k = (i >> 2 & 1) * 170 + j;
         int l = (i >> 1 & 1) * 170 + j;
         int i1 = (i >> 0 & 1) * 170 + j;
-        if(i == 6) {
-          k += 85;
+        if (i == 6) {
+            k += 85;
         }
-        if(i >= 16) {
-          k /= 4;
-          l /= 4;
-          i1 /= 4;
+        if (i >= 16) {
+            k /= 4;
+            l /= 4;
+            i1 /= 4;
         }
 
         return (k & 255) << 16 | (l & 255) << 8 | i1 & 255;
     }
-    
+
     public static int compose(int r, int g, int b, int a) {
         int rgb = a;
         rgb = (rgb << 8) + r;
         rgb = (rgb << 8) + g;
         rgb = (rgb << 8) + b;
         return rgb;
-      }
+    }
 
-      public static int alpha(int c) {
+    public static int alpha(int c) {
         return (c >> 24) & 0xFF;
-      }
+    }
 
-      public static int red(int c) {
+    public static int red(int c) {
         return (c >> 16) & 0xFF;
-      }
+    }
 
-      public static int green(int c) {
+    public static int green(int c) {
         return (c >> 8) & 0xFF;
-      }
+    }
 
-      public static int blue(int c) {
+    public static int blue(int c) {
         return (c) & 0xFF;
-      }
+    }
 
 }

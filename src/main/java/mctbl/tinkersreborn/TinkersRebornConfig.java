@@ -11,6 +11,7 @@ public class TinkersRebornConfig {
     public static String[] gravelOreTypes;
 
     public static boolean disableAllRecipes;
+    public static String[] miningLevels;
 
     public static void setupConfig(File location) {
         metalTypes = new String[] { "Cobalt", "Ardite", "Manyullyn", "Copper", "Bronze", "Tin", "Aluminum", "AluBrass",
@@ -30,6 +31,15 @@ public class TinkersRebornConfig {
                 false,
                 "Disable all TinkersReborn recipes (smeltery, drying rack, crafting, etc)")
             .getBoolean();
+        miningLevels = config
+            .get(
+                "general",
+                "Mining Levels",
+                new String[] { "§7tile.stone.name", "§fIron", "§4item.redstone.name", "§dtile.obsidian.name",
+                    "§9Cobalt", "§5Manyullyn" },
+                "How many mining levels have")
+            .getStringList();
 
     }
+
 }
