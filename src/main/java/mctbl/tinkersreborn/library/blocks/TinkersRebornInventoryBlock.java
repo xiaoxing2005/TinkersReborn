@@ -37,7 +37,7 @@ public abstract class TinkersRebornInventoryBlock extends BlockContainer {
 
     public abstract TileEntity createNewTileEntity(World world, int metadata);
 
-    public abstract int getGui(World world, int x, int y, int z, EntityPlayer entityplayer);
+    public abstract Integer getGui(World world, int x, int y, int z, EntityPlayer entityplayer);
 
     public Object getModInstance() {
         return TinkersReborn.instance;

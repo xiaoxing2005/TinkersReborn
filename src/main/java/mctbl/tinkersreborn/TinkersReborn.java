@@ -17,6 +17,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.crafting.LiquidCasting;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 
@@ -46,6 +47,9 @@ public class TinkersReborn {
 
     public static final List<ITinkersRebornModule> l = new ArrayList<>();
 
+    public static LiquidCasting tableCasting;
+    public static LiquidCasting basinCasting;
+
     public TinkersReborn() {
         l.add(new TinkersRebornGeneral());
         l.add(new TinkersRebornTools());
@@ -56,6 +60,9 @@ public class TinkersReborn {
     public void preInit(FMLPreInitializationEvent event) {
         TinkersRebornConfig.setupConfig(event.getModConfigurationDirectory());
         TinkersRebornRegistry.instance.preInit();
+
+        tableCasting = new LiquidCasting();
+        basinCasting = new LiquidCasting();
 
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 

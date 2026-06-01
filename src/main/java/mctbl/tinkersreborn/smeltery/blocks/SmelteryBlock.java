@@ -102,7 +102,7 @@ public class SmelteryBlock extends TinkersRebornInventoryBlock {
     }
 
     @Override
-    public int getGui(World world, int x, int y, int z, EntityPlayer entityplayer) {
+    public Integer getGui(World world, int x, int y, int z, EntityPlayer entityplayer) {
         return TinkersRebornSmelteryProxyCommon.smelteryGuiID;
     }
 

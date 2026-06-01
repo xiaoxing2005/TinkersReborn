@@ -6,8 +6,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
 
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import mctbl.tinkersreborn.CommonProxy;
+import mctbl.tinkersreborn.smeltery.entity.CastingBasinLogic;
+import mctbl.tinkersreborn.smeltery.entity.CastingTableLogic;
+import mctbl.tinkersreborn.smeltery.model.CastingBasinSpecialRender;
+import mctbl.tinkersreborn.smeltery.model.CastingBlockRender;
+import mctbl.tinkersreborn.smeltery.model.CastingTableSpecialRenderer;
 import mctbl.tinkersreborn.smeltery.model.SmelteryRender;
 import mctbl.tinkersreborn.smeltery.model.TankItemRenderer;
 import mctbl.tinkersreborn.smeltery.model.TankRender;
@@ -23,16 +29,16 @@ public class TinkersRebornSmelteryProxyClient extends TinkersRebornSmelteryProxy
     void registerRenderer() {
         RenderingRegistry.registerBlockHandler(new TankRender());
         RenderingRegistry.registerBlockHandler(new SmelteryRender());
+        RenderingRegistry.registerBlockHandler(new CastingBlockRender());
 
-        // RenderingRegistry.registerBlockHandler(new CastingBlockRender());
         // RenderingRegistry.registerBlockHandler(new DryingRackRender());
         // RenderingRegistry.registerBlockHandler(new PaneRender());
         // RenderingRegistry.registerBlockHandler(new PaneConnectedRender());
         // RenderingRegistry.registerBlockHandler(new RenderBlockFluid());
         // RenderingRegistry.registerBlockHandler(new BlockRenderCastingChannel());
 
-        // ClientRegistry.bindTileEntitySpecialRenderer(CastingTableLogic.class, new CastingTableSpecialRenderer());
-        // ClientRegistry.bindTileEntitySpecialRenderer(CastingBasinLogic.class, new CastingBasinSpecialRender());
+        ClientRegistry.bindTileEntitySpecialRenderer(CastingTableLogic.class, new CastingTableSpecialRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(CastingBasinLogic.class, new CastingBasinSpecialRender());
         // ClientRegistry.bindTileEntitySpecialRenderer(DryingRackLogic.class, new DryingRackSpecialRender());
 
         IItemRenderer tankItemRenderer = new TankItemRenderer();

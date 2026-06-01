@@ -86,7 +86,7 @@ public class PartChestBlock extends TinkersRebornInventoryBlock implements ITink
     }
 
     @Override
-    public int getGui(World world, int x, int y, int z, EntityPlayer entityplayer) {
+    public Integer getGui(World world, int x, int y, int z, EntityPlayer entityplayer) {
         return TinkersRebornToolsProxyCommon.partChestID;
     }
 
