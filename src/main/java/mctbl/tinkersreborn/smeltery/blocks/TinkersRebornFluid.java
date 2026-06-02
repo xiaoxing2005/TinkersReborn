@@ -21,27 +21,24 @@ public class TinkersRebornFluid extends Fluid {
     private Integer color;
     public String identifier;
 
-    public TinkersRebornFluid(String fluidName, int color) {
-        this(fluidName, color, false);
-    }
-
-    public TinkersRebornFluid(String fluidName, int color, boolean initFluid) {
+    public TinkersRebornFluid(String fluidName, int color, boolean initFluid, boolean needFluidBlock) {
         super(fluidName);
         this.identifier = fluidName;
         this.color = color;
         if (initFluid) {
             FluidRegistry.registerFluid(this);
-
-            Block fluidBlock = new TinkersRebornFluidBlock(this, Material.water);
-            fluidBlock.setBlockName("fluid." + fluidName);
-            GameRegistry.registerBlock(fluidBlock, fluidBlock.getUnlocalizedName());
-
             FluidContainerRegistry.registerFluidContainer(
                 new FluidContainerData(
                     new FluidStack(this, 1000),
                     new ItemStack(TinkersRebornGeneral.tinkersBucket, 1, TinkersRebornRegistry.allTinkersFluid.size()),
                     new ItemStack(Items.bucket)));
             TinkersRebornRegistry.allTinkersFluid.add(this);
+        }
+
+        if (needFluidBlock) {
+            Block fluidBlock = new TinkersRebornFluidBlock(this, Material.water);
+            fluidBlock.setBlockName("fluid." + fluidName);
+            GameRegistry.registerBlock(fluidBlock, fluidBlock.getUnlocalizedName());
         }
     }
 
@@ -73,10 +70,6 @@ public class TinkersRebornFluid extends Fluid {
             TinkersRebornRegistry.allTinkersFluid.add(this);
         }
 
-    }
-
-    public TinkersRebornFluid(TinkersRebornMaterial m) {
-        this(m, false);
     }
 
     @Override

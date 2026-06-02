@@ -21,11 +21,11 @@ public class SlimeFluid extends BlockFluidClassic {
     IIcon stillIcon;
     IIcon flowIcon;
 
-    public SlimeFluid(Fluid fluid, Material material) {
-        super(fluid, material);
-        setCreativeTab(TinkersRebornRegistry.blockTab);
-        setStepSound(TinkersRebornGeneral.slimeStep);
-        setBlockName("tinkersreborn.liquid.slime");
+    public SlimeFluid(Fluid fluid) {
+        super(fluid, Material.water);
+        this.setCreativeTab(TinkersRebornRegistry.blockTab);
+        this.setStepSound(TinkersRebornGeneral.slimeStep);
+        this.setBlockName("tinkersreborn.liquid.slime");
     }
 
     @Override
@@ -33,8 +33,7 @@ public class SlimeFluid extends BlockFluidClassic {
     public void registerBlockIcons(IIconRegister iconRegister) {
         stillIcon = iconRegister.registerIcon("tinkersreborn:slime/slime_blue");
         flowIcon = iconRegister.registerIcon("tinkersreborn:slime/slime_blue_flow");
-        TinkersRebornGeneral.blueSlimeFluid.setStillIcon(stillIcon);
-        TinkersRebornGeneral.blueSlimeFluid.setFlowingIcon(flowIcon);
+        this.definedFluid.setIcons(stillIcon, flowIcon);
     }
 
     @Override

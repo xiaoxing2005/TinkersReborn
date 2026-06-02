@@ -89,9 +89,10 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         GameRegistry.registerBlock(metalBlock, TinkersRebornMetalItemBlock.class, metalBlock.getUnlocalizedName());
 
         slimeStep = new StepSoundSlime("mob.slime", 1.0f, 1.0f);
-        blueSlimeFluid = new TinkersRebornFluid("slime_blue", 0X42E9F4, true);
+        blueSlimeFluid = new TinkersRebornFluid("slime_blue", 0X42E9F4, true, false);
 
-        slimePool = new SlimeFluid(blueSlimeFluid, Material.water);
+        slimePool = new SlimeFluid(blueSlimeFluid);
+        GameRegistry.registerBlock(slimePool, slimePool.getUnlocalizedName());
         blueSlimeFluid.setBlock(slimePool);
 
         // Slime Islands

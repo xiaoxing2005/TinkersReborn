@@ -9,23 +9,32 @@ import net.minecraftforge.fluids.Fluid;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.util.TextureHelper;
 
 public class TinkersRebornFluidBlock extends BlockFluidClassic {
 
     public IIcon stillIcon;
     public IIcon flowIcon;
     boolean overwriteFluidIcons = true;
-    private Fluid fluid = null;
+    private TinkersRebornFluid fluid = null;
 
-    public TinkersRebornFluidBlock(Fluid fluid, Material material) {
+    public TinkersRebornFluidBlock(TinkersRebornFluid fluid, Material material) {
         super(fluid, material);
         this.fluid = fluid;
     }
 
     @Override
     public void registerBlockIcons(IIconRegister iconRegister) {
-        stillIcon = iconRegister.registerIcon("tinkersreborn:liquid");
-        flowIcon = iconRegister.registerIcon("tinkersreborn:liquid_flow");
+        if (TextureHelper.itemTextureExists("tinkersreborn:" + this.fluid.identifier)) {
+            stillIcon = iconRegister.registerIcon("tinkersreborn:" + this.fluid.identifier);
+        } else {
+            stillIcon = iconRegister.registerIcon("tinkersreborn:liquid");
+        }
+        if (TextureHelper.itemTextureExists("tinkersreborn:" + this.fluid.identifier + "_flow")) {
+            flowIcon = iconRegister.registerIcon("tinkersreborn:" + this.fluid.identifier + "_flow");
+        } else {
+            flowIcon = iconRegister.registerIcon("tinkersreborn:liquid_flow");
+        }
         if (this.fluid != null) this.fluid.setIcons(stillIcon, flowIcon);
     }
 
