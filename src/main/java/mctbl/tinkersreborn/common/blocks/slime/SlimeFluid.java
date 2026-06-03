@@ -13,7 +13,6 @@ import net.minecraftforge.fluids.Fluid;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
-import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.entity.SlimeBase;
 
 public class SlimeFluid extends BlockFluidClassic {
@@ -23,7 +22,6 @@ public class SlimeFluid extends BlockFluidClassic {
 
     public SlimeFluid(Fluid fluid) {
         super(fluid, Material.water);
-        this.setCreativeTab(TinkersRebornRegistry.blockTab);
         this.setStepSound(TinkersRebornGeneral.slimeStep);
         this.setBlockName("tinkersreborn.liquid.slime");
     }

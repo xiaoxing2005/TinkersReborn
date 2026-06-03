@@ -18,7 +18,7 @@ public class LavaTankItemBlock extends TinkersRebornItemBlock implements IFluidC
     public static final String[] blockTypes = { "Tank", "Gague", "Window" };
 
     public LavaTankItemBlock(Block b) {
-        super(b, "LavaTank", blockTypes);
+        super(b, "tinkersreborn.lavatank", blockTypes);
         setMaxDamage(0);
         setHasSubtypes(true);
     }
@@ -30,13 +30,13 @@ public class LavaTankItemBlock extends TinkersRebornItemBlock implements IFluidC
                 .getCompoundTag("Fluid");
             if (liquidTag != null) {
                 list.add(
-                    StatCollector.translateToLocal("searedtank1.tooltip") + " "
+                    StatCollector.translateToLocal("tinkersreborn.tank.tooltip1") + " "
                         + StatCollector.translateToLocal(liquidTag.getString("FluidName")));
                 list.add(liquidTag.getInteger("Amount") + " mB");
             }
         } else {
-            list.add(StatCollector.translateToLocal("searedtank3.tooltip"));
-            list.add(StatCollector.translateToLocal("searedtank2.tooltip"));
+            list.add(StatCollector.translateToLocal("tinkersreborn.tank.tooltip3"));
+            list.add(StatCollector.translateToLocal("tinkersreborn.tank.tooltip2"));
         }
     }
 

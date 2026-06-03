@@ -20,10 +20,15 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.client.StepSoundSlime;
+import mctbl.tinkersreborn.common.blocks.ConsecratedSoil;
 import mctbl.tinkersreborn.common.blocks.GravelOre;
+import mctbl.tinkersreborn.common.blocks.GraveyardSoil;
+import mctbl.tinkersreborn.common.blocks.Grout;
 import mctbl.tinkersreborn.common.blocks.MetalOre;
+import mctbl.tinkersreborn.common.blocks.SlimeSand;
 import mctbl.tinkersreborn.common.blocks.StoneTorch;
 import mctbl.tinkersreborn.common.blocks.TinkersRebornMetalBlock;
+import mctbl.tinkersreborn.common.blocks.slime.SlimeDirt;
 import mctbl.tinkersreborn.common.blocks.slime.SlimeFluid;
 import mctbl.tinkersreborn.common.blocks.slime.SlimeGel;
 import mctbl.tinkersreborn.common.blocks.slime.SlimeGrass;
@@ -55,6 +60,11 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     public static Block stoneTorch;
     public static Item goldHead;
     public static Block metalBlock;
+    public static Block slimeSand;
+    public static Block grout;
+    public static Block graveyardSoil;
+    public static Block consecratedSoil;
+    public static Block slimeDirt;
 
     // Slime
     public static SoundType slimeStep;
@@ -87,6 +97,21 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
         metalBlock = new TinkersRebornMetalBlock(Material.iron, 10.0F);
         GameRegistry.registerBlock(metalBlock, TinkersRebornMetalItemBlock.class, metalBlock.getUnlocalizedName());
+
+        slimeSand = new SlimeSand();
+        GameRegistry.registerBlock(slimeSand, slimeSand.getUnlocalizedName());
+
+        grout = new Grout();
+        GameRegistry.registerBlock(grout, grout.getUnlocalizedName());
+
+        graveyardSoil = new GraveyardSoil();
+        GameRegistry.registerBlock(graveyardSoil, graveyardSoil.getUnlocalizedName());
+
+        consecratedSoil = new ConsecratedSoil();
+        GameRegistry.registerBlock(consecratedSoil, consecratedSoil.getUnlocalizedName());
+
+        slimeDirt = new SlimeDirt();
+        GameRegistry.registerBlock(slimeDirt, slimeDirt.getUnlocalizedName());
 
         slimeStep = new StepSoundSlime("mob.slime", 1.0f, 1.0f);
         blueSlimeFluid = new TinkersRebornFluid("slime_blue", 0X42E9F4, true, false);

@@ -16,7 +16,7 @@ public class GlueBlock extends TinkersRebornBlock {
 
     public GlueBlock() {
         super(Material.ground, 4.0f, new String[] { "glue" });
-        this.setBlockName("GlueBlock");
+        this.setBlockName("tinkersreborn.glueblock");
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
     }
 

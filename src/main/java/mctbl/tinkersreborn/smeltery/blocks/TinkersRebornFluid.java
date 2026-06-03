@@ -53,6 +53,7 @@ public class TinkersRebornFluid extends Fluid {
             .setViscosity(6000)
             .setTemperature(1300)
             .setLuminosity(12);
+        this.identifier = m.identifier;
         this.materialId = m.materialId;
         if (initFluid) {
             FluidRegistry.registerFluid(this);
