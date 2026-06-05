@@ -274,3 +274,34 @@ flowchart TB
   SlimyMud --> SlimeIsland
 
 ```
+
+## NBT
+
+```json
+
+"TinkersRebornTool":{
+  // actual render materials identifier in order
+  "RenderMaterials":["wood", "wood", "obsidian"],
+  // materials identifier in order READONLY
+  "Materials":["iron", "wood", "obsidian"],
+  // TODO
+  "Modifiers":{
+
+  },
+  // this tool's now stats
+  "Stats":{
+    "Durability": 1,
+    "Attack": 2.1,
+    "MiningSpeed": 2.2,
+    "HarvestLevel": 3
+  },
+  // this tool's base stats READONLY
+  "StatsOriginal":{
+    "Durability": 0.5,
+    "Attack": 2.1,
+    "MiningSpeed": 1.0,
+    "HarvestLevel": 3
+  },
+}
+
+```
