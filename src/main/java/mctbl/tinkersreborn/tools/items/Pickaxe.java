@@ -1,28 +1,30 @@
 package mctbl.tinkersreborn.tools.items;
 
-import net.minecraft.block.material.Material;
+import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.Set;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.item.ItemPickaxe;
+
+import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.tools.HarvestTool;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 
 public class Pickaxe extends HarvestTool {
 
+    public final Set<Material> effectiveMaterials = new HashSet<>();
+    public final static Set<Block> pickaxeEffective = new HashSet<>();
+
     public Pickaxe() {
         super("Pickaxe", 3);
-        this.categoryTags.add("pickaxe");
-        // this.partTypeArray[0] = MaterialStatusType.HEAD;
-        // this.toolPartArray[0] = TinkersRebornTools.pickaxeHead;
-        // this.iconPostfixArray[0] = "_pickaxe_head";
-        // this.partTypeArray[1] = MaterialStatusType.HANDLE;
-        // this.toolPartArray[1] = TinkersRebornTools.rod;
-        // this.iconPostfixArray[1] = "_pickaxe_handle";
-        // this.partTypeArray[2] = MaterialStatusType.EXTRA;
-        // this.toolPartArray[2] = TinkersRebornTools.binding;
-        // this.iconPostfixArray[2] = "_pickaxe_accessory";
 
-        // this.iconPostfixArray[4] = "_pickaxe_head_broken";
-        // this.iconPostfixArray[5] = "_pickaxe_effect";
+        // set the toolclass, actual harvestlevel is done by the overridden callback
+        this.setHarvestLevel("pickaxe", 0);
+
+        this.categoryTags.add("pickaxe");
 
         this.componentsParts
             .add(new ToolPartRecord(TinkersRebornTools.pickaxeHead, MaterialStatusType.HEAD, "_pickaxe_head"));
@@ -32,6 +34,7 @@ public class Pickaxe extends HarvestTool {
             .add(new ToolPartRecord(TinkersRebornTools.binding, MaterialStatusType.EXTRA, "_pickaxe_accessory"));
 
         this.initEffectiveMaterial();
+        this.getItemPickaxeEffect();
     }
 
     void initEffectiveMaterial() {
@@ -41,11 +44,26 @@ public class Pickaxe extends HarvestTool {
         effectiveMaterials.add(Material.glass);
         effectiveMaterials.add(Material.piston);
         effectiveMaterials.add(Material.anvil);
-        effectiveMaterials.add(Material.circuits);
+        effectiveMaterials.add(Material.packedIce);
+    }
+
+    void getItemPickaxeEffect() {
+        try {
+            Class<ItemPickaxe> clz = ItemPickaxe.class;
+            Field effectSetField = clz.getDeclaredField("field_150915_c");
+            effectSetField.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            Set<Block> blockSet = (Set<Block>) effectSetField.get(null);
+            pickaxeEffective.addAll(blockSet);
+        } catch (Exception e) {
+            e.printStackTrace();
+            TinkersReborn.LOG.warn("Tinkers Pickaxe get error when try to get vanila pickaxe's effective block list");
+        }
     }
 
     @Override
-    protected String getHarvestType() {
-        return "pickaxe";
+    public boolean isEffective(Block block, int metadata) {
+        return effectiveMaterials.contains(block.getMaterial()) || pickaxeEffective.contains(block);
     }
+
 }

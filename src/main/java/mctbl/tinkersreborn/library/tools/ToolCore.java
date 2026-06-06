@@ -1,6 +1,7 @@
 package mctbl.tinkersreborn.library.tools;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -55,6 +57,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
     public final List<Map<Integer, IIcon>> allIcons = new ArrayList<>();
     public final Set<String> categoryTags = new HashSet<>();
 
+    // public final Set<Material> effectiveMaterials = new HashSet<>();
+
     public static IIcon blankSprite;
     public static IIcon emptyIcon;
 
@@ -65,7 +69,6 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
         super();
         this.partAmount = partAmount;
         this.maxStackSize = 1;
-        this.setMaxDamage(100);
         this.setUnlocalizedName("TinkerTools." + toolTypeName);
         this.setCreativeTab(TinkersRebornRegistry.toolsTab);
         this.setNoRepair();
@@ -75,7 +78,14 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
         for (int i = 0; i < this.partAmount + 2; i++) {
             this.allIcons.add(new HashMap<>());
         }
+    }
 
+    /**
+     * Multiplier applied to the actual mining speed of the tool Internally a hammer
+     * and pick have the same speed, but a hammer is 2/3 slower
+     */
+    public float miningSpeedModifier() {
+        return 1f;
     }
 
     @Override
@@ -115,7 +125,6 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
                 }
             }
         }
-
         emptyIcon = register.registerIcon("tinkersreborn:blankface");
         blankSprite = register.registerIcon("tinkersreborn:blanksprite");
     }
@@ -123,21 +132,18 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(ItemStack stack, int renderPass) {
-        NBTTagCompound tags = ToolTagsHelper.getToolBaseNBTSafe(stack);
-        if (!tags.hasNoTags()) {
-            NBTTagList renderMaterials = ToolTagsHelper.getStringTagListSafe(tags, ToolTags.RENDERMATERIALS);
-            if (renderMaterials.tagCount() != 0) {
-                if (renderPass < this.partAmount) {
-                    int iconsIdx = (renderPass == 0 && tags.getBoolean(ToolTags.BROKEN)) ? this.partAmount : renderPass;
-                    return getCorrectIcon(this.allIcons.get(iconsIdx), renderMaterials.getStringTagAt(renderPass));
-                }
-                // Effects
-                // else if (renderPass <= 10) {
-                // String effect = "Effect" + (1 + renderPass - this.partAmount);
-                // if (tags.hasKey(effect)) return effectIcons.get(tags.getInteger(effect));
-                // }
+        NBTTagList renderMaterials = ToolTagsHelper.getToolRenderMaterialsNBTSafe(stack);
+        if (renderMaterials.tagCount() != 0) {
+            if (renderPass < this.partAmount) {
+                int iconsIdx = (renderPass == 0 && ToolTagsHelper.isBroken(stack)) ? this.partAmount : renderPass;
+                return getCorrectIcon(this.allIcons.get(iconsIdx), renderMaterials.getStringTagAt(renderPass));
             }
-            return blankSprite;
+            // Effects
+            // else if (renderPass <= 10) {
+            // String effect = "Effect" + (1 + renderPass - this.partAmount);
+            // if (tags.hasKey(effect)) return effectIcons.get(tags.getInteger(effect));
+            // }
+
         }
         return emptyIcon;
     }
@@ -155,7 +161,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
     @Override
     public int getColorFromItemStack(ItemStack stack, int renderPass) {
         NBTTagCompound tags = ToolTagsHelper.getToolBaseNBTSafe(stack);
-        if (!tags.hasNoTags()) {
+        if (tags != null && !tags.hasNoTags()) {
             NBTTagList renderMaterials = ToolTagsHelper.getStringTagListSafe(tags, ToolTags.RENDERMATERIALS);
             if (renderMaterials.tagCount() != 0) {
                 if (renderPass < this.partAmount) {
@@ -185,11 +191,6 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
         if (material != null && !icons.containsKey(material.materialId)) return material.materialTextColor;
 
         return TinkersRebornMaterial.UNKNOWN.materialTextColor;
-    }
-
-    @Override
-    public String getBaseTagName() {
-        return ToolTags.TOOLBASETAG;
     }
 
     @Override
@@ -233,19 +234,17 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
 
     @Override
     public boolean showDurabilityBar(ItemStack stack) {
-        // TODO Auto-generated method stub
-        return super.showDurabilityBar(stack);
+        return super.showDurabilityBar(stack) && !ToolTagsHelper.isBroken(stack);
+    }
+
+    @Override
+    public boolean isDamageable() {
+        return true;
     }
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return 100;
-    }
-
-    @Override
-    public int getDamage(ItemStack stack) {
-        // TODO Auto-generated method stub
-        return super.getDamage(stack);
+        return ToolTagsHelper.getDurabilityStat(stack);
     }
 
     @Override
@@ -255,13 +254,51 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
 
     @Override
     public void setDamage(ItemStack stack, int damage) {
-        // TODO Auto-generated method stub
-        super.setDamage(stack, damage);
+        int max = this.getMaxDamage(stack);
+        super.setDamage(stack, Math.min(max, damage));
+
+        if (getDamage(stack) == max) {
+            ToolTagsHelper.breakTool(stack, null);
+        }
     }
 
     @Override
     public boolean hasCustomEntity(ItemStack stack) {
         return true;
+    }
+
+    @Override
+    public int getHarvestLevel(ItemStack stack, String toolClass) {
+        if (ToolTagsHelper.isBroken(stack)) {
+            return -1;
+        }
+        if (this.getToolClasses(stack)
+            .contains(toolClass)) {
+            // will return 0 if the tag has no info anyway
+            return ToolTagsHelper.getHarvestLevelStat(stack);
+        }
+        return super.getHarvestLevel(stack, toolClass);
+    }
+
+    @Override
+    public Set<String> getToolClasses(ItemStack stack) {
+        // no classes if broken
+        if (ToolTagsHelper.isBroken(stack)) {
+            return Collections.emptySet();
+        }
+        return super.getToolClasses(stack);
+    }
+
+    @Override
+    public float getDigSpeed(ItemStack itemstack, Block block, int metadata) {
+        if (isEffective(block, metadata)) {
+            return ToolTagsHelper.calcMiningSpeed(itemstack, block, metadata);
+        }
+        return super.getDigSpeed(itemstack, block, metadata);
+    }
+
+    public boolean isEffective(Block block, int metadata) {
+        return false;
     }
 
     @Override
@@ -351,8 +388,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
     /**
      * Builds the NBT for a new tinker item with the given data.
      *
-     * @param materials Materials to build with. Have to be in the correct order. No
-     *                  nulls!
+     * @param materials TinkersRebornMaterial to build with. Have to be in the
+     *                  correct order. No nulls!
      * @return The built nbt
      */
     public NBTTagCompound buildItemNBT(List<TinkersRebornMaterial> materials) {
@@ -372,7 +409,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
         // add traits
         // addMaterialTraits(basetag, materials);
 
-        basetag.setTag(getBaseTagName(), tinkersTag);
+        basetag.setTag(ToolTags.TOOLBASETAG, tinkersTag);
         return basetag;
     }
 
@@ -411,4 +448,5 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
         }
 
     }
+
 }

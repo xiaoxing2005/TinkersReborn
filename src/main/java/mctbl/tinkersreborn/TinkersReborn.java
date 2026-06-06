@@ -25,12 +25,7 @@ import mctbl.tinkersreborn.tools.TinkersRebornTools;
     version = Tags.VERSION,
     name = "TinkersReborn",
     acceptedMinecraftVersions = "[1.7.10]",
-    dependencies = "required-after:Forge@[10.13.3.1384,11.14);" + "after:CoFHAPI|energy;"
-        + "after:CoFHCore;"
-        + "after:NotEnoughItems;"
-        + "after:Waila;"
-        + "before:GalacticraftCore;"
-        + "before:UndergroundBiomes")
+    dependencies = "required-after:Forge@[10.13.3.1384,11.14);" + "after:NotEnoughItems;" + "after:Waila;")
 public class TinkersReborn {
 
     public static final String MODID = "tinkersreborn";

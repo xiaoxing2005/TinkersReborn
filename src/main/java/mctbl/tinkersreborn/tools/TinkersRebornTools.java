@@ -259,14 +259,14 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         lumberaxeHead = new TinkersRebornToolPart("lumberaxe_head", "LumberaxeHead");
         mediumGuard = new TinkersRebornToolPart("medium_guard", "MediumGuard");
         pickaxeHead = new TinkersRebornToolPart("pickaxe_head", "PickaxeHead");
-        rod = new TinkersRebornToolPart("rod", "Rod", MaterialStatusType.HANDLE);
+        rod = new TinkersRebornToolPart("rod", "Rod");
         scytheHead = new TinkersRebornToolPart("scythe_head", "ScytheHead");
-        shard = new TinkersRebornToolPart("shard", "Shard", null);
+        shard = new TinkersRebornToolPart("shard", "Shard");
         shovelHead = new TinkersRebornToolPart("shovel_head", "ShovelHead");
         shuriken = new TinkersRebornToolPart("shuriken", "Shuriken");
         swordBlade = new TinkersRebornToolPart("sword_blade", "SwordBlade");
         toughbind = new TinkersRebornToolPart("toughbind", "Toughbind");
-        toughrod = new TinkersRebornToolPart("toughrod", "Toughrod", MaterialStatusType.HANDLE);
+        toughrod = new TinkersRebornToolPart("toughrod", "Toughrod");
         bowString = new BowString();
         fletching = new Fletching();
         boltCore = new BoltCore();

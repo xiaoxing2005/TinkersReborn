@@ -4,8 +4,6 @@ import java.util.Set;
 
 public interface IModifyable {
 
-    String getBaseTagName();
-
     Set<String> getCategoryTags();
 
 }
