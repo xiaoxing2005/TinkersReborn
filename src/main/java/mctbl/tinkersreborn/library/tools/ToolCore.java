@@ -1,9 +1,12 @@
 package mctbl.tinkersreborn.library.tools;
 
+import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -14,6 +17,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -21,7 +25,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
@@ -32,12 +35,15 @@ import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.crafting.ToolBuilderHelper;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.tools.Category;
 import mctbl.tinkersreborn.tools.entity.FancyEntityItem;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import mctbl.tinkersreborn.tools.materials.ExtraMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HandleMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HeadMaterialStats;
+import mctbl.tinkersreborn.util.ColorUtil;
 import mctbl.tinkersreborn.util.TextureHelper;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.ToolTags;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
@@ -55,7 +61,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
      */
     protected final List<ToolPartRecord> componentsParts = new ArrayList<>(4);
     public final List<Map<Integer, IIcon>> allIcons = new ArrayList<>();
-    public final Set<String> categoryTags = new HashSet<>();
+    public final Set<Category> categoryTags = new HashSet<>();
 
     // public final Set<Material> effectiveMaterials = new HashSet<>();
 
@@ -80,12 +86,35 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
         }
     }
 
+    // Tool and Weapon specific properties
     /**
      * Multiplier applied to the actual mining speed of the tool Internally a hammer
      * and pick have the same speed, but a hammer is 2/3 slower
      */
     public float miningSpeedModifier() {
         return 1f;
+    }
+
+    /** Multiplier for damage from materials. Should be fixed per tool. */
+    public abstract float damagePotential();
+
+    /**
+     * A fixed damage value where the calculations start to apply dimishing returns.
+     * Basically if you'd hit more than that damage with this tool, the damage is
+     * gradually reduced depending on how much the cutoff is exceeded.
+     */
+    public float damageCutoff() {
+        return 15.0f; // in general this should be sufficient and only needs increasing if it's a
+        // stronger weapon
+        // fun fact: diamond sword with sharpness V has 15 damage
+    }
+
+    /**
+     * Knockback modifier. Basically this takes the vanilla knockback on hit and
+     * modifies it by this factor.
+     */
+    public float knockback() {
+        return 1.0f;
     }
 
     @Override
@@ -173,19 +202,6 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
         return super.getColorFromItemStack(stack, renderPass);
     }
 
-    protected int getCorrectColor(Map<Integer, IIcon> icons, int id) {
-        if (icons.containsKey(id))
-            // UNKNOWN's color is same as super.getColorFromItemStack
-            return TinkersRebornMaterial.UNKNOWN.materialTextColor;
-
-        TinkersRebornMaterial material = TinkersRebornRegistry.getMaterialById(id);
-        if (material != null) {
-            return material.materialTextColor;
-        } else {
-            return TinkersRebornMaterial.UNKNOWN.materialTextColor;
-        }
-    }
-
     protected int getCorrectColor(Map<Integer, IIcon> icons, String materialIdentifier) {
         TinkersRebornMaterial material = TinkersRebornRegistry.getMaterialByIdentifier(materialIdentifier);
         if (material != null && !icons.containsKey(material.materialId)) return material.materialTextColor;
@@ -193,21 +209,20 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
         return TinkersRebornMaterial.UNKNOWN.materialTextColor;
     }
 
-    @Override
-    public Set<String> getCategoryTags() {
+    public void addCategory(Category... tags) {
+        Collections.addAll(this.categoryTags, tags);
+    }
+
+    public Set<Category> getCategory() {
         return this.categoryTags;
+    }
+
+    public boolean hasCategory(Category tag) {
+        return this.categoryTags.contains(tag);
     }
 
     public List<ToolPartRecord> getToolComponentsParts() {
         return this.componentsParts;
-    }
-
-    public String getEffectSuffix() {
-        return "_" + this.toolTypeName + "_effect";
-    }
-
-    public String getDefaultFolder() {
-        return this.toolTypeName;
     }
 
     public String getUnlocalizedToolName() {
@@ -215,11 +230,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
     }
 
     public String getLocalizedToolName() {
-        return StatCollector.translateToLocal(this.getUnlocalizedToolName());
-    }
-
-    public boolean isItemTool(ItemStack par1ItemStack) {
-        return false;
+        return translate(this.getUnlocalizedToolName());
     }
 
     @Override
@@ -248,11 +259,6 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
     }
 
     @Override
-    public int getDisplayDamage(ItemStack stack) {
-        return this.getDamage(stack);
-    }
-
-    @Override
     public void setDamage(ItemStack stack, int damage) {
         int max = this.getMaxDamage(stack);
         super.setDamage(stack, Math.min(max, damage));
@@ -265,6 +271,11 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
     @Override
     public boolean hasCustomEntity(ItemStack stack) {
         return true;
+    }
+
+    @Override
+    public boolean canHarvestBlock(Block block, ItemStack stack) {
+        return isEffective(block) && !ToolTagsHelper.isBroken(stack);
     }
 
     @Override
@@ -291,13 +302,13 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
 
     @Override
     public float getDigSpeed(ItemStack itemstack, Block block, int metadata) {
-        if (isEffective(block, metadata)) {
+        if (isEffective(block)) {
             return ToolTagsHelper.calcMiningSpeed(itemstack, block, metadata);
         }
         return super.getDigSpeed(itemstack, block, metadata);
     }
 
-    public boolean isEffective(Block block, int metadata) {
+    public boolean isEffective(Block block) {
         return false;
     }
 
@@ -395,8 +406,9 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
     public NBTTagCompound buildItemNBT(List<TinkersRebornMaterial> materials) {
         NBTTagCompound basetag = new NBTTagCompound();
         NBTTagCompound tinkersTag = new NBTTagCompound();
-        NBTTagCompound toolTag = buildToolTag(materials).get();
-        NBTTagList dataTag = buildMaterialListData(materials);
+        NBTTagCompound toolTag = this.buildToolTag(materials)
+            .get();
+        NBTTagList dataTag = this.buildMaterialListData(materials);
 
         tinkersTag.setTag(ToolTags.BASEMATERIALS, dataTag);
         tinkersTag.setTag(ToolTags.RENDERMATERIALS, dataTag.copy());
@@ -421,6 +433,84 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
     @Override
     public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
         return false;
+    }
+
+    /**
+     * For tool station display
+     * 
+     * @param stack
+     * @return
+     */
+    public List<String> getInformation(ItemStack stack) {
+        return getInformation(stack, null, false);
+    }
+
+    @Override
+    public String getItemStackDisplayName(ItemStack p_77653_1_) {
+        // TODO Auto-generated method stub
+        return super.getItemStackDisplayName(p_77653_1_);
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
+        boolean shift = TinkersRebornUtils.isShiftKeyDown();
+        // modifier first
+        this.getTooltipModify(stack, player, list);
+
+        list.add("");
+        this.getTooltipDetailed(stack, player, list);
+
+        if (!shift) {
+            list.add(translate("tinkersreborn.tooltip.holdShift"));
+        } else {
+            this.getTooltipComponents(stack, player, list);
+        }
+    }
+
+    protected void getTooltipModify(ItemStack stack, EntityPlayer player, List<String> list) {
+        // TODO
+    }
+
+    /**
+     * For tooltip display
+     * 
+     * @param stack
+     * @param list
+     */
+    protected void getTooltipDetailed(ItemStack stack, EntityPlayer player, List<String> list) {
+        list.addAll(this.getInformation(stack, player, true));
+    }
+
+    public List<String> getInformation(ItemStack stack, EntityPlayer player, boolean isTooltip) {
+        List<String> list = new LinkedList<>();
+
+        // durability
+        // is broken and need detail, for tooltip
+        if (ToolTagsHelper.isBroken(stack) && isTooltip) {
+            list.add(
+                String.format(
+                    "%s: %s",
+                    translate(HeadMaterialStats.LOC_Durability),
+                    ColorUtil.addDarkRed(ColorUtil.addUnderLine(translate("tinkersreborn.tooltip.broken")))));
+        } else {
+            list.add(
+                HeadMaterialStats.formatDurability(
+                    ToolTagsHelper.getCurrentDurability(stack),
+                    ToolTagsHelper.getMaxDurability(stack)));
+        }
+
+        if (hasCategory(Category.HARVEST)) {
+            list.add(HeadMaterialStats.formatHarvestLevel(ToolTagsHelper.getHarvestLevelStat(stack)));
+            list.add(HeadMaterialStats.formatMiningSpeed(ToolTagsHelper.getMiningSpeed(stack)));
+        }
+        float attack = ToolTagsHelper.getActualAttackDamage(stack, player);
+        list.add(HeadMaterialStats.formatAttack(attack));
+
+        return list;
+    }
+
+    protected void getTooltipComponents(ItemStack stack, EntityPlayer player, List<String> list) {
+
     }
 
     public final class ToolPartRecord {

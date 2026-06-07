@@ -1,23 +1,16 @@
 package mctbl.tinkersreborn.tools;
 
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import net.minecraftforge.event.entity.player.PlayerDropsEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
+import mctbl.tinkersreborn.library.tools.ToolCore;
 
 public class TinkersRebornEvents {
 
     @SubscribeEvent
-    public void onPlayerResporn(PlayerRespawnEvent e) {}
+    public void tinkersToolTooltipEvent(ItemTooltipEvent e) {
+        // use this to prevent vailnila durability display
+        if (e.itemStack.getItem() instanceof ToolCore) e.toolTip.removeIf(s -> s.startsWith("Durability: "));
+    }
 
-    @SubscribeEvent
-    public void onAttackEvent(LivingAttackEvent e) {}
-
-    @SubscribeEvent
-    public void onLivingDrop(LivingDropsEvent e) {}
-
-    @SubscribeEvent
-    public void onPlayerDeath(PlayerDropsEvent e) {}
 }

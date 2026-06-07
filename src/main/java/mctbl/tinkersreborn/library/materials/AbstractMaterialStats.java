@@ -16,17 +16,21 @@ public abstract class AbstractMaterialStats implements IMaterialStats {
 
     public final static String COLOR_Accuracy = "CDAACD";
 
-    public final static String formatBase = "%s: <#%s>%s</#>";
+    public final static String formatBase = "%s: %s%s";
 
-    public String format(String s, String color, int data) {
-        return this.format(s, color, String.valueOf(data));
+    public static String format(String s, String color, int data) {
+        return format(s, color, String.valueOf(data));
     }
 
-    public String format(String s, String color, float data) {
-        return this.format(s, color, TinkersRebornUtils.df.format(data));
+    public static String format(String s, String color, float data) {
+        return format(s, color, TinkersRebornUtils.df.format(data));
     }
 
-    public String format(String s, String color, String data) {
+    public static String formatNumberPercent(String s, String color, float data) {
+        return format(s, color, TinkersRebornUtils.dfPercent.format(data));
+    }
+
+    public static String format(String s, String color, String data) {
         return String.format(formatBase, TinkersRebornUtils.translate(s), color, data);
     }
 

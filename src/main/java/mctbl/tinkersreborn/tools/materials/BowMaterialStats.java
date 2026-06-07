@@ -54,9 +54,9 @@ public class BowMaterialStats extends AbstractMaterialStats {
     public List<String> getLocalizedInfo() {
         List<String> info = new ArrayList<>();
 
-        if (1f / drawspeed != 0) info.add(this.formatDrawspeed());
-        if (range != 0) info.add(this.formatRange());
-        if (bonusDamage != 0) info.add(this.formatDamage());
+        if (1f / drawspeed != 0) info.add(formatDrawspeed(this.drawspeed));
+        if (range != 0) info.add(formatRange(this.range));
+        if (bonusDamage != 0) info.add(formatDamage(this.bonusDamage));
 
         return info;
     }
@@ -72,16 +72,16 @@ public class BowMaterialStats extends AbstractMaterialStats {
         return info;
     }
 
-    public String formatDrawspeed() {
-        return format(LOC_Drawspeed, COLOR_Drawspeed, 1f / this.drawspeed);
+    public static String formatDrawspeed(float drawspeed) {
+        return format(LOC_Drawspeed, COLOR_Drawspeed, 1f / drawspeed);
     }
 
-    public String formatRange() {
-        return format(LOC_Range, COLOR_Range, this.range);
+    public static String formatRange(float range) {
+        return format(LOC_Range, COLOR_Range, range);
     }
 
-    public String formatDamage() {
-        return format(LOC_Damage, COLOR_Damage, this.bonusDamage);
+    public static String formatDamage(float bonusDamage) {
+        return format(LOC_Damage, COLOR_Damage, bonusDamage);
     }
 
 }

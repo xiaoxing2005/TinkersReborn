@@ -37,7 +37,7 @@ public class ExtraMaterialStats extends AbstractMaterialStats {
     public List<String> getLocalizedInfo() {
         List<String> info = new ArrayList<>();
 
-        if (this.extraDurability != 0) info.add(this.formatDurability());
+        if (this.extraDurability != 0) info.add(formatDurability(this.extraDurability));
 
         return info;
     }
@@ -51,8 +51,8 @@ public class ExtraMaterialStats extends AbstractMaterialStats {
         return info;
     }
 
-    public String formatDurability() {
-        return format(LOC_Durability, COLOR_Durability, this.extraDurability);
+    public static String formatDurability(int extraDurability) {
+        return format(LOC_Durability, COLOR_Durability, extraDurability);
     }
 
 }

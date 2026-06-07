@@ -40,6 +40,7 @@ import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.ToolCore;
+import mctbl.tinkersreborn.library.utils.MiningLevelHelper;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
 import mctbl.tinkersreborn.tools.blocks.CastChestBlock;
 import mctbl.tinkersreborn.tools.blocks.CraftingStationBlock;
@@ -399,6 +400,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
         this.registerMaterials();
         this.oreDictRegistry();
+        MiningLevelHelper.init();
     }
 
     @Override

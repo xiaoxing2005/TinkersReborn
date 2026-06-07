@@ -8,6 +8,7 @@ import java.util.Map;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 
+import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.util.ColorUtil;
 
@@ -15,20 +16,32 @@ public final class MiningLevelHelper {
 
     private MiningLevelHelper() {}
 
-    public static Map<String, MiningLevel> nameToLevel = new HashMap<>();
-    public static List<MiningLevel> levelList = new ArrayList<>();
+    public static Map<String, MiningLevel> nameToLevel;
+    public static List<MiningLevel> levelList;
 
-    static {
+    public static void init() {
+        Map<String, EnumChatFormatting> charToFormatting = new HashMap<>();
+        for (EnumChatFormatting e : EnumChatFormatting.values()) charToFormatting.put(e.toString(), e);
+
+        nameToLevel = new HashMap<>();
+        levelList = new ArrayList<>();
         int idx = 0;
         for (String s : TinkersRebornConfig.miningLevels) {
             String prefix = s.substring(0, 2);
             String local = s.substring(2);
-            MiningLevel newLevel = new MiningLevel(idx, prefix, local);
+
+            MiningLevel newLevel = new MiningLevel(idx, charToFormatting.get(prefix), prefix, local);
+            TinkersReborn.LOG.info("Tinker mining level init %s =================", newLevel.getLocalization());
             levelList.add(newLevel);
             nameToLevel.put(local, newLevel);
-
             idx++;
         }
+    }
+
+    public static MiningLevel getMiningLevel(int level) {
+        if (level < 0 || level > levelList.size()) return levelList.get(0);
+
+        return levelList.get(level);
     }
 
     public static class MiningLevel {
@@ -38,13 +51,8 @@ public final class MiningLevelHelper {
         public String colorPrefix;
         public String localString;
 
-        private MiningLevel(int levelIdx, String colorPrefix, String localString) {
-            this(
-                levelIdx,
-                ColorUtil.enumChatFormattingToColor(
-                    EnumChatFormatting.getValueByName(String.valueOf(colorPrefix.charAt(1)))),
-                colorPrefix,
-                localString);
+        private MiningLevel(int levelIdx, EnumChatFormatting formatting, String colorPrefix, String localString) {
+            this(levelIdx, ColorUtil.enumChatFormattingToColor(formatting), colorPrefix, localString);
         }
 
         private MiningLevel(int levelIdx, int color, String colorPrefix, String localString) {

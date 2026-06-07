@@ -43,8 +43,8 @@ public class ShaftMaterialStats extends AbstractMaterialStats {
     public List<String> getLocalizedInfo() {
         List<String> info = new ArrayList<>();
 
-        if (modifier != 0) info.add(this.formatModifier());
-        if (bonusAmmo != 0) info.add(this.formatAmmo());
+        if (modifier != 0) info.add(formatModifier(this.modifier));
+        if (bonusAmmo != 0) info.add(formatAmmo(this.bonusAmmo));
 
         return info;
     }
@@ -59,12 +59,12 @@ public class ShaftMaterialStats extends AbstractMaterialStats {
         return info;
     }
 
-    public String formatModifier() {
-        return format(LOC_Multiplier, COLOR_Multiplier, this.modifier);
+    public static String formatModifier(float modifier) {
+        return format(LOC_Multiplier, COLOR_Multiplier, modifier);
     }
 
-    public String formatAmmo() {
-        return format(LOC_Ammo, COLOR_Durability, this.bonusAmmo);
+    public static String formatAmmo(int bonusAmmo) {
+        return format(LOC_Ammo, COLOR_Durability, bonusAmmo);
     }
 
 }

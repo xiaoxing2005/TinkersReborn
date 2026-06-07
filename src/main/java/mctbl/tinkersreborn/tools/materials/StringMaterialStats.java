@@ -36,7 +36,7 @@ public class StringMaterialStats extends AbstractMaterialStats {
     public List<String> getLocalizedInfo() {
         List<String> info = new ArrayList<>();
 
-        if (modifier != 0) info.add(this.formatModifier());
+        if (modifier != 0) info.add(formatModifier(this.modifier));
 
         return info;
     }
@@ -50,8 +50,8 @@ public class StringMaterialStats extends AbstractMaterialStats {
         return info;
     }
 
-    public String formatModifier() {
-        return format(LOC_Multiplier, COLOR_Modifier, this.modifier);
+    public static String formatModifier(float modifier) {
+        return format(LOC_Multiplier, COLOR_Modifier, modifier);
     }
 
 }

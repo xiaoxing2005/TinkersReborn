@@ -41,8 +41,8 @@ public class FletchingMaterialStats extends AbstractMaterialStats {
     public List<String> getLocalizedInfo() {
         List<String> info = new ArrayList<>();
 
-        if (modifier != 0) info.add(this.formatModifier());
-        if (accuracy != 0) info.add(this.formatAccuracy());
+        if (modifier != 0) info.add(formatModifier(this.modifier));
+        if (accuracy != 0) info.add(formatAccuracy(this.accuracy));
 
         return info;
     }
@@ -57,12 +57,12 @@ public class FletchingMaterialStats extends AbstractMaterialStats {
         return info;
     }
 
-    public String formatModifier() {
-        return format(LOC_Multiplier, COLOR_Multiplier, this.modifier);
+    public static String formatModifier(float modifier) {
+        return format(LOC_Multiplier, COLOR_Multiplier, modifier);
     }
 
-    public String formatAccuracy() {
-        return format(LOC_Accuracy, COLOR_Accuracy, this.accuracy);
+    public static String formatAccuracy(float accuracy) {
+        return format(LOC_Accuracy, COLOR_Accuracy, accuracy);
     }
 
 }

@@ -41,8 +41,8 @@ public class HandleMaterialStats extends AbstractMaterialStats {
     public List<String> getLocalizedInfo() {
         List<String> info = new ArrayList<>();
 
-        if (this.multiplier != 0) info.add(this.formatMultiplier());
-        if (this.durability != 0) info.add(this.formatDurability());
+        if (this.multiplier != 0) info.add(formatMultiplier(this.multiplier));
+        if (this.durability != 0) info.add(formatDurability(this.durability));
 
         return info;
     }
@@ -57,12 +57,12 @@ public class HandleMaterialStats extends AbstractMaterialStats {
         return info;
     }
 
-    public String formatMultiplier() {
-        return format(LOC_MultiplierDesc, COLOR_Multiplier, this.multiplier);
+    public static String formatMultiplier(float multiplier) {
+        return format(LOC_MultiplierDesc, COLOR_Multiplier, multiplier);
     }
 
-    public String formatDurability() {
-        return format(LOC_Durability, COLOR_Durability, this.durability);
+    public static String formatDurability(int durability) {
+        return format(LOC_Durability, COLOR_Durability, durability);
     }
 
 }

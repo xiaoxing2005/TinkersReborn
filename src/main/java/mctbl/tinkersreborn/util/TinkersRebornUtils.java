@@ -1,6 +1,7 @@
 package mctbl.tinkersreborn.util;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 import net.minecraft.client.Minecraft;
@@ -12,7 +13,10 @@ import org.lwjgl.input.Keyboard;
 
 public class TinkersRebornUtils {
 
-    public static DecimalFormat df = new DecimalFormat("##.##");
+    public static final DecimalFormat df = new DecimalFormat(
+        "#,###,###.##",
+        DecimalFormatSymbols.getInstance(Locale.US));
+    public static final DecimalFormat dfPercent = new DecimalFormat("#%");
 
     /**
      * Removes all whitespaces from the given string and makes it lowerspace.

@@ -24,8 +24,6 @@ public class Pickaxe extends HarvestTool {
         // set the toolclass, actual harvestlevel is done by the overridden callback
         this.setHarvestLevel("pickaxe", 0);
 
-        this.categoryTags.add("pickaxe");
-
         this.componentsParts
             .add(new ToolPartRecord(TinkersRebornTools.pickaxeHead, MaterialStatusType.HEAD, "_pickaxe_head"));
         this.componentsParts
@@ -62,8 +60,13 @@ public class Pickaxe extends HarvestTool {
     }
 
     @Override
-    public boolean isEffective(Block block, int metadata) {
+    public boolean isEffective(Block block) {
         return effectiveMaterials.contains(block.getMaterial()) || pickaxeEffective.contains(block);
+    }
+
+    @Override
+    public float damagePotential() {
+        return 1.0F;
     }
 
 }

@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -98,6 +99,55 @@ public class ToolTagsHelper {
         return getToolDataNBTSafe(stack).getFloat(ToolTags.MININGSPEED);
     }
 
+    public static float getAttackStat(ItemStack stack) {
+        return getToolDataNBTSafe(stack).getFloat(ToolTags.ATTACK);
+    }
+
+    public static float getActualToolAttack(ItemStack stack) {
+        float damage = getAttackStat(stack);
+        if (stack != null && stack.getItem() instanceof ToolCore core) {
+            damage *= core.damagePotential();
+        }
+        return damage;
+    }
+
+    public static float calcCutoffDamage(float damage, float cutoff) {
+        float p = 1f;
+        float d = damage;
+        damage = 0f;
+        while (d > cutoff) {
+            damage += p * cutoff;
+            // safety for ridiculous values
+            if (p > 0.001f) {
+                p *= 0.9f;
+            } else {
+                damage += p * cutoff * ((d / cutoff) - 1f);
+                return damage;
+            }
+            d -= cutoff;
+        }
+
+        damage += p * d;
+
+        return damage;
+    }
+
+    public static float getActualAttackDamage(ItemStack stack, EntityLivingBase player) {
+        float damage = (float) SharedMonsterAttributes.attackDamage.getDefaultValue();
+        if (player != null) {
+            damage = (float) player.getEntityAttribute(SharedMonsterAttributes.attackDamage)
+                .getAttributeValue();
+        }
+
+        damage += getActualToolAttack(stack);
+
+        if (stack.getItem() instanceof ToolCore) {
+            damage = calcCutoffDamage(damage, ((ToolCore) stack.getItem()).damageCutoff());
+        }
+
+        return damage;
+    }
+
     public static void breakTool(ItemStack stack, EntityLivingBase entity) {
         NBTTagCompound tag = getToolBaseNBTSafe(stack);
         if (tag == null) {
@@ -110,7 +160,8 @@ public class ToolTagsHelper {
             player.playSound("entity.item.break", 0.8F, 0.8F + entity.worldObj.rand.nextFloat() * 0.4F);
 
             // or this
-            // player.worldObj.playSound(player.posX, player.posY, player.posZ, "entity.item.break", 0.8F,
+            // player.worldObj.playSound(player.posX, player.posY, player.posZ,
+            // "entity.item.break", 0.8F,
             // 0.8F + entity.worldObj.rand.nextFloat() * 0.4F, false);
 
             player.renderBrokenItemStack(stack);
@@ -145,5 +196,14 @@ public class ToolTagsHelper {
 
         return stack.getItem()
             .getHarvestLevel(stack, block.getHarvestTool(meta)) >= block.getHarvestLevel(meta);
+    }
+
+    /* Tool Durability */
+    public static int getCurrentDurability(ItemStack stack) {
+        return stack.getMaxDamage() - stack.getItemDamage();
+    }
+
+    public static int getMaxDurability(ItemStack stack) {
+        return stack.getMaxDamage();
     }
 }
