@@ -35,6 +35,7 @@ public final class ToolTags {
     // misc. tool info
     public static final String FREE_MODIFIERS = "FreeModifiers";
     public static final String BROKEN = "Broken";
+    public static final String UNBREAKABLE = "Unbreakable";
     public static final String CUSTOMNAME = "CustomName";
 
     // Extra

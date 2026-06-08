@@ -47,8 +47,7 @@ public class Pickaxe extends HarvestTool {
 
     void getItemPickaxeEffect() {
         try {
-            Class<ItemPickaxe> clz = ItemPickaxe.class;
-            Field effectSetField = clz.getDeclaredField("field_150915_c");
+            Field effectSetField = ItemPickaxe.class.getDeclaredField("field_150915_c");
             effectSetField.setAccessible(true);
             @SuppressWarnings("unchecked")
             Set<Block> blockSet = (Set<Block>) effectSetField.get(null);

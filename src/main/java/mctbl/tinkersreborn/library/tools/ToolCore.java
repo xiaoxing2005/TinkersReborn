@@ -18,6 +18,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
@@ -25,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
@@ -323,6 +325,32 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
         return false;
     }
 
+    /**
+     * Actually deal damage to the entity we hit. Can be overridden for special
+     * behaviour
+     *
+     * @return True if the entity was hit. Usually the return value of
+     *         {@link Entity#attackEntityFrom(DamageSource, float)}
+     */
+    public boolean dealDamage(ItemStack stack, EntityLivingBase player, Entity entity, float damage) {
+        if (player instanceof EntityPlayer) {
+            return entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) player), damage);
+        }
+        return entity.attackEntityFrom(DamageSource.causeMobDamage(player), damage);
+    }
+
+    /**
+     * Called when an entity is getting damaged with the tool. Reduce the tools
+     * durability accordingly player can be null!
+     */
+    public void reduceDurabilityOnHit(ItemStack stack, EntityPlayer player, float damage) {
+        damage = Math.max(1f, damage / 10f);
+        if (!hasCategory(Category.WEAPON)) {
+            damage *= 2;
+        }
+        ToolTagsHelper.damageTool(stack, (int) damage, player);
+    }
+
     @Override
     public Entity createEntity(World world, Entity location, ItemStack itemstack) {
         return new FancyEntityItem(world, location, itemstack);
@@ -444,6 +472,87 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
     @Override
     public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
         return false;
+    }
+
+    // main logic part
+    @Override
+    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
+        return ToolTagsHelper.attackEntity(stack, this, player, entity);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean hasEffect(ItemStack stack) {
+        return ToolTagsHelper.hasEnchantEffect(stack);
+    }
+
+    @Override
+    public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+        super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
+
+        onUpdateTraits(stack, worldIn, entityIn, itemSlot, isSelected);
+    }
+
+    protected void onUpdateTraits(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+
+        ToolTagsHelper.getTraitsOrdered(stack)
+            .forEach(trait -> trait.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected));
+    }
+
+    // @Override
+    // public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+    // float speed = ToolTagsHelper.getActualAttackSpeed(stack);
+    // int time = Math.round(20f / speed);
+    // if(time < target.hurtResistantTime / 2) {
+    // target.hurtResistantTime = (target.hurtResistantTime + time) / 2;
+    // target.hurtTime = (target.hurtTime + time) / 2;
+    // }
+    // return super.hitEntity(stack, target, attacker);
+    // }
+
+    @Override
+    public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player) {
+        // if(!ToolTagsHelper.isBroken(itemstack) && this instanceof IAoeTool && ((IAoeTool) this).isAoeHarvestTool()) {
+        // for(BlockPos extraPos : ((IAoeTool) this).getAOEBlocks(itemstack, player.getEntityWorld(), player, pos)) {
+        // breakExtraBlock(itemstack, player.getEntityWorld(), player, extraPos, pos);
+        // }
+        // }
+        return breakBlock(itemstack, x, y, z, player);
+    }
+
+    /**
+     * Called to break the base block, return false to perform no breaking
+     * 
+     * @param itemstack Tool ItemStack
+     * @param pos       Current position
+     * @param player    Player instance
+     * @return true if the normal block break code should be skipped
+     */
+    protected boolean breakBlock(ItemStack itemstack, int x, int y, int z, EntityPlayer player) {
+        return super.onBlockStartBreak(itemstack, x, y, z, player);
+    }
+
+    @Override
+    public boolean onBlockDestroyed(ItemStack stack, World world, Block blockIn, int x, int y, int z,
+        EntityLivingBase entityLiving) {
+        if (ToolTagsHelper.isBroken(stack)) {
+            return false;
+        }
+
+        boolean effective = isEffective(blockIn)
+            || ToolTagsHelper.isToolEffective(stack, world.getBlock(x, y, z), world.getBlockMetadata(x, y, z));
+        int damage = effective ? 1 : 2;
+
+        this.afterBlockBreak(stack, world, blockIn, x, y, z, entityLiving, damage, effective);
+
+        return hasCategory(Category.TOOL);
+    }
+
+    public void afterBlockBreak(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase player,
+        int damage, boolean wasEffective) {
+        // TinkerUtil.getTraitsOrdered(stack).forEach(trait -> trait.afterBlockBreak(stack, world, state, pos, player,
+        // wasEffective));
+        ToolTagsHelper.damageTool(stack, damage, player);
     }
 
     /**

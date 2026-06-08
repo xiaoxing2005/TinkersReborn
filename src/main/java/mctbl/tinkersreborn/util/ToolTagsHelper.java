@@ -1,22 +1,37 @@
 package mctbl.tinkersreborn.util;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.potion.Potion;
+import net.minecraft.stats.StatList;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 
+import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.library.tools.ITrait;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 
 public class ToolTagsHelper {
 
     public static int TAG_TYPE_STRING = Constants.NBT.TAG_STRING;
     public static int TAG_TYPE_COMPOUND = Constants.NBT.TAG_COMPOUND;
+    public static Random random = TinkersReborn.random;
 
     private ToolTagsHelper() {}
 
@@ -89,6 +104,10 @@ public class ToolTagsHelper {
 
     public static boolean isBroken(ItemStack stack) {
         return getToolBaseNBTSafe(stack).getBoolean(ToolTags.BROKEN);
+    }
+
+    public static boolean hasEnchantEffect(ItemStack stack) {
+        return getToolBaseNBTSafe(stack).getBoolean(ToolTags.ENCHANT_EFFECT);
     }
 
     public static int getHarvestLevelStat(ItemStack stack) {
@@ -209,5 +228,299 @@ public class ToolTagsHelper {
 
     public static int getMaxDurability(ItemStack stack) {
         return stack.getMaxDamage();
+    }
+
+    /**
+     * Returns true if the tool is effective for harvesting the given block.
+     */
+    public static boolean isToolEffective(ItemStack stack, Block block, int meta) {
+        // check material
+        for (String type : stack.getItem()
+            .getToolClasses(stack)) {
+            if (block.isToolEffective(type, meta)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Damages the tool. Entity is only needed in case the tool breaks for rendering
+     * the break effect.
+     */
+    public static void damageTool(ItemStack stack, int amount, EntityLivingBase entity) {
+        if (amount == 0 || isBroken(stack)) {
+            return;
+        }
+
+        int actualAmount = amount;
+
+        // for(ITrait trait : TinkerUtil.getTraitsOrdered(stack)) {
+        // if(amount > 0) {
+        // actualAmount = trait.onToolDamage(stack, amount, actualAmount, entity);
+        // }
+        // else {
+        // actualAmount = trait.onToolHeal(stack, amount, actualAmount, entity);
+        // }
+        // }
+
+        // extra compatibility for unbreaking.. because things just love to mess it up..
+        // like 3rd party stuff
+        if (actualAmount > 0 && getToolBaseNBTSafe(stack).getBoolean(ToolTags.UNBREAKABLE)) {
+            actualAmount = 0;
+        }
+
+        // ensure we never deal more damage than durability
+        actualAmount = Math.min(actualAmount, getCurrentDurability(stack));
+        stack.setItemDamage(stack.getItemDamage() + actualAmount);
+
+        if (getCurrentDurability(stack) == 0) {
+            breakTool(stack, entity);
+        }
+    }
+
+    public static List<ITrait> getTraitsOrdered(ItemStack tool) {
+        List<ITrait> traits = new ArrayList<>();
+        // NBTTagList list = TagUtil.getTraitsTagList(tool);
+        // for(int i = 0; i < list.tagCount(); i++) {
+        // ITrait trait = TinkerRegistry.getTrait(list.getStringTagAt(i));
+        // if(trait != null) {
+        // traits.add(trait);
+        // }
+        // }
+
+        traits.sort(
+            Comparator.comparingInt(ITrait::getPriority)
+                .reversed());
+
+        return traits;
+    }
+
+    /* Dealing tons of damage */
+
+    /**
+     * General version of attackEntity. Applies cooldowns but has no projectile
+     * entity
+     */
+    public static boolean attackEntity(ItemStack stack, ToolCore tool, EntityLivingBase attacker, Entity targetEntity) {
+        return attackEntity(stack, tool, attacker, targetEntity, null);
+    }
+
+    /**
+     * Makes all the calls to attack an entity. Takes enchantments and potions and
+     * traits into account. Basically call this when a tool deals damage. Most of
+     * this function is the same as
+     * {@link EntityPlayer#attackTargetEntityWithCurrentItem(Entity targetEntity)}
+     */
+    public static boolean attackEntity(ItemStack stack, ToolCore tool, EntityLivingBase attacker, Entity targetEntity,
+        Entity projectileEntity) {
+        // nothing to do, no target?
+        if (targetEntity == null || !targetEntity.canAttackWithItem()
+            || targetEntity.hitByEntity(attacker)
+            || !stack.hasTagCompound()) {
+            return false;
+        }
+        if (isBroken(stack)) {
+            return false;
+        }
+        if (attacker == null) {
+            return false;
+        }
+        boolean isProjectile = projectileEntity != null;
+        EntityLivingBase target = null;
+        EntityPlayer player = null;
+        if (targetEntity instanceof EntityLivingBase) {
+            target = (EntityLivingBase) targetEntity;
+        }
+        if (attacker instanceof EntityPlayer) {
+            player = (EntityPlayer) attacker;
+            if (target instanceof EntityPlayer) {
+                if (!player.canAttackPlayer((EntityPlayer) target)) {
+                    return false;
+                }
+            }
+        }
+
+        // traits on the tool
+        List<ITrait> traits = getTraitsOrdered(stack);
+
+        // players base damage (includes tools damage stat)
+        float baseDamage = (float) attacker.getEntityAttribute(SharedMonsterAttributes.attackDamage)
+            .getAttributeValue();
+
+        // missing because not supported by tcon tools: vanilla damage enchantments, we
+        // have our own modifiers
+        // missing because not supported by tcon tools: vanilla knockback enchantments,
+        // we have our own modifiers
+        float baseKnockback = attacker.isSprinting() ? 1 : 0;
+
+        // calculate if it's a critical hit
+        boolean isCritical = attacker.fallDistance > 0.0F && !attacker.onGround
+            && !attacker.isOnLadder()
+            && !attacker.isInWater()
+            && !attacker.isPotionActive(Potion.blindness)
+            && !attacker.isRiding();
+        for (ITrait trait : traits) {
+            if (trait.isCriticalHit(stack, attacker, target)) {
+                isCritical = true;
+            }
+        }
+
+        // calculate actual damage
+        float damage = baseDamage;
+        if (target != null) {
+            for (ITrait trait : traits) {
+                damage = trait.damage(stack, attacker, target, baseDamage, damage, isCritical);
+            }
+        }
+
+        // apply critical damage
+        if (isCritical) {
+            damage *= 1.5f;
+        }
+
+        // calculate cutoff
+        damage = calcCutoffDamage(damage, tool.damageCutoff());
+
+        // calculate actual knockback
+        float knockback = baseKnockback;
+        if (target != null) {
+            for (ITrait trait : traits) {
+                knockback = trait.knockBack(stack, attacker, target, damage, baseKnockback, knockback, isCritical);
+            }
+        }
+
+        // missing because not supported by tcon tools: vanilla fire aspect
+        // enchantments, we have our own modifiers
+
+        float oldHP = 0;
+
+        double oldVelX = targetEntity.motionX;
+        double oldVelY = targetEntity.motionY;
+        double oldVelZ = targetEntity.motionZ;
+
+        if (target != null) {
+            oldHP = target.getHealth();
+        }
+
+        // apply cooldown damage decrease
+        String sound = null;
+
+        // deal the damage
+        if (target != null) {
+            int hurtResistantTime = target.hurtResistantTime;
+            for (ITrait trait : traits) {
+                trait.onHit(stack, attacker, target, damage, isCritical);
+                // reset hurt reristant time
+                target.hurtResistantTime = hurtResistantTime;
+            }
+        }
+
+        boolean hit = false;
+        if (isProjectile && tool instanceof IProjectile) {
+            // hit = ((IProjectile) tool).dealDamageRanged(stack, projectileEntity, attacker, targetEntity, damage);
+        } else {
+            hit = tool.dealDamage(stack, attacker, targetEntity, damage);
+        }
+
+        // did we hit?
+        if (hit && target != null) {
+            // actual damage dealt
+            float damageDealt = oldHP - target.getHealth();
+
+            // apply knockback modifier
+            oldVelX = target.motionX = oldVelX + (target.motionX - oldVelX) * tool.knockback();
+            oldVelY = target.motionY = oldVelY + (target.motionY - oldVelY) * tool.knockback() / 3f;
+            oldVelZ = target.motionZ = oldVelZ + (target.motionZ - oldVelZ) * tool.knockback();
+
+            // apply knockback
+            if (knockback > 0f) {
+                double velX = -MathHelper.sin(attacker.rotationYaw * (float) Math.PI / 180.0F) * knockback * 0.5F;
+                double velZ = MathHelper.cos(attacker.rotationYaw * (float) Math.PI / 180.0F) * knockback * 0.5F;
+                targetEntity.addVelocity(velX, 0.1d, velZ);
+
+                // slow down player
+                attacker.motionX *= 0.6f;
+                attacker.motionZ *= 0.6f;
+                attacker.setSprinting(false);
+            }
+
+            // Send movement changes caused by attacking directly to hit players.
+            // I guess this is to allow better handling at the hit players side? No idea why
+            // it resets the motion though.
+            if (targetEntity instanceof EntityPlayerMP && targetEntity.velocityChanged) {
+                // TinkerNetwork.sendPacket(targetEntity, new SPacketEntityVelocity(targetEntity));
+                // targetEntity.velocityChanged = false;
+                // targetEntity.motionX = oldVelX;
+                // targetEntity.motionY = oldVelY;
+                // targetEntity.motionZ = oldVelZ;
+            }
+
+            if (player != null) {
+                // vanilla critical callback
+                if (isCritical) {
+                    player.onCriticalHit(target);
+                    // not sure
+                    sound = "entity.player.attack.crit";
+                }
+
+                // "magical" critical damage? (aka caused by modifiers)
+                if (damage > baseDamage) {
+                    // this usually only displays some particles :)
+                    player.onEnchantmentCritical(targetEntity);
+                }
+
+                // vanilla achievement support :D
+                // TODO: READD
+                // if(damage >= 18f) {
+                // player.addStat(AchievementList.OVERKILL);
+                // }
+            }
+            attacker.setLastAttacker(target);
+
+            // Damage indicator particles
+
+            // call post-hit callbacks before reducing the durability
+            for (ITrait trait : traits) {
+                trait.afterHit(stack, attacker, target, damageDealt, isCritical, true); // hit is always true
+            }
+
+            // damage the tool
+            if (player != null) {
+                stack.hitEntity(target, player);
+                if (!player.capabilities.isCreativeMode && !isProjectile) {
+                    tool.reduceDurabilityOnHit(stack, player, damage);
+                }
+
+                player.addStat(StatList.damageDealtStat, Math.round(damageDealt * 10f));
+                player.addExhaustion(0.3f);
+
+                if (player.getEntityWorld() instanceof WorldServer world && damageDealt > 2f) {
+                    int k = (int) (damageDealt * 0.5);
+                    for (int i = 0; i < k; i++) {
+                        world.spawnParticle(
+                            "damageIndicator",
+                            targetEntity.posX + 0.5D - random.nextDouble(),
+                            targetEntity.posY + targetEntity.height * 0.5D * random.nextDouble(),
+                            targetEntity.posZ + 0.5D - random.nextDouble(),
+                            0.2D,
+                            0.2D,
+                            0.2D);
+                    }
+                }
+
+            } else if (!isProjectile) {
+                tool.reduceDurabilityOnHit(stack, null, damage);
+            }
+        } else {
+            sound = "entity.player.attack.nodamage";
+        }
+
+        if (player != null && sound != null) {
+            player.playSound(sound, 0.8F, 0.8F + player.worldObj.rand.nextFloat() * 0.4F);
+        }
+
+        return true;
     }
 }
