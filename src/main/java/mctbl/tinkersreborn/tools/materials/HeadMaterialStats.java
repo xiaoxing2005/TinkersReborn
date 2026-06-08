@@ -71,7 +71,7 @@ public class HeadMaterialStats extends AbstractMaterialStats {
 
     public static String formatHarvestLevel(int harvestLevel) {
         MiningLevel miningLevel = MiningLevelHelper.getMiningLevel(harvestLevel);
-        return format(LOC_HarvestLevel, miningLevel.getColorHex(), miningLevel.getLocalization());
+        return format(LOC_HarvestLevel, ColorUtil.encodeColor(miningLevel.color), miningLevel.getLocalization());
     }
 
     public static String formatDurability(int durability) {

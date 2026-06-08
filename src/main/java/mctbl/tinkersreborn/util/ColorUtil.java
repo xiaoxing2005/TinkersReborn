@@ -7,7 +7,7 @@ import net.minecraft.util.MathHelper;
 
 public class ColorUtil {
 
-    protected static int MARKER = 0xE700;
+    public static int MARKER = 0xE700;
 
     private ColorUtil() {}
 

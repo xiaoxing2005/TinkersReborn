@@ -1,7 +1,6 @@
 package mctbl.tinkersreborn.smeltery;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -29,8 +28,6 @@ import mctbl.tinkersreborn.smeltery.itemblocks.SmelteryItemBlock;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 
 public class TinkersRebornSmeltery implements ITinkersRebornModule {
-
-    public static Item buckets;
 
     public static Block smeltery;
     public static Block lavaTank;
