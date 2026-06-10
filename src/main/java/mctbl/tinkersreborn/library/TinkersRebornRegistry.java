@@ -6,14 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import mctbl.tinkersreborn.library.crafting.LiquidCasting;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.library.tools.ITrait;
 import mctbl.tinkersreborn.library.tools.ToolCore;
+import mctbl.tinkersreborn.library.tools.modifiers.AbstractModifier;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
 
 public class TinkersRebornRegistry {
@@ -33,6 +33,11 @@ public class TinkersRebornRegistry {
     public static List<TinkersRebornMaterial> allMaterialsList;
     public static Map<String, TinkersRebornMaterial> materialIdentifierMaps;
     public static Map<Integer, TinkersRebornMaterial> materialIdMaps;
+
+    public static Map<String, AbstractModifier> modifierIdentifierMaps;
+
+    public static Map<String, ITrait> traitIdentifierMaps;
+    public static Map<Integer, ITrait> traitIdMaps;
 
     // contains all fluid that tinkers reborn registered
     public static List<TinkersRebornFluid> allTinkersFluid;
@@ -62,6 +67,9 @@ public class TinkersRebornRegistry {
         allMaterialsList = new ArrayList<>();
         materialIdentifierMaps = new HashMap<>();
         materialIdMaps = new HashMap<>();
+        modifierIdentifierMaps = new HashMap<>();
+        traitIdentifierMaps = new HashMap<>();
+        traitIdMaps = new HashMap<>();
         allTinkersFluid = new ArrayList<>();
     }
 
@@ -79,6 +87,18 @@ public class TinkersRebornRegistry {
         addMaterialToMap(Arrays.asList(l));
     }
 
+    public static void addModifierToMap(AbstractModifier m) {
+        modifierIdentifierMaps.put(m.getIdentifier(), m);
+    }
+
+    public static void addModifierToMap(List<AbstractModifier> m) {
+        for (AbstractModifier mo : m) addModifierToMap(mo);
+    }
+
+    public static void addModifierToMap(AbstractModifier... m) {
+        addModifierToMap(Arrays.asList(m));
+    }
+
     public static TinkersRebornMaterial getMaterialByIdentifier(String identifier) {
         return materialIdentifierMaps.get(identifier);
     }
@@ -87,12 +107,19 @@ public class TinkersRebornRegistry {
         return materialIdMaps.get(id);
     }
 
-    @Nullable
     public static TinkersRebornFluid getFluidByIndex(int idx) {
         if (idx < allTinkersFluid.size()) {
             return allTinkersFluid.get(idx);
         } else {
             return null;
         }
+    }
+
+    public static ITrait getTrait(String identifier) {
+        return traitIdentifierMaps.get(identifier);
+    }
+
+    public static AbstractModifier getModifier(String identifier) {
+        return modifierIdentifierMaps.get(identifier);
     }
 }

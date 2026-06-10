@@ -11,11 +11,16 @@ public final class ToolTags {
     public static final String BASEMATERIALS = "Materials";
     public static final String RENDERMATERIALS = "RenderMaterials";
     /** Contains all the applied modifiers */
-    public static final String BASEMODIFIERS = "Modifiers";
+    public static final String MODIFIERS = "Modifiers";
+    public static final String FREEMODIFIERS = "FreeModifiers";
+    public static final String USEDMODIFIERS = "UsedModifiers";
 
     /** The tag that contains all the actual calculated runtime-information of the tools */
     public static final String TOOLDATA = "Stats";
     public static final String TOOLDATAORIG = "StatsOriginal";
+
+    public static final String TOOLMODIFIERS = "Modifiers";
+    public static final String TOOLTRAITS = "Traits";
 
     // tools
     public static final String DURABILITY = "Durability";
@@ -33,7 +38,6 @@ public final class ToolTags {
     public static final String ACCURACY = "Accuracy";
 
     // misc. tool info
-    public static final String FREE_MODIFIERS = "FreeModifiers";
     public static final String BROKEN = "Broken";
     public static final String UNBREAKABLE = "Unbreakable";
     public static final String CUSTOMNAME = "CustomName";
@@ -45,6 +49,17 @@ public final class ToolTags {
     public static final String RESET_FLAG = "ResetFlag";
 
     public static final String NO_RENAME = "NoRename";
+
+    // modifier detail
+    public static final String IDENTIFIER = "identifier";
+    public static final String TYPE = "type";
+    public static final String COLOR = "color";
+    public static final String LEVEL = "level";
+    public static final String EXTRAINFO = "extraInfo";
+    public static final String STATUS = "status";
+    public static final String CURRENT = "current";
+    public static final String MAX = "max";
+    public static final String MODIFIERUSED = "modifierUsed";
 
     private ToolTags() {}
 

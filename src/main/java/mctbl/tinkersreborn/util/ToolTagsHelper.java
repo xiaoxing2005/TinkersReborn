@@ -5,8 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -26,6 +24,7 @@ import net.minecraftforge.common.util.Constants;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.tools.ITrait;
 import mctbl.tinkersreborn.library.tools.ToolCore;
+import mctbl.tinkersreborn.tools.Category;
 
 public class ToolTagsHelper {
 
@@ -36,7 +35,6 @@ public class ToolTagsHelper {
     private ToolTagsHelper() {}
 
     /* Generic Tag Operations */
-    @Nullable
     public static NBTTagCompound getTagSafe(ItemStack stack) {
         // yes, the null checks aren't needed anymore, but they don't hurt either.
         // After all the whole purpose of this function is safety/processing possibly
@@ -64,64 +62,142 @@ public class ToolTagsHelper {
         return getTagListSafe(tag, key, TAG_TYPE_STRING);
     }
 
+    public static NBTTagList getCompoundTagListSafe(NBTTagCompound tag, String key) {
+        return getTagListSafe(tag, key, TAG_TYPE_COMPOUND);
+    }
+
+    public static NBTTagList getModifiersTagList(NBTTagCompound tag) {
+        return getCompoundTagListSafe(tag, ToolTags.MODIFIERS);
+    }
+
     /**
      * get the base tagcompound of tool {@link ToolTags}
      * 
      * @param stack
-     * @return
+     * @return tool -> TinkersRebornTool
      */
     public static NBTTagCompound getToolBaseNBTSafe(ItemStack stack) {
         return getTagSafe(getTagSafe(stack), ToolTags.TOOLBASETAG);
     }
 
-    public static void setToolBaseNBTSafe(ItemStack stack, NBTTagCompound tags) {
-        NBTTagCompound basetag = new NBTTagCompound();
-        basetag.setTag(ToolTags.TOOLBASETAG, tags);
-
-        stack.setTagCompound(basetag);
+    /**
+     * get the base tagcompound of tool {@link ToolTags}
+     * 
+     * @param tags
+     * @return tool -> TinkersRebornTool
+     */
+    public static NBTTagCompound getToolBaseNBTSafe(NBTTagCompound tags) {
+        return getTagSafe(tags, ToolTags.TOOLBASETAG);
     }
 
+    public static void setToolBaseNBTSafe(ItemStack stack, NBTTagCompound tags) {
+        NBTTagCompound basetag = getTagSafe(stack);
+        basetag.setTag(ToolTags.TOOLBASETAG, tags);
+
+        if (!basetag.equals(stack.getTagCompound())) stack.setTagCompound(basetag);
+    }
+
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> RenderMaterials
+     */
     public static NBTTagList getToolRenderMaterialsNBTSafe(ItemStack stack) {
         return getStringTagListSafe(getToolBaseNBTSafe(stack), ToolTags.RENDERMATERIALS);
     }
 
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> FreeModifiers
+     */
+    public static int getToolFreeModifiers(ItemStack stack) {
+        return getToolBaseNBTSafe(stack).getInteger(ToolTags.FREEMODIFIERS);
+    }
+
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Materials
+     */
     public static NBTTagList getToolBaseMaterialsNBTSafe(ItemStack stack) {
         return getStringTagListSafe(getToolBaseNBTSafe(stack), ToolTags.BASEMATERIALS);
     }
 
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Stats
+     */
     public static NBTTagCompound getToolDataNBTSafe(ItemStack stack) {
         return getTagSafe(getToolBaseNBTSafe(stack), ToolTags.TOOLDATA);
     }
 
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> StatsOriginal
+     */
     public static NBTTagCompound getToolOriginDataNBTSafe(ItemStack stack) {
         return getTagSafe(getToolBaseNBTSafe(stack), ToolTags.TOOLDATAORIG);
     }
 
     // stats
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> CustomName
+     */
     public static String getCustomName(ItemStack stack) {
         return getToolBaseNBTSafe(stack).getString(ToolTags.CUSTOMNAME);
     }
 
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Broken
+     */
     public static boolean isBroken(ItemStack stack) {
         return getToolBaseNBTSafe(stack).getBoolean(ToolTags.BROKEN);
     }
 
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> EnchantEffect
+     */
     public static boolean hasEnchantEffect(ItemStack stack) {
         return getToolBaseNBTSafe(stack).getBoolean(ToolTags.ENCHANT_EFFECT);
     }
 
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> FreeModifiers
+     */
+    public static int getFreeModifiers(ItemStack stack) {
+        return getToolBaseNBTSafe(stack).getInteger(ToolTags.FREEMODIFIERS);
+    }
+
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Stats -> HarvestLevel
+     */
     public static int getHarvestLevelStat(ItemStack stack) {
         return getToolDataNBTSafe(stack).getInteger(ToolTags.HARVESTLEVEL);
     }
 
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Stats -> Durability
+     */
     public static int getDurabilityStat(ItemStack stack) {
         return getToolDataNBTSafe(stack).getInteger(ToolTags.DURABILITY);
     }
 
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Stats -> MiningSpeed
+     */
     public static float getMiningSpeed(ItemStack stack) {
         return getToolDataNBTSafe(stack).getFloat(ToolTags.MININGSPEED);
     }
 
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Stats -> Attack
+     */
     public static float getAttackStat(ItemStack stack) {
         return getToolDataNBTSafe(stack).getFloat(ToolTags.ATTACK);
     }
@@ -164,8 +240,8 @@ public class ToolTagsHelper {
 
         damage += getActualToolAttack(stack);
 
-        if (stack.getItem() instanceof ToolCore) {
-            damage = calcCutoffDamage(damage, ((ToolCore) stack.getItem()).damageCutoff());
+        if (stack.getItem() instanceof ToolCore core) {
+            damage = calcCutoffDamage(damage, core.damageCutoff());
         }
 
         return damage;
@@ -298,7 +374,6 @@ public class ToolTagsHelper {
     }
 
     /* Dealing tons of damage */
-
     /**
      * General version of attackEntity. Applies cooldowns but has no projectile
      * entity
@@ -333,10 +408,10 @@ public class ToolTagsHelper {
         if (targetEntity instanceof EntityLivingBase) {
             target = (EntityLivingBase) targetEntity;
         }
-        if (attacker instanceof EntityPlayer) {
-            player = (EntityPlayer) attacker;
-            if (target instanceof EntityPlayer) {
-                if (!player.canAttackPlayer((EntityPlayer) target)) {
+        if (attacker instanceof EntityPlayer p) {
+            player = p;
+            if (target instanceof EntityPlayer t) {
+                if (!player.canAttackPlayer(t)) {
                     return false;
                 }
             }
@@ -419,7 +494,8 @@ public class ToolTagsHelper {
 
         boolean hit = false;
         if (isProjectile && tool instanceof IProjectile) {
-            // hit = ((IProjectile) tool).dealDamageRanged(stack, projectileEntity, attacker, targetEntity, damage);
+            // hit = ((IProjectile) tool).dealDamageRanged(stack, projectileEntity,
+            // attacker, targetEntity, damage);
         } else {
             hit = tool.dealDamage(stack, attacker, targetEntity, damage);
         }
@@ -450,7 +526,8 @@ public class ToolTagsHelper {
             // I guess this is to allow better handling at the hit players side? No idea why
             // it resets the motion though.
             if (targetEntity instanceof EntityPlayerMP && targetEntity.velocityChanged) {
-                // TinkerNetwork.sendPacket(targetEntity, new SPacketEntityVelocity(targetEntity));
+                // TinkerNetwork.sendPacket(targetEntity, new
+                // SPacketEntityVelocity(targetEntity));
                 // targetEntity.velocityChanged = false;
                 // targetEntity.motionX = oldVelX;
                 // targetEntity.motionY = oldVelY;
@@ -522,5 +599,44 @@ public class ToolTagsHelper {
         }
 
         return true;
+    }
+
+    public static boolean hasModifier(ItemStack stack, String identifier) {
+        return !getModifierTag(stack, identifier).hasNoTags();
+    }
+
+    public static NBTTagCompound getModifierTag(ItemStack stack, String identifier) {
+        return getModifierTag(getToolBaseNBTSafe(stack), identifier);
+    }
+
+    public static boolean hasModifier(NBTTagCompound root, String identifier) {
+        return !getModifierTag(root, identifier).hasNoTags();
+    }
+
+    public static NBTTagCompound getModifierTag(NBTTagCompound root, String identifier) {
+        NBTTagList modifiersList = getTagListSafe(root, ToolTags.MODIFIERS, TAG_TYPE_COMPOUND);
+        int tagLength = modifiersList.tagCount();
+        if (tagLength == 0) {
+            root.setTag(ToolTags.MODIFIERS, modifiersList);
+        }
+
+        for (int idx = 0; idx < tagLength; idx++) {
+            NBTTagCompound modifierCompound = modifiersList.getCompoundTagAt(idx);
+            if (identifier.equals(modifierCompound.getString(ToolTags.IDENTIFIER))) return modifierCompound;
+        }
+
+        NBTTagCompound newModifierTag = new NBTTagCompound();
+        modifiersList.appendTag(newModifierTag);
+
+        return newModifierTag;
+    }
+
+    public static boolean hasCategory(ItemStack stack, Category category) {
+        if (stack == null || stack.stackSize == 0) {
+            return false;
+        } else if (stack.getItem() instanceof ToolCore core) {
+            return core.hasCategory(category);
+        }
+        return false;
     }
 }

@@ -118,7 +118,7 @@ public class ToolNBT {
         attack = tag.getFloat(ToolTags.ATTACK);
         speed = tag.getFloat(ToolTags.MININGSPEED);
         attackSpeedMultiplier = tag.getFloat(ToolTags.ATTACKSPEEDMULTIPLIER);
-        modifiers = tag.getInteger(ToolTags.FREE_MODIFIERS);
+        modifiers = tag.getInteger(ToolTags.FREEMODIFIERS);
     }
 
     public void write(NBTTagCompound tag) {
@@ -127,7 +127,7 @@ public class ToolNBT {
         tag.setFloat(ToolTags.ATTACK, attack);
         tag.setFloat(ToolTags.MININGSPEED, speed);
         tag.setFloat(ToolTags.ATTACKSPEEDMULTIPLIER, attackSpeedMultiplier);
-        tag.setInteger(ToolTags.FREE_MODIFIERS, modifiers);
+        tag.setInteger(ToolTags.FREEMODIFIERS, modifiers);
     }
 
     public NBTTagCompound get() {

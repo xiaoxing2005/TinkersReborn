@@ -2,8 +2,6 @@ package mctbl.tinkersreborn.library.tools;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,7 +12,6 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public interface IToolMod {
 
-    @Nonnull
     String getIdentifier();
 
     String getLocalizedName();

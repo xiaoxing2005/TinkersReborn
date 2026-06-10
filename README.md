@@ -285,16 +285,26 @@ flowchart TB
   // materials identifier in order READONLY
   "Materials":["iron", "wood", "obsidian"],
   // TODO
-  "Modifiers":{
-
-  },
+  "Modifiers":[
+    {
+      "identifier":"haste",
+      "color":9502720,
+      "type":"modify"
+    },
+    {
+      "identifier":"ecological",
+      "color":-7444965,
+      "type":"trait"
+    }
+  ],
   // this tool's now stats
   "Stats":{
     "Durability": 1,
     "Attack": 2.1,
     "MiningSpeed": 2.2,
     "HarvestLevel": 3,
-    "FreeModifiers": 2
+    "FreeModifiers": 2,
+    "UsedModifiers": 1
   },
   // this tool's base stats READONLY
   "StatsOriginal":{
@@ -305,7 +315,8 @@ flowchart TB
     "FreeModifiers": 3
   },
   // 1 broken, 0 not broken, use boolean
-  "Broken":0
+  "Broken":0,
+  "Unbreakable":1
 }
 
 ```
