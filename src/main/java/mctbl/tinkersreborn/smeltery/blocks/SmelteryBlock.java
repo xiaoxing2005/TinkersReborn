@@ -23,7 +23,6 @@ import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornInventoryBlock;
 import mctbl.tinkersreborn.library.entity.IMasterLogic;
 import mctbl.tinkersreborn.library.entity.IServantLogic;
-import mctbl.tinkersreborn.smeltery.TinkersRebornSmelteryProxyCommon;
 import mctbl.tinkersreborn.smeltery.entity.MultiServantLogic;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryDrainLogic;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
@@ -104,11 +103,6 @@ public class SmelteryBlock extends TinkersRebornInventoryBlock {
             }
         }
         return this.icons[1];
-    }
-
-    @Override
-    public Integer getGui(World world, int x, int y, int z, EntityPlayer entityplayer) {
-        return TinkersRebornSmelteryProxyCommon.smelteryGuiID;
     }
 
     @Override

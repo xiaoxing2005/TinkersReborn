@@ -64,6 +64,7 @@ import mctbl.tinkersreborn.tools.entity.FancyEntityItem;
 import mctbl.tinkersreborn.util.RecipeRemover;
 import mctbl.tinkersreborn.world.gen.TinkersRebornSurfaceOreGen;
 import mctbl.tinkersreborn.world.gen.TinkersRebornWorldGenerator;
+import tconstruct.world.gen.SlimeIslandGen;
 
 public class TinkersRebornGeneral implements ITinkersRebornModule {
 
@@ -175,6 +176,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
         GameRegistry.registerWorldGenerator(new TinkersRebornWorldGenerator(), 0);
         MinecraftForge.TERRAIN_GEN_BUS.register(new TinkersRebornSurfaceOreGen());
+        GameRegistry.registerWorldGenerator(new SlimeIslandGen(slimePool, 2), 2);
     }
 
     @Override

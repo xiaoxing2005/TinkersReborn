@@ -53,11 +53,6 @@ public class SearedBlock extends TinkersRebornInventoryBlock {
         return 0;
     }
 
-    @Override
-    public Integer getGui(World world, int x, int y, int z, EntityPlayer entityplayer) {
-        return null;
-    }
-
     /* Activation */
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float clickX,

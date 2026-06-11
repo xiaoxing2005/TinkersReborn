@@ -22,7 +22,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.ITinkersToolStationBlock;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornInventoryBlock;
-import mctbl.tinkersreborn.tools.TinkersRebornToolsProxyCommon;
 import mctbl.tinkersreborn.tools.entity.TinkersRebornPartBuilderLogic;
 import mctbl.tinkersreborn.tools.model.TableRender;
 
@@ -112,11 +111,6 @@ public class PartBuilderBlock extends TinkersRebornInventoryBlock implements ITi
     }
 
     @Override
-    public Integer getGui(World world, int x, int y, int z, EntityPlayer entityplayer) {
-        return TinkersRebornToolsProxyCommon.partBuilderID;
-    }
-
-    @Override
     public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
         for (int i = 0; i < materials.length; i++) {
             list.add(new ItemStack(itemIn, 1, i));
@@ -128,6 +122,11 @@ public class PartBuilderBlock extends TinkersRebornInventoryBlock implements ITi
     public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
         player.addExhaustion(0.025F);
         return world.setBlockToAir(x, y, z);
+    }
+
+    @Override
+    public int getGuiNumber(Block block) {
+        return 1;
     }
 
 }

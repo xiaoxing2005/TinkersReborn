@@ -1,14 +1,11 @@
 package mctbl.tinkersreborn.smeltery;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import mctbl.tinkersreborn.CommonProxy;
 import mctbl.tinkersreborn.smeltery.entity.CastingBasinLogic;
 import mctbl.tinkersreborn.smeltery.entity.CastingTableLogic;
 import mctbl.tinkersreborn.smeltery.model.CastingBasinSpecialRender;
@@ -23,7 +20,6 @@ public class TinkersRebornSmelteryProxyClient extends TinkersRebornSmelteryProxy
     @Override
     public void initialize() {
         registerRenderer();
-        registerGuiHandler();
     }
 
     void registerRenderer() {
@@ -44,19 +40,5 @@ public class TinkersRebornSmelteryProxyClient extends TinkersRebornSmelteryProxy
         IItemRenderer tankItemRenderer = new TankItemRenderer();
         MinecraftForgeClient
             .registerItemRenderer(Item.getItemFromBlock(TinkersRebornSmeltery.lavaTank), tankItemRenderer);
-    }
-
-    @Override
-    protected void registerGuiHandler() {
-        super.registerGuiHandler();
-        CommonProxy.registerClientGuiHandler(smelteryGuiID, this);
-    }
-
-    @Override
-    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        // if (ID == SmelteryProxyCommon.smelteryGuiID) {
-        // return new SmelteryGui(player.inventory, (SmelteryLogic) world.getTileEntity(x, y, z), world, x, y, z);
-        // }
-        return null;
     }
 }

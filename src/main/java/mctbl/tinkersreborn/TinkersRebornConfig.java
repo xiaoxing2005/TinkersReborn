@@ -38,6 +38,8 @@ public class TinkersRebornConfig {
     public static int tinsRarity;
     public static int aluminumsRarity;
 
+    public static int islandRarity;
+
     public static int defaultModifiers;
 
     public static void setupConfig(File location) {
@@ -111,6 +113,10 @@ public class TinkersRebornConfig {
         tinsRarity = config.get("Worldgen", "Tin Surface Rarity", 100)
             .getInt();
         aluminumsRarity = config.get("Worldgen", "Aluminum Surface Rarity", 50)
+            .getInt();
+
+        // Slime pools
+        islandRarity = config.get("Worldgen", "Slime Island Rarity", 1450)
             .getInt();
 
         defaultModifiers = config.get("Tools", "", 3)

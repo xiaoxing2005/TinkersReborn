@@ -1,5 +1,6 @@
 package mctbl.tinkersreborn.tools.entity;
 
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
@@ -7,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
+import mctbl.tinkersreborn.tools.gui.GuiPartBuilder;
 import mctbl.tinkersreborn.tools.inventory.TinkersRebornPartBuilderContainer;
 
 public class TinkersRebornPartBuilderLogic extends TinkersRebornInventoryLogic implements ISidedInventory {
@@ -25,16 +27,12 @@ public class TinkersRebornPartBuilderLogic extends TinkersRebornInventoryLogic i
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        // for (int xPos = x - 1; xPos <= x + 1; xPos++) {
-        // for (int zPos = z - 1; zPos <= z + 1; zPos++) {
-        // for (int yPos = y - 1; yPos <= y + 1; yPos++) {
-        // TileEntity tile = world.getTileEntity(xPos, yPos, zPos);
-        // if (tile instanceof PatternChestLogic && (x == xPos || z == zPos))
-        // return new PartCrafterChestContainer(inventoryplayer, this, (PatternChestLogic) tile);
-        // }
-        // }
-        // }
         return new TinkersRebornPartBuilderContainer(inventoryplayer, this);
+    }
+
+    @Override
+    public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
+        return new GuiPartBuilder(inventoryplayer, this, world, x, y, z);
     }
 
     @Override

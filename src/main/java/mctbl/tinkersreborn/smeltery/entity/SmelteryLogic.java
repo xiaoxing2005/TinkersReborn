@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -636,6 +637,12 @@ public class SmelteryLogic extends TinkersRebornInventoryLogic
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
         // TODO Auto-generated method stub
         return null;
     }

@@ -1,11 +1,13 @@
 package mctbl.tinkersreborn.tools.entity;
 
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.library.entity.TinkersRebornChestLogic;
+import mctbl.tinkersreborn.tools.gui.GuiCastChest;
 import mctbl.tinkersreborn.tools.inventory.CastChestContainer;
 
 public class CastChestLogic extends TinkersRebornChestLogic {
@@ -29,4 +31,8 @@ public class CastChestLogic extends TinkersRebornChestLogic {
         return new CastChestContainer(inventoryplayer, this);
     }
 
+    @Override
+    public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
+        return new GuiCastChest(inventoryplayer, this, world, x, y, z);
+    }
 }

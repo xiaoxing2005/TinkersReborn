@@ -16,8 +16,6 @@ public class GuiPartBuilder extends GuiContainer {
 
     public TinkersRebornPartBuilderLogic logic;
     public TinkersRebornPartBuilderContainer toolSlots;
-    public int selectedButton;
-    boolean drawChestPart;
     String title;
 
     public GuiPartBuilder(InventoryPlayer inventoryplayer, TinkersRebornPartBuilderLogic stationlogic, World world,
@@ -39,7 +37,8 @@ public class GuiPartBuilder extends GuiContainer {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         // TODO Auto-generated method stub
-
+        // func_146110_a == drawModalRectWithCustomSizedTexture
+        // func_152125_a == drawScaledCustomSizeModalRect
     }
 
 }

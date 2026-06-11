@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -18,6 +19,8 @@ import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
+import mctbl.tinkersreborn.library.gui.container.BaseContainer;
+import mctbl.tinkersreborn.library.utils.BlockPos;
 
 public abstract class TinkersRebornInventoryBlock extends BlockContainer {
 
@@ -37,10 +40,18 @@ public abstract class TinkersRebornInventoryBlock extends BlockContainer {
 
     public abstract TileEntity createNewTileEntity(World world, int metadata);
 
-    public abstract Integer getGui(World world, int x, int y, int z, EntityPlayer entityplayer);
+    public boolean openGui(EntityPlayer player, World world, BlockPos pos) {
+        if (!world.isRemote) {
+            player.openGui(TinkersReborn.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
+            if (player.openContainer instanceof BaseContainer bc) {
+                bc.syncOnOpen((EntityPlayerMP) player);
+            }
+        }
+        return true;
+    }
 
-    public Object getModInstance() {
-        return TinkersReborn.instance;
+    public boolean openGui(EntityPlayer player, World world, int x, int y, int z) {
+        return this.openGui(player, world, BlockPos.of(x, y, z));
     }
 
     @Override
@@ -48,13 +59,11 @@ public abstract class TinkersRebornInventoryBlock extends BlockContainer {
         float clickY, float clickZ) {
         if (player.isSneaking()) return false;
 
-        Integer integer = getGui(world, x, y, z, player);
-        if (integer == null || integer == -1) {
-            return false;
-        } else {
-            if (!world.isRemote) player.openGui(getModInstance(), integer, world, x, y, z);
+        if (!world.isRemote) {
+            this.openGui(player, world, x, y, z);
             return true;
         }
+        return true;
     }
 
     /* Inventory */

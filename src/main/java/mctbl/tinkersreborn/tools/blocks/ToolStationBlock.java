@@ -12,11 +12,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.ITinkersToolStationBlock;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornInventoryBlock;
-import mctbl.tinkersreborn.tools.TinkersRebornToolsProxyCommon;
 import mctbl.tinkersreborn.tools.entity.TinkersRebornToolStationLogic;
 import mctbl.tinkersreborn.tools.model.TableRender;
 
@@ -93,20 +91,16 @@ public class ToolStationBlock extends TinkersRebornInventoryBlock implements ITi
         return new TinkersRebornToolStationLogic();
     }
 
-    @Override
-    public Integer getGui(World world, int x, int y, int z, EntityPlayer entityplayer) {
-        return TinkersRebornToolsProxyCommon.toolStationID;
-    }
-
-    @Override
-    public Object getModInstance() {
-        return TinkersReborn.instance;
-    }
-
     /* Keep pattern chest inventory */
     @Override
     public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
         player.addExhaustion(0.025F);
         return world.setBlockToAir(x, y, z);
     }
+
+    @Override
+    public int getGuiNumber(Block block) {
+        return 0;
+    }
+
 }

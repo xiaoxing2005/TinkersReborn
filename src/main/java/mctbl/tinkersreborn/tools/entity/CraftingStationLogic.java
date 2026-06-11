@@ -1,11 +1,13 @@
 package mctbl.tinkersreborn.tools.entity;
 
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
+import mctbl.tinkersreborn.tools.gui.GuiCraftingStation;
 import mctbl.tinkersreborn.tools.inventory.CraftingStationContainer;
 
 public class CraftingStationLogic extends TinkersRebornInventoryLogic {
@@ -35,5 +37,10 @@ public class CraftingStationLogic extends TinkersRebornInventoryLogic {
     @Override
     public String getDefaultName() {
         return "tinkersreborn.CraftingStation";
+    }
+
+    @Override
+    public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
+        return new GuiCraftingStation(inventoryplayer, this, world, x, y, z);
     }
 }

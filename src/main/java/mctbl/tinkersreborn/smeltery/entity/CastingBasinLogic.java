@@ -23,4 +23,5 @@ public class CastingBasinLogic extends CastingBlockLogic {
     public SmelteryCastedEvent getCastedEvent(CastingRecipe recipe, ItemStack result) {
         return new SmelteryCastedEvent.CastingBasin(recipe, result);
     }
+
 }

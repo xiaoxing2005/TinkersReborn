@@ -1,5 +1,6 @@
 package mctbl.tinkersreborn.smeltery.entity;
 
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -333,6 +334,11 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
     /* We don't have a gui or anything */
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
+        return null;
+    }
+
+    @Override
+    public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
         return null;
     }
 

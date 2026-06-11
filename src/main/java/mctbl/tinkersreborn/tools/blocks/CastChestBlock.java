@@ -19,7 +19,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.ITinkersToolStationBlock;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornInventoryBlock;
-import mctbl.tinkersreborn.tools.TinkersRebornToolsProxyCommon;
 import mctbl.tinkersreborn.tools.entity.CastChestLogic;
 import mctbl.tinkersreborn.tools.model.ChestRender;
 
@@ -90,11 +89,6 @@ public class CastChestBlock extends TinkersRebornInventoryBlock implements ITink
         return new CastChestLogic();
     }
 
-    @Override
-    public Integer getGui(World world, int x, int y, int z, EntityPlayer entityplayer) {
-        return TinkersRebornToolsProxyCommon.castChestID;
-    }
-
     /* Keep pattern chest inventory */
     @Override
     public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
@@ -159,6 +153,11 @@ public class CastChestBlock extends TinkersRebornInventoryBlock implements ITink
             }
         }
         return super.onBlockActivated(world, x, y, z, player, side, clickX, clickY, clickZ);
+    }
+
+    @Override
+    public int getGuiNumber(Block block) {
+        return 3;
     }
 
 }

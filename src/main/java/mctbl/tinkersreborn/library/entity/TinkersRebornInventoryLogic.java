@@ -1,5 +1,6 @@
 package mctbl.tinkersreborn.library.entity;
 
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -10,6 +11,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class TinkersRebornInventoryLogic extends TileEntity implements IInventory {
 
@@ -88,6 +92,9 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
     }
 
     public abstract Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z);
+
+    @SideOnly(Side.CLIENT)
+    public abstract GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z);
 
     /* NBT */
     @Override

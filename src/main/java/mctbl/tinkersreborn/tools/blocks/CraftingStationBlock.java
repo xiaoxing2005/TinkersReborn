@@ -2,7 +2,6 @@ package mctbl.tinkersreborn.tools.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -12,12 +11,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.blocks.ITinkersToolStationBlock;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornInventoryBlock;
-import mctbl.tinkersreborn.tools.TinkersRebornToolsProxyCommon;
 import mctbl.tinkersreborn.tools.entity.CraftingStationLogic;
 import mctbl.tinkersreborn.tools.model.TableRender;
 
-public class CraftingStationBlock extends TinkersRebornInventoryBlock {
+public class CraftingStationBlock extends TinkersRebornInventoryBlock implements ITinkersToolStationBlock {
 
     public CraftingStationBlock() {
         super(Material.wood);
@@ -65,12 +64,12 @@ public class CraftingStationBlock extends TinkersRebornInventoryBlock {
     }
 
     @Override
-    public Integer getGui(World world, int x, int y, int z, EntityPlayer entityplayer) {
-        return TinkersRebornToolsProxyCommon.craftingStationID;
+    public TileEntity createNewTileEntity(World arg0, int arg1) {
+        return new CraftingStationLogic();
     }
 
     @Override
-    public TileEntity createNewTileEntity(World arg0, int arg1) {
-        return new CraftingStationLogic();
+    public int getGuiNumber(Block block) {
+        return 5;
     }
 }

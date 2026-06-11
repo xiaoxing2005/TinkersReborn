@@ -7,7 +7,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -20,7 +19,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
-import mctbl.tinkersreborn.tools.TinkersRebornToolsProxyCommon;
 import mctbl.tinkersreborn.tools.entity.TinkersRebornToolForgeLogic;
 
 public class ToolForgeBlock extends ToolStationBlock {
@@ -86,7 +84,7 @@ public class ToolForgeBlock extends ToolStationBlock {
     }
 
     @Override
-    public Integer getGui(World world, int x, int y, int z, EntityPlayer entityplayer) {
-        return TinkersRebornToolsProxyCommon.toolForgeID;
+    public int getGuiNumber(Block block) {
+        return 4;
     }
 }

@@ -1,5 +1,6 @@
 package mctbl.tinkersreborn.tools.entity;
 
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
@@ -8,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
+import mctbl.tinkersreborn.tools.gui.GuiToolStation;
 import mctbl.tinkersreborn.tools.inventory.TinkersRebornToolStationContainer;
 
 public class TinkersRebornToolStationLogic extends TinkersRebornInventoryLogic implements ISidedInventory {
@@ -43,6 +45,11 @@ public class TinkersRebornToolStationLogic extends TinkersRebornInventoryLogic i
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
         return new TinkersRebornToolStationContainer(inventoryplayer, this);
+    }
+
+    @Override
+    public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
+        return new GuiToolStation(inventoryplayer, this, world, x, y, z);
     }
 
     @Override

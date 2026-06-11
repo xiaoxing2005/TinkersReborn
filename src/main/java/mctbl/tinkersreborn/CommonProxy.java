@@ -1,36 +1,29 @@
 package mctbl.tinkersreborn;
 
-import java.util.HashMap;
-
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import cpw.mods.fml.common.network.IGuiHandler;
+import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 
 public class CommonProxy implements IGuiHandler {
 
-    private static final HashMap<Integer, IGuiHandler> serverGuiHandlers = new HashMap<>();
-    private static final HashMap<Integer, IGuiHandler> clientGuiHandlers = new HashMap<>();
-
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        IGuiHandler handler = serverGuiHandlers.get(ID);
-        if (handler != null) return handler.getServerGuiElement(ID, player, world, x, y, z);
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity instanceof TinkersRebornInventoryLogic tinker) {
+            return tinker.getGuiContainer(player.inventory, world, x, y, z);
+        }
         return null;
     }
 
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        IGuiHandler handler = clientGuiHandlers.get(ID);
-        if (handler != null) return handler.getClientGuiElement(ID, player, world, x, y, z);
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity instanceof TinkersRebornInventoryLogic tinker) {
+            return tinker.getGui(player.inventory, world, x, y, z);
+        }
         return null;
-    }
-
-    public static void registerServerGuiHandler(int gui, IGuiHandler handler) {
-        serverGuiHandlers.put(gui, handler);
-    }
-
-    public static void registerClientGuiHandler(int gui, IGuiHandler handler) {
-        clientGuiHandlers.put(gui, handler);
     }
 }
