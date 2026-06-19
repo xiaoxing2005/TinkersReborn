@@ -160,6 +160,7 @@ public class GuiWidgetTabs extends GuiWidget {
     // guiContainer.drawItemStack
     private void drawItemStack(ItemStack stack, int x, int y) {
         RenderItem itemRender = this.parent.getRenderItem();
+        GL11.glPushMatrix();
         GL11.glTranslatef(0.0F, 0.0F, 32.0F);
         itemRender.zLevel = 200;
         itemRender.renderItemAndEffectIntoGUI(
@@ -171,5 +172,6 @@ public class GuiWidgetTabs extends GuiWidget {
             x,
             y);
         itemRender.zLevel = 0.0F;
+        GL11.glPopMatrix();
     }
 }

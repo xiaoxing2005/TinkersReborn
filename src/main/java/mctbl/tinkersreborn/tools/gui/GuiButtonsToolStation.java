@@ -16,6 +16,8 @@ public class GuiButtonsToolStation extends GuiSideButtons {
 
     protected final GuiToolStation parent;
 
+    private final int columns = 5;
+
     public GuiButtonsToolStation(GuiToolStation parent, Container container) {
         super(parent, container, 5);
 
@@ -28,8 +30,12 @@ public class GuiButtonsToolStation extends GuiSideButtons {
 
     @Override
     public void updatePosition(int parentX, int parentY, int parentSizeX, int parentSizeY) {
+        // ✅ 先预设正确的 xSize，避免两阶段变化
+        this.xSize = 18 * columns + spacing * (columns - 1); // = 106
         super.updatePosition(parentX, parentY, parentSizeX, parentSizeY);
 
+        // ✅ 清空旧按钮，防止重复添加
+        this.buttonList.clear();
         int index = 0;
         buttonCount = 0;
 
@@ -58,9 +64,9 @@ public class GuiButtonsToolStation extends GuiSideButtons {
             }
         }
 
+        // 第二次调用：ySize 可能因行数变化，但 guiLeft 不变（xSize 已稳定）
         super.updatePosition(parentX, parentY, parentSizeX, parentSizeY);
 
-        // activate currently selected/default
         parent.updateGUI();
     }
 

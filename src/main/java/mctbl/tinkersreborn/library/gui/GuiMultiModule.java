@@ -87,6 +87,9 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
             GL11.glTranslatef(-this.guiLeft, -this.guiTop, 0.0F);
             GL11.glTranslatef(module.guiLeft(), module.guiTop(), 0.0F);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GL11.glEnable(GL11.GL_BLEND);
             module.handleDrawGuiContainerForegroundLayer(mouseX, mouseY);
             GL11.glPopMatrix();
         }

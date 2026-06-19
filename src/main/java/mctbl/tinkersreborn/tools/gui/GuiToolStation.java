@@ -115,6 +115,13 @@ public class GuiToolStation extends GuiTinkerStation {
 
     @Override
     public void initGui() {
+        buttons.xOffset = -2;
+        buttons.yOffset = beamC.h + buttonDecorationTop.h;
+        toolInfo.xOffset = 2;
+        toolInfo.yOffset = beamC.h + panelDecorationL.h;
+        traitInfo.xOffset = toolInfo.xOffset;
+        traitInfo.yOffset = toolInfo.yOffset + toolInfo.ySize() + 4;
+
         super.initGui();
         Keyboard.enableRepeatEvents(true);
 
@@ -128,13 +135,6 @@ public class GuiToolStation extends GuiTinkerStation {
         // textField.setCanLoseFocus(false);
         textField.setEnableBackgroundDrawing(false);
         textField.setMaxStringLength(40);
-
-        buttons.xOffset = -2;
-        buttons.yOffset = beamC.h + buttonDecorationTop.h;
-        toolInfo.xOffset = 2;
-        toolInfo.yOffset = beamC.h + panelDecorationL.h;
-        traitInfo.xOffset = toolInfo.xOffset;
-        traitInfo.yOffset = toolInfo.yOffset + toolInfo.ySize() + 4;
 
         for (GuiModule module : modules) {
             module.guiTopBias(+4);
@@ -321,6 +321,7 @@ public class GuiToolStation extends GuiTinkerStation {
         final float scale = 3.7f;
         final float xOff = 10f;
         final float yOff = 22f;
+        GL11.glPushMatrix();
         GL11.glTranslatef(xOff, yOff, 0);
         GL11.glScalef(scale, scale, 1.0f);
         {
@@ -344,6 +345,7 @@ public class GuiToolStation extends GuiTinkerStation {
         }
         GL11.glScalef(1f / scale, 1f / scale, 1.0f);
         GL11.glTranslatef(-xOff, -yOff, 0);
+        GL11.glPopMatrix();
 
         // rebind gui texture since itemstack drawing sets it to something else
         this.mc.getTextureManager()
@@ -351,7 +353,6 @@ public class GuiToolStation extends GuiTinkerStation {
 
         // reset state after item drawing
         GL11.glEnable(GL11.GL_BLEND);
-
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         RenderHelper.disableStandardItemLighting();
         GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -439,9 +440,7 @@ public class GuiToolStation extends GuiTinkerStation {
         beamR.draw(x, y);
 
         // draw the decoration for the buttons
-        for (Object o : buttons.getButtonList()) {
-            GuiButton button = (GuiButton) o;
-
+        for (GuiButton button : buttons.getButtonList()) {
             buttonDecorationTop.draw(button.xPosition, button.yPosition - buttonDecorationTop.h);
             // don't draw the bottom for the buttons in the last row
             if (button.id < buttons.getButtonList()
@@ -456,7 +455,7 @@ public class GuiToolStation extends GuiTinkerStation {
         panelDecorationL.draw(traitInfo.guiLeft() + 5, traitInfo.guiTop() - panelDecorationL.h);
         panelDecorationR.draw(traitInfo.guiRight() - 5 - panelDecorationR.w, traitInfo.guiTop() - panelDecorationR.h);
 
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        // GL11.glEnable(GL11.GL_DEPTH_TEST);
 
         // continue as usual and hope that the drawing state is not completely wrecked
         super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
