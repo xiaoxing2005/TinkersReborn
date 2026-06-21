@@ -638,8 +638,11 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
-        String customName = ToolTagsHelper.getCustomName(stack);
-        if (!customName.isEmpty()) return customName;
+        if (stack.hasDisplayName()) {
+            return stack.getTagCompound()
+                .getCompoundTag("display")
+                .getString("Name");
+        }
 
         String toolBaseName = getLocalizedToolName();
         String materialName = ToolTagsHelper.getToolBaseMaterialsList(stack)
@@ -720,7 +723,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
             this.toolForRender = new ItemStack(this);
             this.toolForRender.setTagCompound(this.buildRenderNBT(materials));
-            ToolTagsHelper.setCustomName(this.toolForRender, this.getLocalizedToolName());
+            this.toolForRender.setStackDisplayName(this.getLocalizedToolName());
         }
 
         return this.toolForRender;

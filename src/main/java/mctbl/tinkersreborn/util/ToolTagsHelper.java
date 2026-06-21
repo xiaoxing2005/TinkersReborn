@@ -110,6 +110,12 @@ public class ToolTagsHelper {
         return getStringTagListSafe(getToolBaseNBTSafe(stack), ToolTags.RENDERMATERIALS);
     }
 
+    public static void setToolRenderMaterialsNBTSafe(ItemStack stack, NBTTagList tagList) {
+        NBTTagCompound toolBaseNBTSafe = getToolBaseNBTSafe(stack);
+        toolBaseNBTSafe.setTag(ToolTags.RENDERMATERIALS, tagList);
+        setToolBaseNBTSafe(stack, toolBaseNBTSafe);
+    }
+
     public static List<TinkersRebornMaterial> getToolRenderMaterialsList(ItemStack stack) {
         return fromTagToMaterial(getToolRenderMaterialsNBTSafe(stack));
     }
@@ -183,18 +189,6 @@ public class ToolTagsHelper {
     }
 
     // stats
-    /**
-     * @param stack
-     * @return tool -> TinkersRebornTool -> CustomName
-     */
-    public static String getCustomName(ItemStack stack) {
-        return getToolBaseNBTSafe(stack).getString(ToolTags.CUSTOMNAME);
-    }
-
-    public static void setCustomName(ItemStack stack, String name) {
-        getToolBaseNBTSafe(stack).setString(ToolTags.CUSTOMNAME, name);
-    }
-
     /**
      * @param stack
      * @return tool -> TinkersRebornTool -> Broken

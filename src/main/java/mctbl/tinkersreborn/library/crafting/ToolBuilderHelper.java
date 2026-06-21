@@ -184,9 +184,7 @@ public class ToolBuilderHelper {
                 // stacks might be null because stacksize got 0 during processing, we have to
                 // reflect that in the input
                 // so the caller can identify that
-                if (isStackEmpty(usedStacks.get(i))) {
-                    input.get(i).stackSize = 0;
-                } else {
+                if (!isStackEmpty(usedStacks.get(i))) {
                     input.get(i).stackSize = usedStacks.get(i).stackSize;
                 }
             }
@@ -358,6 +356,7 @@ public class ToolBuilderHelper {
 
         ItemStack output = toolStack.copy();
         ToolTagsHelper.setToolBaseMaterialsNBTSafe(output, materialList);
+        ToolTagsHelper.setToolRenderMaterialsNBTSafe(output, (NBTTagList) materialList.copy());
         ToolTagsHelper.setModifiersTagList(output, modifierList);
         rebuildTool(output);
 

@@ -9,7 +9,9 @@ import net.minecraft.util.IIcon;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.tools.IToolPart;
+import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.tools.ToolCore.ToolPartRecord;
+import mctbl.tinkersreborn.tools.inventory.ContainerToolStation;
 
 public class SlotToolStationIn extends Slot {
 
@@ -21,6 +23,19 @@ public class SlotToolStationIn extends Slot {
     public SlotToolStationIn(IInventory inventoryIn, int index, int xPosition, int yPosition, Container parent) {
         super(inventoryIn, index, xPosition, yPosition);
         this.parent = parent;
+    }
+
+    @Override
+    public void putStack(ItemStack stack) {
+        if (this.getSlotIndex() == 0 && stack != null
+            && stack.getItem() instanceof ToolCore
+            && parent instanceof ContainerToolStation cts
+            && stack.hasDisplayName()) {
+
+            String toolName = stack.getDisplayName();
+            if (!toolName.isEmpty()) cts.setToolName(toolName);
+        }
+        super.putStack(stack);
     }
 
     @Override

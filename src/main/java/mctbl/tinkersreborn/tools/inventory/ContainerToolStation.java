@@ -218,9 +218,19 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
     public void onResultTaken(EntityPlayer playerIn, ItemStack stack) {
         boolean resultTaken = false;
 
+        try {
+            resultTaken = !isStackEmpty(repairTool(true)) || !isStackEmpty(replaceToolParts(true))
+                || !isStackEmpty(modifyTool(true))
+                || !isStackEmpty(renameTool());
+        } catch (TinkerGuiException e) {
+            // no error updating needed
+            e.printStackTrace();
+        }
+
         if (resultTaken) {
             updateSlotsAfterToolAction();
         } else {
+
             // calculate the result again (serverside)
             try {
                 ItemStack tool = buildTool();
@@ -244,6 +254,19 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
         onCraftMatrixChanged(null);
 
         this.playCraftSound(playerIn);
+    }
+
+    /**
+     * Removes the tool in the input slot and fixes all stacks that have stacksize 0 after being used up.
+     */
+    private void updateSlotsAfterToolAction() {
+        // perfect, items already got removed but we still have to clean up 0-stacks and remove the tool
+        tile.setInventorySlotContents(0, null); // slot where the tool was
+        for (int i = 1; i < tile.getSizeInventory(); i++) {
+            if (isStackEmpty(tile.getStackInSlot(i))) {
+                tile.setInventorySlotContents(i, null);
+            }
+        }
     }
 
     protected void playCraftSound(EntityPlayer player) {
@@ -332,21 +355,6 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
     private ItemStack getToolStack() {
         return inventorySlots.get(0)
             .getStack();
-    }
-
-    /**
-     * Removes the tool in the input slot and fixes all stacks that have stacksize 0
-     * after being used up.
-     */
-    private void updateSlotsAfterToolAction() {
-        // perfect, items already got removed but we still have to clean up 0-stacks and
-        // remove the tool
-        tile.setInventorySlotContents(0, null); // slot where the tool was
-        for (int i = 1; i < tile.getSizeInventory(); i++) {
-            if (!isStackEmpty(tile.getStackInSlot(i)) && tile.getStackInSlot(i).stackSize == 0) {
-                tile.setInventorySlotContents(i, null);
-            }
-        }
     }
 
     private List<ItemStack> getInputs() {
