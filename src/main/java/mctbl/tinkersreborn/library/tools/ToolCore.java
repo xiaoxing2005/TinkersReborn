@@ -399,12 +399,15 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         return ToolBuilderHelper.buildTool(null, list.toArray(new ItemStack[0]));
     }
 
-    public boolean checkRecipeMatch(ItemStack[] parts) {
-        if (this.componentsParts.size() != parts.length) return false;
+    public boolean checkRecipeMatch(List<ItemStack> parts) {
+        if (this.componentsParts.size() != parts.size()) return false;
+        List<Item> inputToolPartList = parts.stream()
+            .map(stack -> stack.getItem())
+            .collect(Collectors.toList());
         List<Item> toolPartList = this.componentsParts.stream()
             .map(record -> record.toolPart())
             .collect(Collectors.toList());
-        for (int i = 0; i < parts.length; i++) if (!parts[i].getItem()
+        for (int i = 0; i < inputToolPartList.size(); i++) if (!inputToolPartList.get(i)
             .equals(toolPartList.get(i))) return false;
         return true;
     }
@@ -934,7 +937,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         }
 
         public boolean isValid(ItemStack stack) {
-            if (stack.getItem() instanceof IToolPart itp) {
+            if (!TinkersRebornUtils.isStackEmpty(stack) && stack.getItem() instanceof IToolPart itp) {
                 return isValid(itp, itp.getMaterial(stack));
             }
             return false;

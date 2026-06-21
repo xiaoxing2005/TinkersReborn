@@ -19,7 +19,7 @@ public class ToolStationLogic extends TinkersRebornInventoryLogic implements ISi
     public String toolName;
 
     public ToolStationLogic() {
-        super(4);
+        super(6);
         toolName = "";
     }
 

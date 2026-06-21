@@ -11,11 +11,15 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import mctbl.tinkersreborn.common.network.AbstractPacketThreadsafe;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
+import mctbl.tinkersreborn.common.network.TinkerNetwork.AbstactPacketHandler;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.tools.gui.GuiToolStation;
 import mctbl.tinkersreborn.tools.inventory.ContainerToolStation;
 
 public class ToolStationSelectionPacket extends AbstractPacketThreadsafe {
+
+    public static class Handler extends AbstactPacketHandler {
+    }
 
     public ToolCore tool;
     public int activeSlots;

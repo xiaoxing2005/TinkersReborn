@@ -12,6 +12,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.network.AbstractPacketThreadsafe;
+import mctbl.tinkersreborn.common.network.TinkerNetwork.AbstactPacketHandler;
 import mctbl.tinkersreborn.library.blocks.ITinkersToolStationBlock;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
@@ -20,6 +21,9 @@ import mctbl.tinkersreborn.util.TinkersRebornUtils;
  * Sent to the server when the user clicks on a tab in the TinkerStation GUI
  */
 public class TinkerStationTabPacket extends AbstractPacketThreadsafe {
+
+    public static class Handler extends AbstactPacketHandler {
+    }
 
     public int blockX;
     public int blockY;

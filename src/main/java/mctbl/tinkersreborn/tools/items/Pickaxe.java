@@ -72,9 +72,9 @@ public class Pickaxe extends HarvestTool {
     @Override
     public ToolBuildGuiInfo getToolBuildGuiInfo() {
         if (this.toolBuildGuiInfo == null) {
-            this.toolBuildGuiInfo = new ToolBuildGuiInfo(this).addSlotPosition(33 - 18, 42 + 18) // rodg
-                .addSlotPosition(33 + 20, 42 - 20) // pick head
-                .addSlotPosition(33, 42); // binding
+            this.toolBuildGuiInfo = new ToolBuildGuiInfo(this).addSlotPosition(35 + 18, 40 - 18) // pick head
+                .addSlotPosition(35 - 20, 40 + 20) // rod
+                .addSlotPosition(35, 40); // binding
         }
         return this.toolBuildGuiInfo;
     }

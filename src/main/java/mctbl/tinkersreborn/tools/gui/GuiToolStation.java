@@ -62,7 +62,8 @@ public class GuiToolStation extends GuiTinkerStation {
     private static final GuiElement SlotBackground = new GuiElement(176, 0, 18, 18);
     private static final GuiElement SlotBorder = new GuiElement(194, 0, 18, 18);
 
-    // private static final GuiElement ArrowLeft = new GuiElement(8, 241, 8, 15, 256, 256);
+    // private static final GuiElement ArrowLeft = new GuiElement(8, 241, 8, 15,
+    // 256, 256);
     private static final GuiElement ArrowRight = new GuiElement(0, 241, 8, 15, 256, 256);
 
     private static final GuiElement SlotSpaceTop = new GuiElement(0, 174 + 2, 18, 2);
@@ -116,7 +117,7 @@ public class GuiToolStation extends GuiTinkerStation {
     @Override
     public void initGui() {
         buttons.xOffset = -2;
-        buttons.yOffset = beamC.h + buttonDecorationTop.h;
+        buttons.yOffset = beamC.h + buttonDecorationTop.h + 4;
         toolInfo.xOffset = 2;
         toolInfo.yOffset = beamC.h + panelDecorationL.h;
         traitInfo.xOffset = toolInfo.xOffset;
@@ -248,8 +249,8 @@ public class GuiToolStation extends GuiTinkerStation {
                     sb.append(EnumChatFormatting.RED);
 
                     // is an item in the slot?
-                    if (slotStack.getItem() instanceof IToolPart) {
-                        if (tpr.isValidItem((IToolPart) slotStack.getItem())) {
+                    if (!TinkersRebornUtils.isStackEmpty(slotStack) && slotStack.getItem() instanceof IToolPart itp) {
+                        if (tpr.isValidItem(itp)) {
                             // the item has an invalid material
                             warning(translate("gui.error.wrong_material_part"));
                         }
@@ -321,6 +322,7 @@ public class GuiToolStation extends GuiTinkerStation {
         final float scale = 3.7f;
         final float xOff = 10f;
         final float yOff = 22f;
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glPushMatrix();
         GL11.glTranslatef(xOff, yOff, 0);
         GL11.glScalef(scale, scale, 1.0f);
@@ -330,7 +332,7 @@ public class GuiToolStation extends GuiTinkerStation {
 
             if (currentInfo != null) {
                 if (!TinkersRebornUtils.isStackEmpty(currentInfo.tool)) {
-                    itemRender.renderItemIntoGUI(
+                    itemRender.renderItemAndEffectIntoGUI(
                         fontRendererObj,
                         this.mc.getTextureManager(),
                         currentInfo.tool,
@@ -343,8 +345,6 @@ public class GuiToolStation extends GuiTinkerStation {
                 }
             }
         }
-        GL11.glScalef(1f / scale, 1f / scale, 1.0f);
-        GL11.glTranslatef(-xOff, -yOff, 0);
         GL11.glPopMatrix();
 
         // rebind gui texture since itemstack drawing sets it to something else
@@ -368,18 +368,12 @@ public class GuiToolStation extends GuiTinkerStation {
         } else if (container.getTile()
             .isInventoryEmpty()) {
                 ArrowRight.draw(cornerX + 104, cornerY + 38);
-            } else {
-                ArrowRight.draw(cornerX + 104, cornerY + 38);
             }
 
         // the slot backgrounds
         for (int i = 0; i < activeSlots; i++) {
             Slot slot = inventorySlots.getSlot(i);
-            if (!slot.getHasStack()) {
-                GL11.glColor4f(1.0f, 1.0f, 1.0f, 0.58f);
-            } else {
-                GL11.glColor4f(1.0f, 1.0f, 1.0f, 0.28f);
-            }
+            GL11.glColor4f(1.0f, 1.0f, 1.0f, 0.28f);
             SlotBackground
                 .draw(x + this.cornerX + slot.xDisplayPosition - 1, y + this.cornerY + slot.yDisplayPosition - 1);
         }
@@ -408,7 +402,7 @@ public class GuiToolStation extends GuiTinkerStation {
                 }
 
                 IIcon icon = ((SlotToolStationIn) slot).icon;
-                if (icon == null) {
+                if (icon == null || slot.getHasStack()) {
                     continue;
                 }
 
@@ -420,7 +414,9 @@ public class GuiToolStation extends GuiTinkerStation {
                     icon,
                     16,
                     16);
-                // itemRender.renderItemIntoGUI(stack, x + this.cornerX + slot.xDisplayPosition, y + this.cornerY +
+
+                // itemRender.renderItemIntoGUI(stack, x + this.cornerX + slot.xDisplayPosition,
+                // y + this.cornerY +
                 // slot.yDisplayPosition);
             }
         }
@@ -505,8 +501,9 @@ public class GuiToolStation extends GuiTinkerStation {
         currentInfo = info;
 
         ToolCore tool = null;
-
-        if (info.tool.getItem() instanceof ToolCore t) {
+        if (info == ToolBuildGuiInfo.repairInfo) {
+            tool = null;
+        } else if (info.tool.getItem() instanceof ToolCore t) {
             tool = t;
         }
 

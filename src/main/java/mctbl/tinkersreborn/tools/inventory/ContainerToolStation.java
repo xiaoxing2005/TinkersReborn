@@ -18,6 +18,7 @@ import net.minecraft.util.StringUtils;
 import net.minecraft.world.WorldServer;
 
 import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.TinkerGuiException;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.crafting.ToolBuilderHelper;
@@ -31,6 +32,8 @@ import mctbl.tinkersreborn.tools.entity.ToolStationLogic;
 import mctbl.tinkersreborn.tools.gui.GuiToolStation;
 import mctbl.tinkersreborn.tools.inventory.slots.SlotToolStationIn;
 import mctbl.tinkersreborn.tools.inventory.slots.SlotToolStationOut;
+import mctbl.tinkersreborn.tools.network.ToolStationSelectionPacket;
+import mctbl.tinkersreborn.tools.network.ToolStationTextPacket;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogic> {
@@ -61,7 +64,7 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
     }
 
     public List<ItemStack> getInputSlotContents() {
-        List<ItemStack> contents = new ArrayList<>();;
+        List<ItemStack> contents = new ArrayList<>();
         for (Slot slotIn : inventorySlots) {
             if (slotIn instanceof SlotToolStationIn && !isStackEmpty(slotIn.getStack())) {
                 contents.add(slotIn.getStack());
@@ -77,7 +80,7 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
     @Override
     protected void syncNewContainer(EntityPlayerMP player) {
         this.activeSlots = tile.getSizeInventory();
-        // TinkerNetwork.sendTo(new ToolStationSelectionPacket(null, tile.getSizeInventory()), player);
+        TinkerNetwork.sendTo(new ToolStationSelectionPacket(null, tile.getSizeInventory()), player);
     }
 
     @Override
@@ -90,10 +93,10 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
         this.setToolSelection(otherContainer.selectedTool, otherContainer.activeSlots);
         this.setToolName(otherContainer.toolName);
         // also send the data to the player
-        // TinkerNetwork.sendTo(new ToolStationSelectionPacket(otherContainer.selectedTool, otherContainer.activeSlots),
-        // player);
+        TinkerNetwork
+            .sendTo(new ToolStationSelectionPacket(otherContainer.selectedTool, otherContainer.activeSlots), player);
         if (otherContainer.toolName != null && !otherContainer.toolName.isEmpty()) {
-            // TinkerNetwork.sendTo(new ToolStationTextPacket(otherContainer.toolName), player);
+            TinkerNetwork.sendTo(new ToolStationTextPacket(otherContainer.toolName), player);
         }
     }
 

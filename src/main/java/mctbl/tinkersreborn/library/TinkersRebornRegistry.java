@@ -33,6 +33,7 @@ public class TinkersRebornRegistry {
     public static TinkersRebornCreativeTab miscTab;
 
     public static List<ToolCore> tools;
+    public static Map<String, ToolCore> toolNameMap;
     public static List<ToolCore> toolStationCrafting;
     public static List<ToolCore> toolForgeCrafting;
 
@@ -71,6 +72,7 @@ public class TinkersRebornRegistry {
 
     private void init() {
         tools = new ArrayList<>();
+        toolNameMap = new HashMap<>();
         toolStationCrafting = new ArrayList<>();
         toolForgeCrafting = new ArrayList<>();
         allMaterialsList = new ArrayList<>();
@@ -147,6 +149,7 @@ public class TinkersRebornRegistry {
 
     public static void registerTool(ToolCore tool) {
         tools.add(tool);
+        toolNameMap.put(tool.toolTypeName, tool);
     }
 
     public static List<ToolCore> getAllTools() {

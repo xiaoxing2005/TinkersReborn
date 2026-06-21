@@ -4,6 +4,7 @@ import static mctbl.tinkersreborn.util.TinkersRebornUtils.isStackEmpty;
 import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -52,12 +53,16 @@ public class ToolBuilderHelper {
 
     @Nullable
     public static ItemStack buildTool(String toolName, Collection<ToolCore> possibleTools, ItemStack... parts) {
-        ToolCore core = findMatchingToolCore(parts, possibleTools);
+        List<ItemStack> inputToolPartList = Arrays.asList(parts)
+            .stream()
+            .filter(i -> i != null)
+            .collect(Collectors.toList());
+        ToolCore core = findMatchingToolCore(inputToolPartList, possibleTools);
         if (core == null)
             // build fail because can't find match recipce
             return null;
         List<TinkersRebornMaterial> materials = new ArrayList<>();
-        for (ItemStack stack : parts) {
+        for (ItemStack stack : inputToolPartList) {
             materials.add(TinkersRebornRegistry.getMaterialById(stack.getItemDamage()));
         }
 
@@ -66,7 +71,7 @@ public class ToolBuilderHelper {
         return newTool;
     }
 
-    private static ToolCore findMatchingToolCore(ItemStack[] parts, Collection<ToolCore> possibleTools) {
+    private static ToolCore findMatchingToolCore(List<ItemStack> parts, Collection<ToolCore> possibleTools) {
         for (ToolCore core : possibleTools) if (core.checkRecipeMatch(parts)) return core;
         return null;
     }

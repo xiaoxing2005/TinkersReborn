@@ -45,7 +45,7 @@ public class GuiSideButtons extends GuiModule {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+    public boolean handleMouseClicked(int mouseX, int mouseY, int mouseButton) {
         if (mouseButton == 0) {
             for (Object o : this.buttonList) {
                 GuiButton guibutton = (GuiButton) o;
@@ -54,10 +54,11 @@ public class GuiSideButtons extends GuiModule {
                     this.clickedButton = guibutton;
                     guibutton.func_146113_a(this.mc.getSoundHandler());
                     this.actionPerformed(guibutton);
+                    return true;
                 }
             }
         }
-
+        return false;
     }
 
     @Override

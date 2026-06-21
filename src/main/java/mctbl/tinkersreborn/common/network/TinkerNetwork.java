@@ -15,23 +15,27 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.utils.BlockPos;
+import mctbl.tinkersreborn.tools.network.TinkerStationTabPacket;
+import mctbl.tinkersreborn.tools.network.ToolStationSelectionPacket;
+import mctbl.tinkersreborn.tools.network.ToolStationTextPacket;
 
 public class TinkerNetwork {
 
     public static TinkerNetwork instance = new TinkerNetwork();
 
     public final SimpleNetworkWrapper network;
-    protected final AbstactPacketHandler handler;
     private int id = 0;
 
     public TinkerNetwork() {
         network = new SimpleNetworkWrapper(TinkersReborn.MODID);
-        handler = new AbstactPacketHandler();
     }
 
     public void setUp() {
         // register packet
+        registerPacket(ToolStationSelectionPacket.class);
+        registerPacket(ToolStationTextPacket.class);
 
+        registerPacketServer(TinkerStationTabPacket.class);
     }
 
     /**
@@ -57,7 +61,14 @@ public class TinkerNetwork {
     }
 
     private void registerPacketImpl(Class<? extends AbstractPacket> packetClazz, Side side) {
-        network.registerMessage(handler, packetClazz, id++, side);
+        try {
+            Class<?> handlerClass = Class.forName(packetClazz.getName() + "$Handler");
+            AbstactPacketHandler handler = (AbstactPacketHandler) handlerClass.getDeclaredConstructor()
+                .newInstance();
+            network.registerMessage(handler, packetClazz, id++, side);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to register packet handler for " + packetClazz.getSimpleName(), e);
+        }
     }
 
     public static class AbstactPacketHandler implements IMessageHandler<AbstractPacket, IMessage> {
