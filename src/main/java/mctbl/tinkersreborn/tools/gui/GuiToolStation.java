@@ -362,13 +362,7 @@ public class GuiToolStation extends GuiTinkerStation {
         ItemCover.draw(this.cornerX + 7, this.cornerY + 18);
 
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        ContainerToolStation container = (ContainerToolStation) inventorySlots;
-        if (container.getSelectedTool() != null) {
-            ArrowRight.draw(cornerX + 104, cornerY + 38);
-        } else if (container.getTile()
-            .isInventoryEmpty()) {
-                ArrowRight.draw(cornerX + 104, cornerY + 38);
-            }
+        ArrowRight.draw(cornerX + 104, cornerY + 38);
 
         // the slot backgrounds
         for (int i = 0; i < activeSlots; i++) {
@@ -450,8 +444,6 @@ public class GuiToolStation extends GuiTinkerStation {
         panelDecorationR.draw(toolInfo.guiRight() - 5 - panelDecorationR.w, toolInfo.guiTop() - panelDecorationR.h);
         panelDecorationL.draw(traitInfo.guiLeft() + 5, traitInfo.guiTop() - panelDecorationL.h);
         panelDecorationR.draw(traitInfo.guiRight() - 5 - panelDecorationR.w, traitInfo.guiTop() - panelDecorationR.h);
-
-        // GL11.glEnable(GL11.GL_DEPTH_TEST);
 
         // continue as usual and hope that the drawing state is not completely wrecked
         super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);

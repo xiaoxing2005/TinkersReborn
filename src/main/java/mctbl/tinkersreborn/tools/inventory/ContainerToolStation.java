@@ -4,6 +4,7 @@ import static mctbl.tinkersreborn.util.TinkersRebornUtils.isStackEmpty;
 import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -349,7 +350,7 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
     }
 
     private List<ItemStack> getInputs() {
-        List<ItemStack> input = new ArrayList<>(tile.getSizeInventory() - 1);
+        List<ItemStack> input = new ArrayList<>(Collections.nCopies(tile.getSizeInventory() - 1, null));
         for (int i = 1; i < tile.getSizeInventory(); i++) {
             input.set(i - 1, tile.getStackInSlot(i));
         }

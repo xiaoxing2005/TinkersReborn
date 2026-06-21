@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
@@ -219,6 +221,14 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
         return shardItem;
     }
 
+    public void setRepresentativeItem(Item representativeItem) {
+        this.setRepresentativeItem(new ItemStack(representativeItem));
+    }
+
+    public void setRepresentativeItem(Block representativeBlock) {
+        this.setRepresentativeItem(new ItemStack(representativeBlock));
+    }
+
     public TinkersRebornMaterial setRepresentativeItem(ItemStack representativeItem) {
         this.representativeItem = representativeItem;
         return this;
@@ -267,6 +277,12 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
         } else {
             return new LinkedList<>();
         }
+    }
+
+    public void addCommonItems(String oredictSuffix) {
+        this.addItem("ingot" + oredictSuffix, 1, VALUE_Ingot);
+        this.addItem("nugget" + oredictSuffix, 1, VALUE_Nugget);
+        this.addItem("block" + oredictSuffix, 1, VALUE_Block);
     }
 
     public static final class RenderMaterial extends TinkersRebornMaterial {

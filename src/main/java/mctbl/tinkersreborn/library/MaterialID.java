@@ -23,4 +23,5 @@ public class MaterialID {
     public static final int Steel = 16;
     public static final int BlueSlime = 17;
     public static final int PigIron = 18;
+    public static final int EndStone = 19;
 }

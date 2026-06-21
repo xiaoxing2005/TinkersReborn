@@ -135,7 +135,7 @@ public class TinkersRebornUtils {
 
     public static List<ItemStack> copyItemStackList(List<ItemStack> stackList) {
         return stackList.stream()
-            .map(i -> i.copy())
+            .map(i -> i != null ? i.copy() : null)
             .collect(Collectors.toList());
     }
 
