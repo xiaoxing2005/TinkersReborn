@@ -15,7 +15,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StringUtils;
 import net.minecraft.world.WorldServer;
 
 import mctbl.tinkersreborn.TinkersReborn;
@@ -43,7 +42,7 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
     protected SlotToolStationOut out;
     protected ToolCore selectedTool; // needed for newly opened containers to sync
     protected int activeSlots;
-    public String toolName;
+    public String toolName = "";
 
     public ContainerToolStation(InventoryPlayer playerInventory, ToolStationLogic tile) {
         super(tile);
@@ -320,10 +319,11 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
         ItemStack tool = getToolStack();
 
         // modifying possible?
+        // new name not same as old
+        // or have name and new name is empty
         if (isStackEmpty(tool) || !(tool.getItem() instanceof ToolCore)
-            || StringUtils.isNullOrEmpty(toolName)
-            || tool.getDisplayName()
-                .equals(toolName)) {
+            || (tool.hasDisplayName() && tool.getDisplayName()
+                .equals(toolName) || (!tool.hasDisplayName() && toolName.isEmpty()))) {
             return null;
         }
 
@@ -332,7 +332,13 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
             throw new TinkerGuiException(translate("gui.error.no_rename"));
         }
 
-        result.setStackDisplayName(toolName);
+        if (toolName.isEmpty()) {
+            // reset name
+            result.func_135074_t();
+        } else {
+            // set new name
+            result.setStackDisplayName(toolName);
+        }
 
         return result;
     }

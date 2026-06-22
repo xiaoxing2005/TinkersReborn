@@ -146,7 +146,7 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
         pointY -= this.cornerY;
         return pointX >= left - 1 && pointX < left + right + 1 && pointY >= top - 1 && pointY < top + bottom + 1;
     }
-    
+
     protected void updateSubmodule(GuiModule module) {
         module.updatePosition(this.cornerX, this.cornerY, this.realWidth, this.realHeight);
         module.mc = this.mc;

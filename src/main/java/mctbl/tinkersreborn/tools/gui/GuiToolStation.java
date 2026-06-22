@@ -5,6 +5,7 @@ import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -30,7 +31,6 @@ import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.gui.GuiElement;
 import mctbl.tinkersreborn.library.gui.GuiElementScalable;
 import mctbl.tinkersreborn.library.gui.GuiModule;
-import mctbl.tinkersreborn.library.gui.GuiToolNameField;
 import mctbl.tinkersreborn.library.gui.Icons;
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.IModifyable;
@@ -89,7 +89,7 @@ public class GuiToolStation extends GuiTinkerStation {
     protected GuiButtonsToolStation buttons;
     protected int activeSlots; // how many of the available slots are active
 
-    public GuiToolNameField textField;
+    public GuiTextField textField;
 
     protected GuiInfoPanel toolInfo;
     protected GuiInfoPanel traitInfo;
@@ -131,7 +131,7 @@ public class GuiToolStation extends GuiTinkerStation {
         this.guiTop += 4;
         this.cornerY += 4;
 
-        textField = new GuiToolNameField(fontRendererObj, cornerX + 70, cornerY + 7, 92, 12);
+        textField = new GuiTextField(fontRendererObj, cornerX + 70, cornerY + 7, 92, 12);
         // textField.setFocused(true);
         // textField.setCanLoseFocus(false);
         textField.setEnableBackgroundDrawing(false);
