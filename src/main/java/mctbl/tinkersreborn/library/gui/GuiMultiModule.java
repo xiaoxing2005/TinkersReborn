@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.inventory.Container;
@@ -230,6 +231,10 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
 
     public RenderItem getRenderItem() {
         return itemRender;
+    }
+
+    public FontRenderer getFontRender() {
+        return this.fontRendererObj;
     }
 
     public int guiLeft() {

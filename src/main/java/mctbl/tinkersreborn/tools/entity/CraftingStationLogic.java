@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
+import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.gui.GuiCraftingStation;
 import mctbl.tinkersreborn.tools.inventory.ContainerCraftingStation;
 
@@ -41,6 +42,6 @@ public class CraftingStationLogic extends TinkersRebornInventoryLogic {
 
     @Override
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        return new GuiCraftingStation(inventoryplayer, this, world, x, y, z);
+        return new GuiCraftingStation(inventoryplayer, world, BlockPos.of(x, y, z), this);
     }
 }
