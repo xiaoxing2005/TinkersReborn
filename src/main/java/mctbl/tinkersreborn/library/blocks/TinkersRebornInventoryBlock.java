@@ -172,5 +172,4 @@ public abstract class TinkersRebornInventoryBlock extends BlockContainer {
         }
         return false;
     }
-
 }

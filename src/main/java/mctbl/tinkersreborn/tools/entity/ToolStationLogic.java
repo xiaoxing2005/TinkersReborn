@@ -1,16 +1,21 @@
 package mctbl.tinkersreborn.tools.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+
+import org.lwjgl.util.Point;
 
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.gui.GuiToolStation;
+import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
 import mctbl.tinkersreborn.tools.inventory.ContainerToolStation;
 
 public class ToolStationLogic extends TinkersRebornInventoryLogic implements ISidedInventory {
@@ -54,14 +59,6 @@ public class ToolStationLogic extends TinkersRebornInventoryLogic implements ISi
     }
 
     @Override
-    public void setInventorySlotContents(int slot, ItemStack stack) {
-        super.setInventorySlotContents(slot, stack);
-        if (slot != 0) {
-            // buildTool(toolName);
-        }
-    }
-
-    @Override
     public ItemStack decrStackSize(int slot, int amount) {
         ItemStack itemstack = super.decrStackSize(slot, amount);
         if (slot != 0) {}
@@ -75,16 +72,6 @@ public class ToolStationLogic extends TinkersRebornInventoryLogic implements ISi
             this.worldObj.markTileEntityChunkModified(this.xCoord, this.yCoord, this.zCoord, this);
         }
     }
-
-    // public void buildTool(String name) {
-    // }
-    //
-    // public void setToolname(String name) {
-    // }
-
-    // protected ItemStack tryRenameTool(ItemStack output, String name) {
-    // return null;
-    // }
 
     @Override
     public boolean canUpdate() {
@@ -122,10 +109,24 @@ public class ToolStationLogic extends TinkersRebornInventoryLogic implements ISi
     @Override
     public void closeInventory() {}
 
-    public static boolean canRename(NBTTagCompound tags, ItemStack tool) {
-        // return tags != null && (!tags.hasKey("Name")
-        // || tags.getString("Name").equals("\u00A7f" + ToolBuilder.defaultToolName(tool)));
-        return false;
+    @Override
+    public List<DisplayItem> getDisplayItems() {
+        // TODO use selected info slot position
+        List<DisplayItem> items = new ArrayList<>();
+        List<Point> points = ToolBuildGuiInfo.repairInfo.positions;
+        for (int i = 0; i < getSizeInventory(); i++) {
+            ItemStack stack = getStackInSlot(i);
+            if (stack == null) continue;
+
+            float x = (33 - points.get(i)
+                .getX()) / 61f;
+            float z = (42 - points.get(i)
+                .getY()) / 61f;
+            float s = i == 0 ? 0.7F : 0.5f;
+
+            items.add(new DisplayItem(stack, x, 1.0F, z, s, -1));
+        }
+        return items;
     }
 
 }

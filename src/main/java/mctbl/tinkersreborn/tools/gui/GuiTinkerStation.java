@@ -13,6 +13,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.blocks.ITinkersToolStationBlock;
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import mctbl.tinkersreborn.library.gui.GuiElement;
@@ -22,6 +23,7 @@ import mctbl.tinkersreborn.library.gui.container.ContainerMultiModule;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.gui.module.GuiTinkerTabs;
 import mctbl.tinkersreborn.tools.inventory.ContainerTinkerStation;
+import mctbl.tinkersreborn.tools.network.TinkerStationTabPacket;
 
 @SideOnly(Side.CLIENT)
 // Takes care of the tinker station pseudo-multiblock
@@ -89,7 +91,7 @@ public class GuiTinkerStation extends GuiMultiModule {
         if (b instanceof ITinkersToolStationBlock) {
             TileEntity te = world.getTileEntity(pos.x, pos.y, pos.z);
             if (te instanceof TinkersRebornInventoryLogic) {
-                // TinkerNetwork.sendToServer(new TinkerStationTabPacket(pos));
+                TinkerNetwork.sendToServer(new TinkerStationTabPacket(pos));
             }
 
             // sound!

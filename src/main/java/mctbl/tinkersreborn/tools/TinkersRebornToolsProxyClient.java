@@ -2,7 +2,9 @@ package mctbl.tinkersreborn.tools;
 
 import net.minecraftforge.client.MinecraftForgeClient;
 
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import mctbl.tinkersreborn.tools.model.ChestRender;
 import mctbl.tinkersreborn.tools.model.TableRender;
 import mctbl.tinkersreborn.tools.model.ToolRender;
@@ -15,7 +17,9 @@ public class TinkersRebornToolsProxyClient extends TinkersRebornToolsProxyCommon
     }
 
     protected void registerRenderer() {
-        RenderingRegistry.registerBlockHandler(new TableRender());
+        TableRender tableRender = new TableRender();
+        RenderingRegistry.registerBlockHandler(tableRender);
+        ClientRegistry.bindTileEntitySpecialRenderer(TinkersRebornInventoryLogic.class, tableRender);
         RenderingRegistry.registerBlockHandler(new ChestRender());
 
         ToolRender render = new ToolRender();

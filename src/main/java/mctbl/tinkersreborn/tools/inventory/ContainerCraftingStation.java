@@ -78,7 +78,7 @@ public class ContainerCraftingStation extends ContainerTinkerStation<CraftingSta
                 .offset(dir);
             boolean stationPart = false;
             for (Pair<BlockPos, Block> tinkerPos : tinkerStationBlocks) {
-                if (tinkerPos.getLeft()
+                if (tinkerPos.getKey()
                     .equals(neighbor)) {
                     stationPart = true;
                     break;
@@ -87,35 +87,17 @@ public class ContainerCraftingStation extends ContainerTinkerStation<CraftingSta
             if (!stationPart) {
                 TileEntity te = world.getTileEntity(neighbor.x, neighbor.y, neighbor.z);
                 if (te != null && !(te instanceof CraftingStationLogic)) {
-
-                    if (te instanceof IInventory t && !t.isUseableByPlayer(player)) {
-                        continue;
+                    if (te instanceof IInventory && ((IInventory) te).isUseableByPlayer(player)) {
+                        inventoryTE = te;
+                        accessDir = dir;
+                        break;
                     }
-
-                    // try internal access first
-                    // if (te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)) {
-                    // if (te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                    // null) instanceof IItemHandlerModifiable) {
-                    // inventoryTE = te;
-                    // accessDir = null;
-                    // break;
-                    // }
-                    // }
-                    // try sided access else
-                    // if (te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir.getOpposite())) {
-                    // if (te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                    // dir.getOpposite()) instanceof IItemHandlerModifiable) {
-                    // inventoryTE = te;
-                    // accessDir = dir.getOpposite();
-                    // break;
-                    // }
-                    // }
                 }
             }
         }
 
         if (inventoryTE != null) {
-            addSubContainer(new ContainerSideInventory(inventoryTE, accessDir, -6 - 18 * 6, 8, 6), false);
+            addSubContainer(new ContainerSideInventory<>(inventoryTE, accessDir, -6 - 18 * 6, 8, 6), false);
         }
 
         this.addPlayerInventory(playerInventory, 8, 84);
@@ -155,47 +137,27 @@ public class ContainerCraftingStation extends ContainerTinkerStation<CraftingSta
         // the recipe
         result.setInventorySlotContents(SLOT_RESULT, itemstack);
 
-        // update recipe on server
-        if (!world.isRemote) {
-            EntityPlayerMP entityplayermp = (EntityPlayerMP) player;
-
+        if (!world.isRemote && player instanceof EntityPlayerMP p) {
+            WorldServer server = p.getServerForPlayer();
             // we need to sync to all players currently in the inventory
-            List<EntityPlayerMP> relevantPlayers = getAllPlayersWithThisContainerOpen(
-                this,
-                entityplayermp.getServerForPlayer());
+            List<EntityPlayerMP> relevantPlayers = getAllPlayersWithThisContainerOpen(this, server);
 
-            // sync result to all serverside inventories to prevent duplications/recipes
-            // being blocked
-            // need to do this every time as otherwise taking items of the result causes
-            // desync
-            syncResultToAllOpenWindows(itemstack, relevantPlayers);
+            for (EntityPlayerMP other : relevantPlayers) {
+                if (other.openContainer != this && other.openContainer instanceof ContainerCraftingStation otherCsc
+                    && this.sameGui(otherCsc)) {
+                    otherCsc.craftResult.setInventorySlotContents(SLOT_RESULT, itemstack);
 
-            // if the recipe changed, update clients last recipe
-            // this also updates the client side display when the recipe is added
+                    if (lastLastRecipe != lastRecipe) {
+                        otherCsc.lastRecipe = lastRecipe;
+                    }
+                }
+            }
             if (lastLastRecipe != lastRecipe) {
-                syncRecipeToAllOpenWindows(lastRecipe, relevantPlayers);
                 lastLastRecipe = lastRecipe;
             }
         }
     }
 
-    private void syncResultToAllOpenWindows(final ItemStack stack, List<EntityPlayerMP> players) {
-        players.forEach(otherPlayer -> {
-            otherPlayer.openContainer.putStackInSlot(SLOT_RESULT, stack);
-            // otherPlayer.connection.sendPacket(new
-            // SPacketSetSlot(otherPlayer.openContainer.windowId, SLOT_RESULT, stack));
-        });
-    }
-
-    private void syncRecipeToAllOpenWindows(final IRecipe lastRecipe, List<EntityPlayerMP> players) {
-        players.forEach(otherPlayer -> {
-            // safe cast since hasSameContainerOpen does class checks
-            ((ContainerCraftingStation) otherPlayer.openContainer).lastRecipe = lastRecipe;
-            // TinkerNetwork.sendTo(new LastRecipeMessage(lastRecipe), otherPlayer);
-        });
-    }
-
-    // todo: move this to Mantle
     // server can be gotten from EntityPlayerMP
     private <T extends TileEntity> List<EntityPlayerMP> getAllPlayersWithThisContainerOpen(BaseContainer<T> container,
         WorldServer server) {
@@ -212,39 +174,8 @@ public class ContainerCraftingStation extends ContainerTinkerStation<CraftingSta
     }
 
     @Override
-    public boolean canMergeSlot(ItemStack p_94530_1_, Slot p_94530_2_) {
-        return p_94530_2_.inventory != this.craftResult && super.canMergeSlot(p_94530_1_, p_94530_2_);
-    }
-
-    protected TileEntity detectInventory() {
-
-        for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-            if (dir == ForgeDirection.UP || dir == ForgeDirection.DOWN) {
-                continue;
-            }
-            BlockPos neighbor = BlockPos.of(xCoord, yCoord, zCoord)
-                .offset(dir);
-            boolean stationPart = false;
-            for (Pair<BlockPos, Block> tinkerPos : tinkerStationBlocks) {
-                if (tinkerPos.getLeft()
-                    .equals(neighbor)) {
-                    stationPart = true;
-                    break;
-                }
-            }
-            if (!stationPart) {
-                TileEntity te = world.getTileEntity(neighbor.x, neighbor.y, neighbor.z);
-                // if (te != null && te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir.getOpposite()))
-                // {
-                // if (te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                // dir.getOpposite()) instanceof IItemHandlerModifiable) {
-                // return te;
-                // }
-                // }
-            }
-        }
-
-        return null;
+    public boolean canMergeSlot(ItemStack stack, Slot slotIn) {
+        return slotIn.inventory != this.craftResult && super.canMergeSlot(stack, slotIn);
     }
 
     /**

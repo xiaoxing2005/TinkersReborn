@@ -1,5 +1,8 @@
 package mctbl.tinkersreborn.tools.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -43,5 +46,23 @@ public class CraftingStationLogic extends TinkersRebornInventoryLogic {
     @Override
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
         return new GuiCraftingStation(inventoryplayer, world, BlockPos.of(x, y, z), this);
+    }
+
+    @Override
+    public List<DisplayItem> getDisplayItems() {
+        List<DisplayItem> items = new ArrayList<>();
+        float s = 0.5f;
+        float o = 3f / 16f; // we want to move it 3 pixel in a 16 width texture
+        for (int i = 0; i < 9; i++) {
+            ItemStack stack = getStackInSlot(i);
+            if (stack == null) continue;
+            float x = +o - (i % 3) * o;
+            float y = 1.0f;
+            float z = +o - (i / 3) * o;
+
+            items.add(new DisplayItem(stack, x, y, z, s, 0));
+        }
+
+        return items;
     }
 }

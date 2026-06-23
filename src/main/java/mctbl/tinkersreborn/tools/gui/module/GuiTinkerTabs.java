@@ -16,6 +16,7 @@ import mctbl.tinkersreborn.library.gui.GuiModule;
 import mctbl.tinkersreborn.library.gui.GuiWidgetTabs;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.gui.GuiTinkerStation;
+import mctbl.tinkersreborn.tools.gui.GuiToolStation;
 
 public class GuiTinkerTabs extends GuiModule {
 
@@ -60,6 +61,7 @@ public class GuiTinkerTabs extends GuiModule {
         // we actually want to be on top of the parent
         this.guiLeft = parentX;
         this.guiTop = parentY - this.ySize;
+        if (parent instanceof GuiToolStation) this.guiTop += 4;
 
         tabs.setPosition(guiLeft + 4, guiTop);
     }

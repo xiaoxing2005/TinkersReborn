@@ -1,5 +1,8 @@
 package mctbl.tinkersreborn.library.entity;
 
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -64,6 +67,10 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
         inventory[slot] = itemstack;
         if (itemstack != null && itemstack.stackSize > getInventoryStackLimit()) {
             itemstack.stackSize = getInventoryStackLimit();
+        }
+
+        if (worldObj != null && worldObj.isRemote) {
+            worldObj.markBlockRangeForRenderUpdate(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord);
         }
     }
 
@@ -215,5 +222,26 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
         }
 
         return true;
+    }
+
+    public List<DisplayItem> getDisplayItems() {
+        return Collections.emptyList();
+    }
+
+    public static class DisplayItem {
+
+        public final ItemStack stack;
+        public final float x, y, z;
+        public final float scale;
+        public final float rotation;
+
+        public DisplayItem(ItemStack stack, float x, float y, float z, float scale, float rotation) {
+            this.stack = stack;
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.scale = scale;
+            this.rotation = rotation;
+        }
     }
 }
