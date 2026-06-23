@@ -24,7 +24,6 @@ import com.google.common.collect.Sets;
 import gnu.trove.map.TIntIntMap;
 import gnu.trove.map.hash.TIntIntHashMap;
 import mctbl.tinkersreborn.TinkersReborn;
-import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.TinkerGuiException;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
@@ -33,6 +32,7 @@ import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.IRepairable;
 import mctbl.tinkersreborn.library.tools.IToolPart;
 import mctbl.tinkersreborn.library.tools.ITrait;
+import mctbl.tinkersreborn.library.tools.TinkersRebornEvent;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.tools.ToolCore.ToolPartRecord;
 import mctbl.tinkersreborn.library.tools.traits.AbstractTrait;
@@ -223,7 +223,7 @@ public class ToolBuilderHelper {
         // result
         List<ItemStack> inputItems = TinkersRebornUtils.copyItemStackList(toolPartsIn);
         // TODO
-        // if(!TinkerEvent.OnToolPartReplacement.fireEvent(inputItems, toolStack)) {
+        // if(!TinkersRebornEvent.OnToolPartReplacement.fireEvent(inputItems, toolStack)) {
         // // event cancelled
         // return null;
         // }
@@ -314,28 +314,28 @@ public class ToolBuilderHelper {
         ItemStack copyToCheck = tinkersItem.buildItem(ToolTagsHelper.fromTagToMaterial(materialList));
         // this includes traits
         NBTTagList modifiers = ToolTagsHelper.getModifiersTagList(toolStack);
-        for (int i = 0; i < modifiers.tagCount(); i++) {
-            String id = modifiers.getStringTagAt(i);
-            IModifier mod = TinkersRebornRegistry.getModifier(id);
-
-            boolean canApply = false;
-            try {
-                // will throw an exception if it can't apply
-                canApply = mod != null && mod.canApply(copyToCheck, copyToCheck);
-            } catch (TinkerGuiException e) {
-                // try again with more modifiers, in case something modified them (tinkers tool
-                // leveling)
-                // ensure that free modifiers are present (
-                if (ToolTagsHelper.getFreeModifiers(copyToCheck) < TinkersRebornConfig.defaultModifiers) {
-                    ItemStack copyWithModifiers = copyToCheck.copy();
-                    ToolTagsHelper.setFreeModifiers(toolStack, TinkersRebornConfig.defaultModifiers);
-                    canApply = mod.canApply(copyWithModifiers, copyWithModifiers);
-                }
-            }
-            if (!canApply) {
-                throw new TinkerGuiException();
-            }
-        }
+        // for (int i = 0; i < modifiers.tagCount(); i++) {
+        // String id = modifiers.getStringTagAt(i);
+        // IModifier mod = TinkersRebornRegistry.getModifier(id);
+        //
+        // boolean canApply = false;
+        // try {
+        // // will throw an exception if it can't apply
+        // canApply = mod != null && mod.canApply(copyToCheck, copyToCheck);
+        // } catch (TinkerGuiException e) {
+        // // try again with more modifiers, in case something modified them (tinkers tool
+        // // leveling)
+        // // ensure that free modifiers are present (
+        // if (ToolTagsHelper.getFreeModifiers(copyToCheck) < TinkersRebornConfig.defaultModifiers) {
+        // ItemStack copyWithModifiers = copyToCheck.copy();
+        // ToolTagsHelper.setFreeModifiers(toolStack, TinkersRebornConfig.defaultModifiers);
+        // canApply = mod.canApply(copyWithModifiers, copyWithModifiers);
+        // }
+        // }
+        // if (!canApply) {
+        // throw new TinkerGuiException();
+        // }
+        // }
 
         final NBTTagList modifierList = (NBTTagList) modifiers.copy();
         for (int i = 0; i < modifierList.tagCount(); i++) {
@@ -419,8 +419,8 @@ public class ToolBuilderHelper {
         // readd traits
         tinkersItem.addMaterialTraits(tinkersTag, materials);
 
-        // fire event TODO
-        // TinkerEvent.OnItemBuilding.fireEvent(rootNBT, ImmutableList.copyOf(materials), tinkersItem);
+        // fire event
+        TinkersRebornEvent.OnItemBuilding.fireEvent(tinkersTag, materials, tinkersItem);
 
         // reapply modifiers
         List<NBTTagCompound> oldModifiersTag = modifiersAndTraitTagOld.stream()
@@ -483,12 +483,14 @@ public class ToolBuilderHelper {
         AbstractTrait traitModifier = (AbstractTrait) newTrait;
 
         NBTTagList tagList = ToolTagsHelper.getModifiersTagList(rootCompound);
-        ToolTagsHelper.setModifiersTagList(rootCompound, tagList);
 
-        NBTTagCompound tag = new NBTTagCompound();
-        traitModifier.updateNBT(tag);
-        tagList.appendTag(tag);
+        NBTTagCompound traitTag = ToolTagsHelper.getModifierTag(rootCompound, traitModifier.getIdentifier());
+        if (traitTag.hasNoTags()) {
+            traitTag = new NBTTagCompound();
+            traitModifier.updateNBT(traitTag);
+            tagList.appendTag(traitTag);
+        }
 
-        traitModifier.applyEffect(rootCompound, tag);
+        traitModifier.applyEffect(rootCompound, traitTag);
     }
 }

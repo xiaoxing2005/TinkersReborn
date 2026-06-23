@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -99,7 +100,7 @@ public class ToolTagsHelper {
         NBTTagCompound basetag = getTagSafe(stack);
         basetag.setTag(ToolTags.TOOLBASETAG, tags);
 
-        if (!basetag.equals(stack.getTagCompound())) stack.setTagCompound(basetag);
+        if (basetag != stack.getTagCompound()) stack.setTagCompound(basetag);
     }
 
     /**
@@ -278,7 +279,7 @@ public class ToolTagsHelper {
     }
 
     public static void setModifiersTagList(NBTTagCompound compound, NBTTagList list) {
-        if (!getModifiersTagList(compound).equals(list)) compound.setTag(ToolTags.MODIFIERS, list);
+        if (getModifiersTagList(compound) != list) compound.setTag(ToolTags.MODIFIERS, list);
     }
 
     /**
@@ -295,6 +296,18 @@ public class ToolTagsHelper {
      */
     public static int getDurabilityStat(ItemStack stack) {
         return getToolDataNBTSafe(stack).getInteger(ToolTags.DURABILITY);
+    }
+
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Stats -> Durability
+     */
+    public static int getDurabilityStat(NBTTagCompound root) {
+        return getToolDataNBTSafe(root).getInteger(ToolTags.DURABILITY);
+    }
+
+    public static void setDurabilityStat(NBTTagCompound root, int newDurability) {
+        getToolDataNBTSafe(root).setInteger(ToolTags.DURABILITY, newDurability);
     }
 
     /**
@@ -469,14 +482,13 @@ public class ToolTagsHelper {
 
         int actualAmount = amount;
 
-        // for(ITrait trait : TinkerUtil.getTraitsOrdered(stack)) {
-        // if(amount > 0) {
-        // actualAmount = trait.onToolDamage(stack, amount, actualAmount, entity);
-        // }
-        // else {
-        // actualAmount = trait.onToolHeal(stack, amount, actualAmount, entity);
-        // }
-        // }
+        for (ITrait trait : getTraitsOrdered(stack)) {
+            if (amount > 0) {
+                actualAmount = trait.onToolDamage(stack, amount, actualAmount, entity);
+            } else {
+                actualAmount = trait.onToolHeal(stack, amount, actualAmount, entity);
+            }
+        }
 
         // extra compatibility for unbreaking.. because things just love to mess it up..
         // like 3rd party stuff
@@ -513,13 +525,18 @@ public class ToolTagsHelper {
 
     public static List<ITrait> getTraitsOrdered(ItemStack tool) {
         List<ITrait> traits = new ArrayList<>();
-        // NBTTagList list = TagUtil.getTraitsTagList(tool);
-        // for(int i = 0; i < list.tagCount(); i++) {
-        // ITrait trait = TinkerRegistry.getTrait(list.getStringTagAt(i));
-        // if(trait != null) {
-        // traits.add(trait);
-        // }
-        // }
+
+        List<NBTTagCompound> traitList = getModifiersList(tool).stream()
+            .filter(
+                c -> c.getString(ToolTags.TYPE)
+                    .equals(ToolTags.TYPETRAITS))
+            .collect(Collectors.toList());;
+        for (NBTTagCompound compound : traitList) {
+            ITrait trait = TinkersRebornRegistry.getTrait(compound.getString(ToolTags.IDENTIFIER));
+            if (trait != null) {
+                traits.add(trait);
+            }
+        }
 
         traits.sort(
             Comparator.comparingInt(ITrait::getPriority)

@@ -188,3 +188,16 @@ tinkersreborn.attack=Attack
 tinkersreborn.attack.desc=
 tinkersreborn.harvestlevel=Mining Level
 tinkersreborn.harvestlevel.desc=
+
+
+// traits
+modifier.ecological.name=Ecological
+modifier.ecological.desc=§oGreen Power!§r\nRenewable resources are so good, they regenerate by themselves!
+modifier.cheap.name=Cheap
+modifier.cheap.desc=§oMore bang for your buck!§r\nIncreases durability gained when repairing the tool.
+modifier.cheapskate.name=Cheapskate
+modifier.cheapskate.desc=§oCheeky!§r\nStone is bad. Your tool has less durability.
+modifier.crude.name=Crude
+modifier.crude.desc=§oArmor is for cowards!§r\nBonus damage against unarmored targets.
+modifier.crude.extra=Vs Unarmored: +%s
+

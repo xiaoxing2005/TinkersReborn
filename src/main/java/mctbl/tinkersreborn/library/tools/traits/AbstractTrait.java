@@ -26,8 +26,6 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
 // Trait and modifier in one! Useful because modifiers are saved as traits
 public abstract class AbstractTrait extends AbstractModifier implements ITrait {
 
-    public static final String LOC_Name = AbstractModifier.LOC_Name;
-    public static final String LOC_Desc = AbstractModifier.LOC_Desc;
     // private final String identifier;
     protected final int color;
 
@@ -154,6 +152,7 @@ public abstract class AbstractTrait extends AbstractModifier implements ITrait {
         if (data.level == 0) {
             data.level = 1;
         }
+        data.type = ToolTags.TYPETRAITS;
         data.write(modifierTag);
     }
 

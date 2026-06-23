@@ -5,7 +5,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 
-public class TinkersRebornEvents {
+public class TinkersRebornEventsHandler {
 
     @SubscribeEvent
     public void tinkersToolTooltipEvent(ItemTooltipEvent e) {

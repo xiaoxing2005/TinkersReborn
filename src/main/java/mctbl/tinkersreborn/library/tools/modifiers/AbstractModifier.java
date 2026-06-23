@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import com.google.common.collect.ImmutableList;
 
+import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.TinkerGuiException;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.tools.IModifier;
@@ -34,7 +35,7 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
     public static final String LOC_Desc = "modifier.%s.desc";
     public static final String LOC_Extra = "modifier.%s.extra";
 
-    protected static final Random random = new Random();
+    protected static final Random random = TinkersReborn.random;
 
     public final String identifier;
 

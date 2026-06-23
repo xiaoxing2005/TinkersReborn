@@ -23,6 +23,7 @@ import static mctbl.tinkersreborn.library.MaterialID.Wood;
 import static mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.VALUE_Fragment;
 import static mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.VALUE_Ingot;
 import static mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.VALUE_Shard;
+import static mctbl.tinkersreborn.tools.TinkerTraits.*;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -214,7 +215,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
-        TinkersRebornEvents tre = new TinkersRebornEvents();
+        TinkersRebornEventsHandler tre = new TinkersRebornEventsHandler();
         MinecraftForge.EVENT_BUS.register(tre);
         FMLCommonHandler.instance()
             .bus()
@@ -441,20 +442,20 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         woodMaterial.addItem("stickWood", 1, VALUE_Shard);
         woodMaterial.addItem("plankWood", 1, VALUE_Ingot);
         woodMaterial.addItem("logWood", 1, VALUE_Ingot * 4);
-        // woodMaterial.addTrait(ecological);
+        woodMaterial.addTrait(ecological);
 
         stoneMaterial = new TinkersRebornMaterial(Stone, "Stone", 0x7F7F7F).setCraftable(true);
         stoneMaterial.addItem("cobblestone", 1, VALUE_Ingot);
         stoneMaterial.addItem("stone", 1, VALUE_Ingot);
         stoneMaterial.setRepresentativeItem(Blocks.cobblestone);
-        // stoneMaterial.addTrait(cheapskate, HEAD);
-        // stoneMaterial.addTrait(cheap);
+        stoneMaterial.addTrait(cheapskate, MaterialStatusType.HEAD);
+        stoneMaterial.addTrait(cheap);
 
         flintMaterial = new TinkersRebornMaterial(Flint, "Flint", 0x484848).setCraftable(true);
         flintMaterial.addItem(Items.flint, 1, VALUE_Ingot);
         flintMaterial.setRepresentativeItem(Items.flint);
-        // flintMaterial.addTrait(crude2, HEAD);
-        // flintMaterial.addTrait(crude);
+        flintMaterial.addTrait(crude2, MaterialStatusType.HEAD);
+        flintMaterial.addTrait(crude);
 
         cactusMaterial = new TinkersRebornMaterial(Cactus, "Cactus", 0x12690B).setCraftable(true);
         cactusMaterial.addItem("blockCactus", 1, VALUE_Ingot);

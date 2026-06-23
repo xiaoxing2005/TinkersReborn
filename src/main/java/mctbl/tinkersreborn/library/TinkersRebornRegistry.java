@@ -11,7 +11,9 @@ import java.util.Map;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
+import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.crafting.LiquidCasting;
+import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.RenderMaterial;
 import mctbl.tinkersreborn.library.tools.IModifier;
@@ -43,9 +45,7 @@ public class TinkersRebornRegistry {
     public static Map<String, RenderMaterial> renderMaterials;
 
     public static Map<String, IModifier> modifierIdentifierMaps;
-
     public static Map<String, ITrait> traitIdentifierMaps;
-    public static Map<Integer, ITrait> traitIdMaps;
 
     // contains all fluid that tinkers reborn registered
     public static List<TinkersRebornFluid> allTinkersFluid;
@@ -80,7 +80,6 @@ public class TinkersRebornRegistry {
         materialIdMaps = new HashMap<>();
         modifierIdentifierMaps = new LinkedHashMap<>();
         traitIdentifierMaps = new LinkedHashMap<>();
-        traitIdMaps = new LinkedHashMap<>();
         allTinkersFluid = new ArrayList<>();
         this.initRenderMaterial();
     }
@@ -135,8 +134,31 @@ public class TinkersRebornRegistry {
         }
     }
 
+    /**
+     * Call before adding a trait to a material. Checks consistency and takes care everything is in a consistent state.
+     * Registers the trait if it's not registered, takes events into account.
+     */
+    public static boolean checkMaterialTrait(TinkersRebornMaterial material, ITrait trait, MaterialStatusType staus) {
+        if (material == null) {
+            TinkersReborn.LOG.fatal("Could not add Trait \"{}\": Material is null", trait.getIdentifier());
+            return false;
+        }
+
+        addTrait(trait);
+
+        return true;
+    }
+
+    public static void addTrait(ITrait trait) {
+        traitIdentifierMaps.put(trait.getIdentifier(), trait);
+    }
+
     public static ITrait getTrait(String identifier) {
         return traitIdentifierMaps.get(identifier);
+    }
+
+    public static void registerModifierAlias(IModifier modifier, String identifier) {
+        modifierIdentifierMaps.put(identifier, modifier);
     }
 
     public static IModifier getModifier(String identifier) {

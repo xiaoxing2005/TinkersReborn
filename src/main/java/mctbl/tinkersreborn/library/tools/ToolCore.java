@@ -46,6 +46,7 @@ import mctbl.tinkersreborn.library.crafting.ToolBuilderHelper;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.RenderMaterial;
+import mctbl.tinkersreborn.library.tools.modifiers.ModifierNBT;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.tools.Category;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
@@ -501,6 +502,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
         // add traits
         addMaterialTraits(tinkersTag, materials);
+        TinkersRebornEvent.OnItemBuilding.fireEvent(toolTag, materials, this);
 
         basetag.setTag(ToolTags.TOOLBASETAG, tinkersTag);
         return basetag;
@@ -561,7 +563,6 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     }
 
     protected void onUpdateTraits(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-
         ToolTagsHelper.getTraitsOrdered(stack)
             .forEach(trait -> trait.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected));
     }
@@ -653,6 +654,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
         boolean shift = TinkersRebornUtils.isShiftKeyDown();
         // modifier first
@@ -669,7 +671,24 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     }
 
     protected void getTooltipModify(ItemStack stack, EntityPlayer player, List<String> list) {
-        // TODO
+        List<NBTTagCompound> modifiersList = ToolTagsHelper.getModifiersList(stack);
+        for (NBTTagCompound tag : modifiersList) {
+            ModifierNBT data = ModifierNBT.readTag(tag);
+
+            // get matching modifier
+            IModifier modifier = TinkersRebornRegistry.getModifier(data.identifier);
+            if (modifier != null && !modifier.isHidden()) {
+                list.add(data.getColorString() + modifier.getTooltip(tag, false));
+
+            } else {
+                ITrait trait = TinkersRebornRegistry.getTrait(data.identifier);
+                if (trait != null && !trait.isHidden()) {
+                    list.add(data.getColorString() + trait.getLocalizedName());
+                }
+            }
+
+        }
+
     }
 
     /**
