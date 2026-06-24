@@ -3,24 +3,17 @@ package mctbl.tinkersreborn.tools.traits;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import mctbl.tinkersreborn.TinkersReborn;
-import mctbl.tinkersreborn.library.potion.TinkersRebornPotion;
+import mctbl.tinkersreborn.library.entity.EnderferenceProperties;
 import mctbl.tinkersreborn.library.tools.traits.AbstractTrait;
 
 public class TraitEnderference extends AbstractTrait {
-
-    public static TinkersRebornPotion Enderference = new TinkersRebornPotion(
-        new ResourceLocation(TinkersReborn.MODID, "enderference"),
-        true,
-        false,
-        0x21985f);
 
     public TraitEnderference() {
         super("enderference", EnumChatFormatting.DARK_AQUA);
@@ -32,8 +25,10 @@ public class TraitEnderference extends AbstractTrait {
     public void onHit(ItemStack tool, EntityLivingBase player, EntityLivingBase target, float damage,
         boolean isCritical) {
         if (target instanceof EntityEnderman) {
-            PotionEffect effect = new PotionEffect(Enderference.getId(), 100, 1, false);
-            target.addPotionEffect(effect);
+            EnderferenceProperties props = getProps(target);
+            if (props != null) {
+                props.apply(100);
+            }
         }
     }
 
@@ -41,14 +36,39 @@ public class TraitEnderference extends AbstractTrait {
     public void afterHit(ItemStack tool, EntityLivingBase player, EntityLivingBase target, float damageDealt,
         boolean wasCritical, boolean wasHit) {
         if (!wasHit) {
-            target.removePotionEffect(Enderference.getId());
+            EnderferenceProperties props = getProps(target);
+            if (props != null) {
+                props.apply(0);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onEntityConstructing(EntityEvent.EntityConstructing event) {
+        if (event.entity instanceof EntityLivingBase) {
+            event.entity.registerExtendedProperties(EnderferenceProperties.IDENTIFIER, new EnderferenceProperties());
+        }
+    }
+
+    @SubscribeEvent
+    public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
+        if (event.entityLiving.worldObj.isRemote) return; // 只在服务端处理
+
+        EnderferenceProperties props = getProps(event.entityLiving);
+        if (props != null) {
+            props.tick();
         }
     }
 
     @SubscribeEvent
     public void onEnderTeleport(EnderTeleportEvent event) {
-        if (Enderference.getLevel(event.entityLiving) > 0) {
+        EnderferenceProperties props = getProps(event.entityLiving);
+        if (props != null && props.isActive()) {
             event.setCanceled(true);
         }
+    }
+
+    public static EnderferenceProperties getProps(EntityLivingBase entity) {
+        return (EnderferenceProperties) entity.getExtendedProperties(EnderferenceProperties.IDENTIFIER);
     }
 }
