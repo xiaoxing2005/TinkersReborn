@@ -3,6 +3,7 @@ package mctbl.tinkersreborn.library.gui;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -156,11 +157,14 @@ public class GuiWidgetTabs extends GuiWidget {
     // guiContainer.drawItemStack
     private void drawItemStack(ItemStack stack, int x, int y) {
         RenderItem itemRender = this.parent.getRenderItem();
+
         GL11.glPushMatrix();
-        GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glTranslatef(0.0F, 0.0F, 32.0F);
+
+        RenderHelper.enableGUIStandardItemLighting();
+        // GL11.glDisable(GL11.GL_LIGHTING);
         itemRender.zLevel = 200;
         itemRender.renderItemAndEffectIntoGUI(
             stack.getItem()
@@ -171,6 +175,9 @@ public class GuiWidgetTabs extends GuiWidget {
             x,
             y);
         itemRender.zLevel = 0.0F;
+
+        RenderHelper.disableStandardItemLighting();
+
         GL11.glPopMatrix();
     }
 }
