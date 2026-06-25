@@ -24,4 +24,17 @@ public class MaterialID {
     public static final int BlueSlime = 17;
     public static final int PigIron = 18;
     public static final int EndStone = 19;
+
+    public static final int Lead = 20;
+    public static final int Silver = 21;
+    public static final int BloodBone = 22;
+    public static final int String = 23;
+    public static final int Vine = 24;
+    public static final int SlimeVine = 25;
+    public static final int Blaze = 26;
+    public static final int Reed = 27;
+    public static final int Ice = 28;
+    public static final int Feather = 29;
+    public static final int Leaf = 30;
+    public static final int SlimeLeaf = 31;
 }

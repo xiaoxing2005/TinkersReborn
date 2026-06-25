@@ -8,6 +8,7 @@ import mctbl.tinkersreborn.tools.traits.TraitAlien;
 import mctbl.tinkersreborn.tools.traits.TraitAridiculous;
 import mctbl.tinkersreborn.tools.traits.TraitBaconlicious;
 import mctbl.tinkersreborn.tools.traits.TraitBonusDamage;
+import mctbl.tinkersreborn.tools.traits.TraitBreakable;
 import mctbl.tinkersreborn.tools.traits.TraitCheap;
 import mctbl.tinkersreborn.tools.traits.TraitCheapskate;
 import mctbl.tinkersreborn.tools.traits.TraitColdblooded;
@@ -17,17 +18,23 @@ import mctbl.tinkersreborn.tools.traits.TraitDuritos;
 import mctbl.tinkersreborn.tools.traits.TraitEcological;
 import mctbl.tinkersreborn.tools.traits.TraitEnderference;
 import mctbl.tinkersreborn.tools.traits.TraitEstablished;
+import mctbl.tinkersreborn.tools.traits.TraitFreezing;
+import mctbl.tinkersreborn.tools.traits.TraitHeavy;
 import mctbl.tinkersreborn.tools.traits.TraitHellish;
+import mctbl.tinkersreborn.tools.traits.TraitHoly;
 import mctbl.tinkersreborn.tools.traits.TraitInsatiable;
 import mctbl.tinkersreborn.tools.traits.TraitLightweight;
 import mctbl.tinkersreborn.tools.traits.TraitMagnetic;
 import mctbl.tinkersreborn.tools.traits.TraitMomentum;
 import mctbl.tinkersreborn.tools.traits.TraitPetramor;
+import mctbl.tinkersreborn.tools.traits.TraitPoisonous;
 import mctbl.tinkersreborn.tools.traits.TraitPrickly;
+import mctbl.tinkersreborn.tools.traits.TraitRaging;
 import mctbl.tinkersreborn.tools.traits.TraitSharp;
 import mctbl.tinkersreborn.tools.traits.TraitSlimey;
 import mctbl.tinkersreborn.tools.traits.TraitSpiky;
 import mctbl.tinkersreborn.tools.traits.TraitSplintering;
+import mctbl.tinkersreborn.tools.traits.TraitSplitting;
 import mctbl.tinkersreborn.tools.traits.TraitStiff;
 import mctbl.tinkersreborn.tools.traits.TraitStonebound;
 import mctbl.tinkersreborn.tools.traits.TraitTasty;
@@ -55,9 +62,9 @@ public class TinkerTraits {
     public static final AbstractTrait established = new TraitEstablished();
     // public static final AbstractTrait flammable = new TraitFlammable();
     public static final AbstractTrait fractured = new TraitBonusDamage("fractured", 1.5f);
-    // public static final AbstractTrait heavy = new TraitHeavy();
+    public static final AbstractTrait heavy = new TraitHeavy();
     public static final AbstractTrait hellish = new TraitHellish();
-    // public static final AbstractTrait holy = new TraitHoly();
+    public static final AbstractTrait holy = new TraitHoly();
     public static final AbstractTrait insatiable = new TraitInsatiable();
     // public static final AbstractTrait jagged = new TraitJagged();
     public static final AbstractTrait lightweight = new TraitLightweight();
@@ -65,10 +72,10 @@ public class TinkerTraits {
     public static final AbstractTrait magnetic2 = new TraitMagnetic(2);
     public static final AbstractTrait momentum = new TraitMomentum();
     public static final AbstractTrait petramor = new TraitPetramor();
-    // public static final AbstractTrait poisonous = new TraitPoisonous();
+    public static final AbstractTrait poisonous = new TraitPoisonous();
     public static final AbstractTrait prickly = new TraitPrickly();
-    // public static final AbstractTrait raging = new TraitRaging(1);
-    // public static final AbstractTrait raging2 = new TraitRaging(2);
+    public static final AbstractTrait raging = new TraitRaging(1);
+    public static final AbstractTrait raging2 = new TraitRaging(2);
     public static final AbstractTrait sharp = new TraitSharp();
     // public static final AbstractTrait shocking = new TraitShocking();
     public static final AbstractTrait slimeyGreen = new TraitSlimey("green", EntitySlime.class);
@@ -86,10 +93,10 @@ public class TinkerTraits {
     public static final AbstractTrait writable2 = new TraitWritable(2);
     //
     // // arrow shaft traits
-    // public static final AbstractTrait breakable = new TraitBreakable();
+    public static final AbstractTrait breakable = new TraitBreakable();
     // public static final AbstractTrait endspeed = new TraitEndspeed();
-    // public static final AbstractTrait freezing = new TraitFreezing();
+    public static final AbstractTrait freezing = new TraitFreezing();
     // public static final AbstractTrait hovering = new TraitHovering();
-    // public static final AbstractTrait splitting = new TraitSplitting();
+    public static final AbstractTrait splitting = new TraitSplitting();
 
 }

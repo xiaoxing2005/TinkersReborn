@@ -182,7 +182,6 @@ public interface ITrait extends IToolMod {
      * When the tool is equipped, this is called to set the players attributes.
      * See Item.getAttributeModifiers
      *
-     * @param slot         Analogous to Item.getAttributeModifiers
      * @param stack        Item.getAttributeModifiers
      * @param attributeMap The map you usually return. Fill in your stuff, if needed
      */
