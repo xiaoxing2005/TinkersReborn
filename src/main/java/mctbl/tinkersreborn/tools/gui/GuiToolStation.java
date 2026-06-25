@@ -204,7 +204,7 @@ public class GuiToolStation extends GuiTinkerStation {
                 ModifierNBT data = ModifierNBT.readTag(tag);
 
                 // get matching modifier
-                IModifier modifier = TinkersRebornRegistry.getModifier(data.identifier);
+                IModifier modifier = TinkersRebornRegistry.getModifierAndTrait(data.identifier);
                 if (modifier == null || modifier.isHidden()) {
                     continue;
                 }

@@ -17,6 +17,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.ITrait;
 import mctbl.tinkersreborn.library.utils.RecipeMatchRegistry;
 import mctbl.tinkersreborn.util.ColorUtil;
@@ -283,16 +284,16 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     /**
      * Adds the trait as the default trait, will be used if no more specific one is present time.
      */
-    public TinkersRebornMaterial addTrait(ITrait materialTrait) {
+    public TinkersRebornMaterial addTrait(IModifier materialTrait) {
         return addTrait(materialTrait, null);
     }
 
     /**
      * Adds the trait to be added if the specified stats are used.
      */
-    public TinkersRebornMaterial addTrait(ITrait materialTrait, MaterialStatusType staus) {
+    public TinkersRebornMaterial addTrait(IModifier materialTrait, MaterialStatusType staus) {
         if (TinkersRebornRegistry.checkMaterialTrait(this, materialTrait, staus)) {
-            getStatTraits(staus).add(materialTrait);
+            getStatTraits(staus).add((ITrait) materialTrait);
         }
         return this;
     }

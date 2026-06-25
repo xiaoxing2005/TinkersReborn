@@ -30,7 +30,6 @@ import mctbl.tinkersreborn.library.TinkerGuiException;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.IToolMod;
-import mctbl.tinkersreborn.library.tools.ITrait;
 import mctbl.tinkersreborn.library.utils.EntityLivingBaseReflector;
 import mctbl.tinkersreborn.library.utils.RecipeMatchRegistry;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
@@ -82,7 +81,7 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
         for (int i = 0; i < traits.size(); i++) {
             String id = traits.get(i)
                 .getString(ToolTags.IDENTIFIER);
-            ITrait trait = TinkersRebornRegistry.getTrait(id);
+            IModifier trait = TinkersRebornRegistry.getModifierAndTrait(id);
             if (trait != null) {
                 if (!canApplyTogether(trait) || !trait.canApplyTogether(this)) {
                     throw new TinkerGuiException(
@@ -99,7 +98,7 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
         for (int i = 0; i < modifiers.size(); i++) {
             String id = modifiers.get(i)
                 .getString(ToolTags.IDENTIFIER);
-            IModifier mod = TinkersRebornRegistry.getModifier(id);
+            IModifier mod = TinkersRebornRegistry.getModifierAndTrait(id);
             if (mod != null) {
                 if (!canApplyTogether(mod) || !mod.canApplyTogether(this)) {
                     throw new TinkerGuiException(

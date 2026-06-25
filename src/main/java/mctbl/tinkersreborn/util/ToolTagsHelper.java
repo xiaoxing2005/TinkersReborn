@@ -25,6 +25,7 @@ import net.minecraftforge.common.util.Constants;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.ITrait;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.tools.Category;
@@ -597,9 +598,9 @@ public class ToolTagsHelper {
                     .equals(ToolTags.TYPETRAITS))
             .collect(Collectors.toList());;
         for (NBTTagCompound compound : traitList) {
-            ITrait trait = TinkersRebornRegistry.getTrait(compound.getString(ToolTags.IDENTIFIER));
-            if (trait != null) {
-                traits.add(trait);
+            IModifier trait = TinkersRebornRegistry.getModifierAndTrait(compound.getString(ToolTags.IDENTIFIER));
+            if (trait != null && trait instanceof ITrait t) {
+                traits.add(t);
             }
         }
 

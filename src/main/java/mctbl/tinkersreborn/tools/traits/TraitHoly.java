@@ -26,7 +26,7 @@ public class TraitHoly extends AbstractTrait {
     public float damage(ItemStack tool, EntityLivingBase player, EntityLivingBase target, float damage, float newDamage,
         boolean isCritical) {
         if (target.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD) {
-            LOG.info("TraitHoly gives extra damage {}", bonusDamage);
+            // LOG.info("TraitHoly gives extra damage {}", bonusDamage);
             newDamage += bonusDamage;
         }
 

@@ -679,7 +679,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
             ModifierNBT data = ModifierNBT.readTag(tag);
 
             // get matching modifier
-            IModifier modifier = TinkersRebornRegistry.getModifier(data.identifier);
+            IModifier modifier = TinkersRebornRegistry.getModifierAndTrait(data.identifier);
             if (modifier != null && !modifier.isHidden()) {
                 list.add(data.getColorString() + modifier.getTooltip(tag, false));
             }
@@ -737,7 +737,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
             String modifierIdentifier = compound.getString(ToolTags.IDENTIFIER);
 
             // get matching modifier
-            IModifier modifier = TinkersRebornRegistry.getModifier(modifierIdentifier);
+            IModifier modifier = TinkersRebornRegistry.getModifierAndTrait(modifierIdentifier);
             if (modifier != null && !modifier.isHidden()) {
                 for (String str : modifier.getExtraInfo(tool, compound)) {
                     if (!str.isEmpty()) list.add(data.getColorString() + str);

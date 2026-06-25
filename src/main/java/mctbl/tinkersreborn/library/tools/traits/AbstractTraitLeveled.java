@@ -27,13 +27,13 @@ public abstract class AbstractTraitLeveled extends AbstractTrait {
 
         // don't overwrite the modifier alias if one with less levels already is present
         // we basically always want the level1 one to be associated with the modifier used
-        IModifier modifier = TinkersRebornRegistry.getModifier(name);
+        IModifier modifier = TinkersRebornRegistry.getModifierAndTrait(name);
         if (modifier != null) {
             if (modifier instanceof AbstractTraitLeveled && ((AbstractTraitLeveled) modifier).levels > this.levels) {
-                TinkersRebornRegistry.registerModifierAlias(this, name);
+                TinkersRebornRegistry.addModifierAndTrait(this);
             }
         } else {
-            TinkersRebornRegistry.registerModifierAlias(this, name);
+            TinkersRebornRegistry.addModifierAndTrait(this);
         }
 
         aspects.clear();

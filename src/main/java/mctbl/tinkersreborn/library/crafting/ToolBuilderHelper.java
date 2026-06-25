@@ -340,7 +340,7 @@ public class ToolBuilderHelper {
         final NBTTagList modifierList = (NBTTagList) modifiers.copy();
         for (int i = 0; i < modifierList.tagCount(); i++) {
             String id = modifierList.getStringTagAt(i);
-            IModifier mod = TinkersRebornRegistry.getModifier(id);
+            IModifier mod = TinkersRebornRegistry.getModifierAndTrait(id);
             // if the new head's harvest level equals/exceeds the fortification level, it's
             // no longer beneficial. good riddance!
             // TODO
@@ -432,7 +432,7 @@ public class ToolBuilderHelper {
         // copy over and reapply all relevant modifiers
         for (NBTTagCompound modifiers : oldModifiersTag) {
             String identifier = modifiers.getString(ToolTags.IDENTIFIER);
-            IModifier modifier = TinkersRebornRegistry.getModifier(identifier);
+            IModifier modifier = TinkersRebornRegistry.getModifierAndTrait(identifier);
             if (modifier == null) {
                 TinkersReborn.LOG.debug("Missing modifier: {}", identifier);
                 continue;
@@ -467,12 +467,12 @@ public class ToolBuilderHelper {
      */
     public static void addTrait(NBTTagCompound rootCompound, ITrait trait, int color) {
         // only registered traits allowed
-        if (TinkersRebornRegistry.getTrait(trait.getIdentifier()) == null) {
+        if (TinkersRebornRegistry.getModifierAndTrait(trait.getIdentifier()) == null) {
             TinkersReborn.LOG.error("addTrait: Trying to apply unregistered Trait {}", trait.getIdentifier());
             return;
         }
 
-        ITrait newTrait = TinkersRebornRegistry.getTrait(trait.getIdentifier());
+        IModifier newTrait = TinkersRebornRegistry.getModifierAndTrait(trait.getIdentifier());
 
         if (newTrait == null || !(newTrait instanceof AbstractTrait)) {
             TinkersReborn.LOG.error("addTrait: No matching modifier for the Trait {} present", trait.getIdentifier());
