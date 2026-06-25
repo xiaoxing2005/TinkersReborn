@@ -197,13 +197,13 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
     public String getTooltip(NBTTagCompound modifierTag, boolean detailed) {
         StringBuilder sb = new StringBuilder();
 
-        ModifierNBT data = ModifierNBT.readTag(modifierTag);
+        // ModifierNBT data = ModifierNBT.readTag(modifierTag);
 
         sb.append(getLocalizedName());
-        if (data.level > 1) {
-            sb.append(" ");
-            sb.append(TinkersRebornUtils.getRomanNumeral(data.level));
-        }
+        // if (data.level > 1) {
+        // sb.append(" ");
+        // sb.append(TinkersRebornUtils.getRomanNumeral(data.level));
+        // }
 
         return sb.toString();
     }
@@ -219,9 +219,10 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
         String basic = getLocalizedName(); // backup
         if (level == 0) {
             return basic;
-        } else if (level > 1) {
-            basic += " " + TinkersRebornUtils.getRomanNumeral(level);
         }
+        // else if (level > 1) {
+        // basic += " " + TinkersRebornUtils.getRomanNumeral(level);
+        // }
 
         for (int i = level; i > 1; i--) {
             if (canTranslate(String.format(LOC_Name + i, getIdentifier()))) {

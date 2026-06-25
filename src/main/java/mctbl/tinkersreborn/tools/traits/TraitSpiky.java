@@ -7,7 +7,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 import mctbl.tinkersreborn.library.tools.traits.AbstractTrait;
@@ -17,18 +16,19 @@ public class TraitSpiky extends AbstractTrait {
 
     public TraitSpiky() {
         super("spiky", EnumChatFormatting.DARK_GREEN);
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
     public void onPlayerHurt(ItemStack tool, EntityPlayer player, EntityLivingBase attacker, LivingHurtEvent event) {
-        dealSpikyDamage(false, tool, player, attacker, event);
+        if (!player.worldObj.isRemote) dealSpikyDamage(false, tool, player, attacker, event);
     }
 
     @Override
     public void onBlock(ItemStack tool, EntityPlayer player, LivingHurtEvent event) {
-        Entity target = event.source.getSourceOfDamage();
-        dealSpikyDamage(true, tool, player, target, event);
+        if (!player.worldObj.isRemote) {
+            Entity target = event.source.getSourceOfDamage();
+            dealSpikyDamage(true, tool, player, target, event);
+        }
     }
 
     private void dealSpikyDamage(boolean isBlocking, ItemStack tool, EntityPlayer player, Entity target,

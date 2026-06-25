@@ -23,6 +23,8 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
@@ -34,6 +36,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
 import cpw.mods.fml.relauncher.Side;
@@ -47,6 +50,7 @@ import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.RenderMaterial;
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierNBT;
+import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.tools.Category;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
@@ -621,9 +625,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     public void afterBlockBreak(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase player,
         int damage, boolean wasEffective) {
-        // TinkerUtil.getTraitsOrdered(stack).forEach(trait ->
-        // trait.afterBlockBreak(stack, world, state, pos, player,
-        // wasEffective));
+        ToolTagsHelper.getTraitsOrdered(stack)
+            .forEach(trait -> trait.afterBlockBreak(stack, world, block, BlockPos.of(x, y, z), player, wasEffective));
         ToolTagsHelper.damageTool(stack, damage, player);
     }
 
@@ -713,7 +716,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
         if (hasCategory(Category.HARVEST)) {
             list.add(HeadMaterialStats.formatHarvestLevel(ToolTagsHelper.getHarvestLevelStat(stack)));
-            list.add(HeadMaterialStats.formatMiningSpeed(ToolTagsHelper.getMiningSpeed(stack)));
+            list.add(HeadMaterialStats.formatMiningSpeed(ToolTagsHelper.getMiningSpeedStat(stack)));
         }
         float attack = ToolTagsHelper.getActualAttackDamage(stack, player);
         list.add(HeadMaterialStats.formatAttack(attack));
@@ -950,6 +953,22 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     }
 
     public abstract ToolBuildGuiInfo getToolBuildGuiInfo();
+
+    @Override
+    public Multimap<String, AttributeModifier> getAttributeModifiers(ItemStack stack) {
+        Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(stack);
+
+        if (!ToolTagsHelper.isBroken(stack)) {
+            multimap.put(
+                SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(),
+                new AttributeModifier(field_111210_e, "Weapon modifier", ToolTagsHelper.getActualToolAttack(stack), 0));
+        }
+
+        ToolTagsHelper.getTraitsOrdered(stack)
+            .forEach(trait -> trait.getAttributeModifiers(stack, multimap));
+
+        return multimap;
+    }
 
     public final class ToolPartRecord {
 

@@ -62,7 +62,7 @@ public class TraitAlien extends TraitProgressiveStats {
         // speed
         else if (entity.ticksExisted % (TICK_PER_STAT * 2) == 0) {
             if (distributed.speed < pool.speed) {
-                ToolTagsHelper.setMiningSpeed(tool, ToolTagsHelper.getMiningSpeed(tool) + SPEED_STEP);
+                ToolTagsHelper.setMiningSpeed(tool, ToolTagsHelper.getMiningSpeedStat(tool) + SPEED_STEP);
                 distributed.speed += SPEED_STEP;
             }
         }

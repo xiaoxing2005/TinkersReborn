@@ -19,7 +19,7 @@ public class TraitPrickly extends AbstractTrait {
     @Override
     public void afterHit(ItemStack tool, EntityLivingBase player, EntityLivingBase target, float damageDealt,
         boolean wasCritical, boolean wasHit) {
-        if (target.isEntityAlive() && wasHit) {
+        if (!player.worldObj.isRemote && target.isEntityAlive() && wasHit) {
             causeDamage(player, target);
         }
     }

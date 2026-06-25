@@ -20,4 +20,13 @@ public class BlueSlime extends SlimeBase {
         return new BlueSlime(world);
     }
 
+    @Override
+    protected void alterSquishAmount() {
+        this.squishAmount *= 0.8F;
+    }
+
+    @Override
+    protected int getJumpDelay() {
+        return this.rand.nextInt(10) + 10;
+    }
 }

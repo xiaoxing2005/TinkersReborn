@@ -40,7 +40,7 @@ public abstract class TraitProgressiveStats extends AbstractTrait {
 
         ToolTagsHelper
             .setDurabilityStat(rootCompound, ToolTagsHelper.getDurabilityStat(rootCompound) + bonus.durability);
-        ToolTagsHelper.setMiningSpeed(rootCompound, ToolTagsHelper.getMiningSpeed(rootCompound) + bonus.speed);
+        ToolTagsHelper.setMiningSpeed(rootCompound, ToolTagsHelper.getMiningSpeedStat(rootCompound) + bonus.speed);
         ToolTagsHelper.setAttackStat(rootCompound, ToolTagsHelper.getAttackStat(rootCompound) + bonus.attack);
 
     }

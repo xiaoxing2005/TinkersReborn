@@ -42,7 +42,7 @@ public class ToolTagsHelper {
         // yes, the null checks aren't needed anymore, but they don't hurt either.
         // After all the whole purpose of this function is safety/processing possibly
         // invalid input ;)
-        if (stack == null || stack.getItem() == null || !stack.hasTagCompound()) return null;
+        if (stack == null || stack.getItem() == null || !stack.hasTagCompound()) return new NBTTagCompound();
 
         return stack.getTagCompound();
     }
@@ -98,9 +98,10 @@ public class ToolTagsHelper {
      */
     public static void setToolBaseNBTSafe(ItemStack stack, NBTTagCompound tags) {
         NBTTagCompound basetag = getTagSafe(stack);
-        basetag.setTag(ToolTags.TOOLBASETAG, tags);
-
         if (basetag != stack.getTagCompound()) stack.setTagCompound(basetag);
+
+        if (getTagSafe(basetag, ToolTags.TOOLBASETAG) != tags) basetag.setTag(ToolTags.TOOLBASETAG, tags);
+
     }
 
     /**
@@ -242,10 +243,20 @@ public class ToolTagsHelper {
 
     /**
      * @param compound
-     * @return tool -> TinkersRebornTool -> FreeModifiers
+     * @return tool -> TinkersRebornTool -> Stats -> FreeModifiers
      */
     public static int getFreeModifiers(NBTTagCompound compound) {
-        return compound.getInteger(ToolTags.FREEMODIFIERS);
+        return getToolDataNBTSafe(compound).getInteger(ToolTags.FREEMODIFIERS);
+    }
+
+    public static void setFreeModifiers(ItemStack stack, int modifiers) {
+        NBTTagCompound baseTag = getToolDataNBTSafe(stack);
+        baseTag.setInteger(ToolTags.FREEMODIFIERS, modifiers);
+    }
+
+    public static void setFreeModifiers(NBTTagCompound compound, int modifiers) {
+        NBTTagCompound baseTag = getToolDataNBTSafe(compound);
+        baseTag.setInteger(ToolTags.FREEMODIFIERS, modifiers);
     }
 
     /**
@@ -254,16 +265,6 @@ public class ToolTagsHelper {
      */
     public static boolean isToolNoRenaem(ItemStack stack) {
         return getToolBaseNBTSafe(stack).getBoolean(ToolTags.NO_RENAME);
-    }
-
-    /**
-     * @param stack
-     * @return tool -> TinkersRebornTool -> FreeModifiers
-     */
-    public static void setFreeModifiers(ItemStack stack, int modifiers) {
-        NBTTagCompound baseTag = getToolBaseNBTSafe(stack);
-        baseTag.setInteger(ToolTags.FREEMODIFIERS, modifiers);
-        setToolBaseNBTSafe(stack, baseTag);
     }
 
     /**
@@ -346,7 +347,7 @@ public class ToolTagsHelper {
      * @param stack
      * @return tool -> TinkersRebornTool -> Stats -> MiningSpeed
      */
-    public static float getMiningSpeed(ItemStack stack) {
+    public static float getMiningSpeedStat(ItemStack stack) {
         return getToolDataNBTSafe(stack).getFloat(ToolTags.MININGSPEED);
     }
 
@@ -354,7 +355,7 @@ public class ToolTagsHelper {
      * @param stack
      * @return tool -> TinkersRebornTool -> Stats -> MiningSpeed
      */
-    public static float getMiningSpeed(NBTTagCompound root) {
+    public static float getMiningSpeedStat(NBTTagCompound root) {
         return getToolDataNBTSafe(root).getFloat(ToolTags.MININGSPEED);
     }
 
@@ -435,6 +436,14 @@ public class ToolTagsHelper {
         return damage;
     }
 
+    public static float getActualMiningSpeed(ItemStack stack) {
+        float speed = getMiningSpeedStat(stack);
+        if (!TinkersRebornUtils.isStackEmpty(stack) && stack.getItem() instanceof ToolCore) {
+            speed *= ((ToolCore) stack.getItem()).miningSpeedModifier();
+        }
+        return speed;
+    }
+
     public static void breakTool(ItemStack stack, EntityLivingBase entity) {
         NBTTagCompound tag = getToolBaseNBTSafe(stack);
         if (tag == null) {
@@ -477,7 +486,7 @@ public class ToolTagsHelper {
         } else if (!canHarvest(stack, block, meta)) {
             return 1.0F;
         }
-        float speed = getMiningSpeed(stack);
+        float speed = getMiningSpeedStat(stack);
 
         if (stack.getItem() instanceof ToolCore core) speed *= core.miningSpeedModifier();
 
@@ -782,7 +791,8 @@ public class ToolTagsHelper {
                 // player.addStat(AchievementList.OVERKILL);
                 // }
             }
-            attacker.setLastAttacker(target);
+            // attacker.setLastAttacker(target);
+            target.setLastAttacker(attacker);
 
             // Damage indicator particles
 
@@ -845,7 +855,7 @@ public class ToolTagsHelper {
         NBTTagList modifiersList = getModifiersTagList(root);
         int tagLength = modifiersList.tagCount();
         if (tagLength == 0) {
-            root.setTag(ToolTags.MODIFIERS, modifiersList);
+            return new NBTTagCompound();
         }
 
         for (int idx = 0; idx < tagLength; idx++) {

@@ -215,7 +215,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
-        TinkersRebornEventsHandler tre = new TinkersRebornEventsHandler();
+        TinkersRebornToolsEventsHandler tre = new TinkersRebornToolsEventsHandler();
         MinecraftForge.EVENT_BUS.register(tre);
         FMLCommonHandler.instance()
             .bus()
@@ -488,54 +488,54 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         // see ItemDye
         boneMaterial.addItem(new ItemStack(Items.dye, 1, 15), 1, VALUE_Fragment); // bonemeal
         boneMaterial.setRepresentativeItem(Items.bone);
-        // boneMaterial.addTrait(splintering, HEAD);
+        boneMaterial.addTrait(splintering, MaterialStatusType.HEAD);
         // boneMaterial.addTrait(splitting, SHAFT);
-        // boneMaterial.addTrait(fractured);
+        boneMaterial.addTrait(fractured);
 
         paperMaterial = new TinkersRebornMaterial(Paper, "Paper", 0xFFFFFF).setCraftable(true);
         paperMaterial.addItem("paper", 1, VALUE_Fragment);
         paperMaterial.setRepresentativeItem(Items.paper);
-        // paperMaterial.addTrait(writable2, HEAD);
-        // paperMaterial.addTrait(writable);
+        paperMaterial.addTrait(writable2, MaterialStatusType.HEAD);
+        paperMaterial.addTrait(writable);
 
         slimeMaterial = new TinkersRebornMaterial(Slime, "Slime", 0x6EB065).setCraftable(true);
         slimeMaterial.addItem("slimecrystalGreen", 1, VALUE_Ingot);
-        // slimeMaterial.addTrait(slimeyGreen);
+        slimeMaterial.addTrait(slimeyGreen);
 
         blueSlimeMaterial = new TinkersRebornMaterial(BlueSlime, "BlueSlime", 0x66AEB0).setCraftable(true);
         blueSlimeMaterial.addItem("slimecrystalBlue", 1, VALUE_Ingot);
-        // blueSlimeMaterial.addTrait(slimeyBlue);
+        blueSlimeMaterial.addTrait(slimeyBlue);
 
         ironMaterial = new TinkersRebornMaterial(Iron, "Iron", 0xDADADA);
         ironFluid = new TinkersRebornFluid(ironMaterial, true);
         ironMaterial.addCommonItems("Iron");
         ironMaterial.setRepresentativeItem(Items.iron_ingot);
-        // ironMaterial.addTrait(magnetic2, HEAD);
-        // ironMaterial.addTrait(magnetic);
+        ironMaterial.addTrait(magnetic2, MaterialStatusType.HEAD);
+        ironMaterial.addTrait(magnetic);
 
         pigIronMaterial = new TinkersRebornMaterial(PigIron, "PigIron", 0xF0A8A4);
         pigIronFluid = new TinkersRebornFluid(pigIronMaterial, true);
         pigIronMaterial.addCommonItems("Pigiron");
-        // pigIronMaterial.addTrait(baconlicious, HEAD);
-        // pigIronMaterial.addTrait(tasty, HEAD);
-        // pigIronMaterial.addTrait(tasty);
+        pigIronMaterial.addTrait(baconlicious, MaterialStatusType.HEAD);
+        pigIronMaterial.addTrait(tasty, MaterialStatusType.HEAD);
+        pigIronMaterial.addTrait(tasty);
 
         cobaltMaterial = new TinkersRebornMaterial(Cobalt, "Cobalt", 0x2376DD);
         cobaltFluid = new TinkersRebornFluid(cobaltMaterial, true);
         cobaltMaterial.addCommonItems("Cobalt");
-        // cobaltMaterial.addTrait(momentum, HEAD);
-        // cobaltMaterial.addTrait(lightweight);
+        cobaltMaterial.addTrait(momentum, MaterialStatusType.HEAD);
+        cobaltMaterial.addTrait(lightweight);
 
         arditeMaterial = new TinkersRebornMaterial(Ardite, "Ardite", 0xF18D2A);
         arditeFluid = new TinkersRebornFluid(arditeMaterial, true);
         arditeMaterial.addCommonItems("Ardite");
-        // arditeMaterial.addTrait(stonebound, HEAD);
-        // arditeMaterial.addTrait(petramor);
+        arditeMaterial.addTrait(stonebound, MaterialStatusType.HEAD);
+        arditeMaterial.addTrait(petramor);
 
         manyullynMaterial = new TinkersRebornMaterial(Manyullyn, "Manyullyn", 0x7338A5);
         manyullynFluid = new TinkersRebornFluid(manyullynMaterial, true);
         manyullynMaterial.addCommonItems("Manyullyn");
-        // manyullynMaterial.addTrait(insatiable, HEAD);
+        // manyullynMaterial.addTrait(insatiable, MaterialStatusType.HEAD);
         // manyullynMaterial.addTrait(coldblooded);
 
         copperMaterial = new TinkersRebornMaterial(Copper, "Copper", 0xCC6410);

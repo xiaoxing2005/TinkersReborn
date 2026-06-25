@@ -186,8 +186,7 @@ public interface ITrait extends IToolMod {
      * @param stack        Item.getAttributeModifiers
      * @param attributeMap The map you usually return. Fill in your stuff, if needed
      */
-    default void getAttributeModifiers(int equipmentSlot, ItemStack stack,
-        Multimap<String, AttributeModifier> attributeMap) {}
+    default void getAttributeModifiers(ItemStack stack, Multimap<String, AttributeModifier> attributeMap) {}
 
     /**
      * Determines the order in which traits/modifiers are processed. Higher priority gets processed first.

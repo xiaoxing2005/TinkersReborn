@@ -57,17 +57,17 @@ public abstract class AbstractTraitLeveled extends AbstractTrait {
         NBTTagList tagList = ToolTagsHelper.getModifiersTagList(rootCompound);
         ToolTagsHelper.setModifiersTagList(rootCompound, tagList);
 
-        NBTTagCompound tag = ToolTagsHelper.getModifierTag(rootCompound, name);
+        NBTTagCompound tag = ToolTagsHelper.getModifierTag(rootCompound, getIdentifier());
 
         if (tag.hasNoTags()) {
             tagList.appendTag(tag);
         }
 
-        if (!tag.getBoolean(identifier)) {
+        if (!tag.getBoolean(getIdentifier())) {
             ModifierNBT data = ModifierNBT.readTag(tag);
             data.level += levels;
             data.write(tag);
-            tag.setBoolean(identifier, true);
+            tag.setBoolean(getIdentifier(), true);
 
             applyModifierEffect(rootCompound);
         }
