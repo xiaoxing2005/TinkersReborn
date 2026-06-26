@@ -27,7 +27,7 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
 public class ModBlasting extends ModifierTrait {
 
     public ModBlasting() {
-        super("blasting", 0xffaa23, 3, 0);
+        super("blasting", 0xFFAA23, 3, 0);
 
         ListIterator<ModifierAspect> iter = aspects.listIterator();
         while (iter.hasNext()) {

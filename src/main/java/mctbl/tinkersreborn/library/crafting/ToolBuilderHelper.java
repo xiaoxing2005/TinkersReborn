@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -502,5 +503,51 @@ public class ToolBuilderHelper {
         }
 
         traitModifier.applyEffect(rootCompound, traitTag);
+    }
+
+    public static short getEnchantmentLevel(NBTTagCompound rootTag, Enchantment enchantment) {
+        NBTTagList enchantments = rootTag.getTagList("ench", 10);
+
+        int id = enchantment.effectId;
+
+        for (int i = 0; i < enchantments.tagCount(); i++) {
+            if (enchantments.getCompoundTagAt(i)
+                .getShort("id") == id) {
+                return enchantments.getCompoundTagAt(i)
+                    .getShort("lvl");
+            }
+        }
+
+        return 0;
+    }
+
+    public static void addEnchantment(NBTTagCompound rootTag, Enchantment enchantment) {
+        NBTTagList enchantments = rootTag.getTagList("ench", 10);
+
+        NBTTagCompound enchTag = new NBTTagCompound();
+        int enchId = enchantment.effectId;
+
+        int id = -1;
+        for (int i = 0; i < enchantments.tagCount(); i++) {
+            if (enchantments.getCompoundTagAt(i)
+                .getShort("id") == enchId) {
+                enchTag = enchantments.getCompoundTagAt(i);
+                id = i;
+                break;
+            }
+        }
+
+        int level = enchTag.getShort("lvl") + 1;
+        level = Math.min(level, enchantment.getMaxLevel());
+        enchTag.setShort("id", (short) enchId);
+        enchTag.setShort("lvl", (short) level);
+
+        if (id < 0) {
+            enchantments.appendTag(enchTag);
+        } else {
+            enchantments.func_150304_a(id, enchTag);
+        }
+
+        rootTag.setTag("ench", enchantments);
     }
 }

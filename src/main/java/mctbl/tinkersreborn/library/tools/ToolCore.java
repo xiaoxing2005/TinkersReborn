@@ -509,6 +509,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         NBTTagCompound toolTag = this.buildToolTag(materials)
             .get();
         NBTTagList dataTag = this.buildMaterialListData(materials);
+        NBTTagList categoryList = this.buildCategoryList();
 
         tinkersTag.setTag(ToolTags.BASEMATERIALS, dataTag);
         tinkersTag.setTag(ToolTags.RENDERMATERIALS, dataTag.copy());
@@ -516,7 +517,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         tinkersTag.setTag(ToolTags.TOOLDATAORIG, toolTag.copy());
 
         // save categories on the tool
-        // TagUtil.setCategories(basetag, getCategories());
+        tinkersTag.setTag(ToolTags.TOOLCATEGORY, categoryList);
 
         // add traits
         addMaterialTraits(tinkersTag, materials);
@@ -524,6 +525,13 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
         basetag.setTag(ToolTags.TOOLBASETAG, tinkersTag);
         return basetag;
+    }
+
+    public NBTTagList buildCategoryList() {
+        NBTTagList list = new NBTTagList();
+        getCategory().stream()
+            .forEach(c -> list.appendTag(new NBTTagString(c.name)));
+        return list;
     }
 
     public void addMaterialTraits(NBTTagCompound root, List<TinkersRebornMaterial> materials) {

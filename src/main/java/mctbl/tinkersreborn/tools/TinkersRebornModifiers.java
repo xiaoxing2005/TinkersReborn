@@ -17,6 +17,10 @@ import mctbl.tinkersreborn.tools.modifiers.ModBeheading;
 import mctbl.tinkersreborn.tools.modifiers.ModBlasting;
 import mctbl.tinkersreborn.tools.modifiers.ModDiamond;
 import mctbl.tinkersreborn.tools.modifiers.ModEmerald;
+import mctbl.tinkersreborn.tools.modifiers.ModFiery;
+import mctbl.tinkersreborn.tools.modifiers.ModHaste;
+import mctbl.tinkersreborn.tools.modifiers.ModKnockback;
+import mctbl.tinkersreborn.tools.modifiers.ModLuck;
 
 public class TinkersRebornModifiers {
 
@@ -28,11 +32,11 @@ public class TinkersRebornModifiers {
     public static AbstractModifier modDiamond;
     public static AbstractModifier modEmerald;
     public static AbstractModifier modFiery;
-    public static AbstractModifier modFins;
-    public static AbstractModifier modGlowing;
+    // public static AbstractModifier modFins;
+    // public static AbstractModifier modGlowing;
     public static AbstractModifier modHaste;
-    public static AbstractModifier modHarvestWidth;
-    public static AbstractModifier modHarvestHeight;
+    // public static AbstractModifier modHarvestWidth;
+    // public static AbstractModifier modHarvestHeight;
     public static AbstractModifier modKnockback;
     public static AbstractModifier modLuck;
     public static AbstractModifier modMendingMoss;
@@ -78,6 +82,35 @@ public class TinkersRebornModifiers {
 
         modEmerald = new ModEmerald();
         modEmerald.addItem("gemEmerald");
+
+        modFiery = new ModFiery();
+        modFiery.addItem(Items.blaze_powder);
+
+        // modFins = new ModFins();
+        // modFins.addItem("fish", 2, 1);
+
+        // modGlowing = registerModifier(new ModGlowing());
+        // modGlowing.addRecipeMatch(new RecipeMatch.ItemCombination(1, glowstoneDust, new ItemStack(Items.ENDER_EYE),
+        // glowstoneDust));
+
+        modHaste = new ModHaste(50);
+        modHaste.addItem("dustRedstone");
+        modHaste.addItem("blockRedstone", 1, 9);
+
+        // modHarvestWidth = registerModifier(new ModHarvestSize("width"));
+        // modHarvestWidth.addItem(TinkerCommons.matExpanderW, 1, 1);
+        //
+        // modHarvestHeight = registerModifier(new ModHarvestSize("height"));
+        // modHarvestHeight.addItem(TinkerCommons.matExpanderH, 1, 1);
+
+        modKnockback = new ModKnockback();
+        modKnockback.addItem(Blocks.piston, 1);
+        modKnockback.addItem(Blocks.sticky_piston, 1);
+
+        modLuck = new ModLuck();
+        modLuck.addItem("gemLapis");
+        modLuck.addItem("blockLapis", 1, 9);
+
     }
 
     public void postInit(FMLPostInitializationEvent e) {

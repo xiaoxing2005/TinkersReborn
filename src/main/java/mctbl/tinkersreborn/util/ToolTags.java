@@ -46,6 +46,7 @@ public final class ToolTags {
     public static final String BROKEN = "Broken";
     public static final String UNBREAKABLE = "Unbreakable";
     public static final String CUSTOMNAME = "CustomName";
+    public static final String TOOLCATEGORY = "CategoryList";
 
     // Extra
     public static final String REPAIR_COUNT = "RepairCount";

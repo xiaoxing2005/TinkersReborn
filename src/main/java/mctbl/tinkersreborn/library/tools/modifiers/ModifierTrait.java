@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableList;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.tools.traits.AbstractTrait;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
+import mctbl.tinkersreborn.util.ToolTags;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 /**
@@ -42,6 +43,8 @@ public class ModifierTrait extends AbstractTrait implements IModifierDisplay {
             }
             addAspects(new ModifierAspect.DataAspect(this, color), ModifierAspect.freeModifier);
         }
+
+        this.type = ToolTags.TYPEMODIFIERS;
     }
 
     @Override

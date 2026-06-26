@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -27,7 +26,9 @@ import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.ITrait;
+import mctbl.tinkersreborn.library.tools.TinkerToolEvent;
 import mctbl.tinkersreborn.library.tools.ToolCore;
+import mctbl.tinkersreborn.library.tools.ToolNBT;
 import mctbl.tinkersreborn.tools.Category;
 
 public class ToolTagsHelper {
@@ -203,6 +204,14 @@ public class ToolTagsHelper {
         return getTagSafe(compound, ToolTags.TOOLDATA);
     }
 
+    public static ToolNBT getToolStats(ItemStack stack) {
+        return new ToolNBT(getToolDataNBTSafe(stack));
+    }
+
+    public static ToolNBT getToolStats(NBTTagCompound root) {
+        return new ToolNBT(getToolDataNBTSafe(root));
+    }
+
     /**
      * @param stack
      * @return tool -> TinkersRebornTool -> StatsOriginal
@@ -248,6 +257,14 @@ public class ToolTagsHelper {
      */
     public static int getFreeModifiers(ItemStack stack) {
         return getFreeModifiers(getToolBaseNBTSafe(stack));
+    }
+
+    /**
+     * @param root
+     * @return tool -> TinkersRebornTool -> CategoryList
+     */
+    public static NBTTagList getCategoryList(NBTTagCompound root) {
+        return getTagListSafe(root, ToolTags.TOOLCATEGORY, TAG_TYPE_STRING);
     }
 
     /**
@@ -620,7 +637,7 @@ public class ToolTagsHelper {
     public static void repairTool(ItemStack stack, int amount, EntityLivingBase entity) {
         unbreakTool(stack);
 
-        // TinkerToolEvent.OnRepair.fireEvent(stack, amount);
+        TinkerToolEvent.OnRepair.fireEvent(stack, amount);
 
         healTool(stack, amount, entity);
     }
@@ -628,11 +645,7 @@ public class ToolTagsHelper {
     public static List<ITrait> getTraitsOrdered(ItemStack tool) {
         List<ITrait> traits = new ArrayList<>();
 
-        List<NBTTagCompound> traitList = getModifiersList(tool).stream()
-            .filter(
-                c -> c.getString(ToolTags.TYPE)
-                    .equals(ToolTags.TYPETRAITS))
-            .collect(Collectors.toList());;
+        List<NBTTagCompound> traitList = getModifiersList(tool);
         for (NBTTagCompound compound : traitList) {
             IModifier trait = TinkersRebornRegistry.getModifierAndTrait(compound.getString(ToolTags.IDENTIFIER));
             if (trait != null && trait instanceof ITrait t) {
@@ -913,6 +926,16 @@ public class ToolTagsHelper {
                 return;
             }
         }
+    }
+
+    public static List<Category> getCategories(NBTTagCompound root) {
+        List<Category> cateList = new ArrayList<>();
+        NBTTagList categoryList = getCategoryList(root);
+        int tagCount = categoryList.tagCount();
+        for (int idx = 0; idx < tagCount; idx++) {
+            cateList.add(Category.categories.get(categoryList.getStringTagAt(idx)));
+        }
+        return cateList;
     }
 
     public static boolean hasCategory(ItemStack stack, Category category) {

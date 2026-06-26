@@ -41,6 +41,7 @@ public abstract class AbstractTrait extends AbstractModifier implements ITrait {
         super(TinkersRebornUtils.sanitizeLocalizationString(identifier));
         // this.identifier = Util.sanitizeLocalizationString(identifier);
         this.color = color;
+        this.type = ToolTags.TYPETRAITS;
 
         // we assume traits can only be applied once.
         // If you want stacking traits you'll have to do that stuff yourself :P
@@ -156,7 +157,7 @@ public abstract class AbstractTrait extends AbstractModifier implements ITrait {
         if (data.level == 0) {
             data.level = 1;
         }
-        data.type = ToolTags.TYPETRAITS;
+        data.type = this.type;
         data.write(modifierTag);
     }
 

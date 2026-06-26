@@ -52,6 +52,8 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
 
     public final String identifier;
 
+    public String type = ToolTags.TYPEMODIFIERS;
+
     protected final List<ModifierAspect> aspects = new LinkedList<>();
 
     public AbstractModifier(String identifier) {

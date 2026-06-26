@@ -329,6 +329,7 @@ flowchart TB
       }
     }
   },
+  "CategoryList": ["harvest", "tool"],
   // 1 broken, 0 not broken, use boolean
   "Broken":0,
   "Unbreakable":1,
