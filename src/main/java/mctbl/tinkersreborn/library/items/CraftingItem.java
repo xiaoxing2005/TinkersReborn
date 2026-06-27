@@ -59,18 +59,6 @@ public class CraftingItem extends Item {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int meta) {
-        if (unlocalizedNames != null) {
-            int arr = MathHelper.clamp_int(meta, 0, unlocalizedNames.length);
-            if (arr >= icons.length) return icons[0];
-            return icons[arr];
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister) {
         this.icons = new IIcon[textureNames.length];
 

@@ -84,7 +84,7 @@ public class TinkersRebornFluid extends Fluid {
         if (this.color != null) {
             return this.color;
         }
-        TinkersRebornMaterial m = TinkersRebornRegistry.getMaterialById(materialId);
+        TinkersRebornMaterial m = TinkersRebornRegistry.getMaterialByIdentifier(identifier);
         if (materialId != null && m != null) {
             return m.materialTextColor;
         }

@@ -1,7 +1,10 @@
 package mctbl.tinkersreborn.tools.items;
 
 import net.minecraft.item.ItemStack;
-
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.items.CraftingItem;
 
@@ -32,6 +35,18 @@ public class Pattern extends CraftingItem {
     @Override
     public String getUnlocalizedName(ItemStack stack) {
         return this.getUnlocalizedName() + "." + patternName[stack.getItemDamage()];
+    }
+    
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIconFromDamage(int meta) {
+        if (unlocalizedNames != null) {
+            int arr = MathHelper.clamp_int(meta, 0, unlocalizedNames.length);
+            if (arr >= icons.length) return icons[0];
+            return icons[arr];
+        } else {
+            return null;
+        }
     }
 
 }

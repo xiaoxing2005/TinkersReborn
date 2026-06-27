@@ -412,7 +412,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         for (int i = 0; i < this.partAmount; i++) {
             ToolPartRecord toolPartRecord = this.componentsParts.get(i);
             if (toolPartRecord != null && material.hasStats(toolPartRecord.statusType())) {
-                list.add(new ItemStack(toolPartRecord.toolPart(), 1, material.materialId));
+                list.add(TinkersRebornToolPart.writeNBT(new ItemStack(toolPartRecord.toolPart()), material.identifier));
             }
         }
         return ToolBuilderHelper.buildTool(null, list.toArray(new ItemStack[0]));
@@ -964,7 +964,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         RecipeMatch.Match match = matchOptional.get();
         for (ItemStack stacks : match.stacks) {
             // invalid material?
-            if (TinkersRebornTools.sharpeningKit.getMaterialId(stacks) != material.materialId) {
+            if (TinkersRebornTools.sharpeningKit.getMaterial(stacks) != material) {
                 return 0;
             }
         }

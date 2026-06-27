@@ -12,6 +12,7 @@ import mctbl.tinkersreborn.library.tools.modifiers.ModifierNBT;
 import mctbl.tinkersreborn.library.tools.modifiers.ToolModifier;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
+import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import mctbl.tinkersreborn.tools.materials.HeadMaterialStats;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
@@ -34,7 +35,7 @@ public class ModFortify extends ToolModifier {
             new ModifierAspect.DataAspect(this),
             ModifierAspect.harvestOnly);
 
-        ItemStack kit = new ItemStack(TinkersRebornTools.sharpeningKit, 1, this.material.materialId);
+        ItemStack kit = TinkersRebornToolPart.writeNBT(new ItemStack(TinkersRebornTools.sharpeningKit), this.material.identifier);
         ItemStack flint = new ItemStack(Items.flint);
         addRecipeMatch(new RecipeMatch.ItemCombination(1, kit, flint));
     }

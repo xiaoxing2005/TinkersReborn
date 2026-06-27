@@ -7,24 +7,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.items.CraftingItem;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
-import mctbl.tinkersreborn.library.tools.IMaterialPart;
 import mctbl.tinkersreborn.library.tools.IToolPart;
 import mctbl.tinkersreborn.util.TextureHelper;
 import mctbl.tinkersreborn.util.TinkersStr;
+import mctbl.tinkersreborn.util.ToolTags;
+import mctbl.tinkersreborn.util.ToolTagsHelper;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.IIcon;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public class TinkersRebornToolPart extends CraftingItem implements IToolPart, IMaterialPart {
+public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
 
     public static final String toolNameFormatter = TinkersStr.tooNamePattern.toString();
 
@@ -33,7 +35,7 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart, IM
     public int cost;
     public IIcon defaultIcon;
     public IIcon outlineIcon;
-    public Map<Integer, IIcon> icons;
+    public Map<String, IIcon> iconMap;
     public MaterialStatusType allowType; // TODO shard is null (maybe sharpen kit is too)
 
     public TinkersRebornToolPart(String texture, String name, int cost, MaterialStatusType allowType) {
@@ -61,26 +63,24 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart, IM
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
-        int id = getMaterialId(stack);
-        if (id == -1) {
+	TinkersRebornMaterial material = this.getMaterial(stack);
+        if (material == TinkersRebornMaterial.UNKNOWN) {
             return super.getItemStackDisplayName(stack);
         } else {
             return String.format(
                 toolNameFormatter,
-                TinkersRebornRegistry.getMaterialById(id)
-                    .localizedPrefix(),
+                material.localizedPrefix(),
                 this.getLocalizedPartName());
         }
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-        int id = getMaterialId(stack);
-        return id == -1 ? super.getUnlocalizedName()
+	TinkersRebornMaterial material = this.getMaterial(stack);
+        return material == TinkersRebornMaterial.UNKNOWN ? super.getUnlocalizedName()
             : String.format(
                 toolNameFormatter,
-                TinkersRebornRegistry.getMaterialById(id)
-                    .localizedPrefix(),
+                material.localizedPrefix(),
                 this.getLocalizedPartName());
     }
 
@@ -90,7 +90,7 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart, IM
             .filter(m -> m.statsMap.containsKey(this.allowType))
             .collect(Collectors.toList());
         for (TinkersRebornMaterial m : statsList) {
-            list.add(new ItemStack(this, 1, m.materialId));
+	    list.add(writeNBT(new ItemStack(this), m.identifier));
         }
     }
 
@@ -99,11 +99,11 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart, IM
         List<TinkersRebornMaterial> statsList = TinkersRebornRegistry.allMaterialsList.stream()
             .filter(m -> m.statsMap.containsKey(this.allowType))
             .collect(Collectors.toList());
-        this.icons = new HashMap<>();
+        this.iconMap = new HashMap<>();
         for (TinkersRebornMaterial m : statsList) {
             String path = "tinkersreborn:" + folder + m.identifier + "_" + texture;
             if (TextureHelper.itemTextureExists(path)) {
-                this.icons.put(m.materialId, iconRegister.registerIcon(path));
+                this.iconMap.put(m.identifier, iconRegister.registerIcon(path));
             }
         }
         // default texture
@@ -115,33 +115,60 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart, IM
         }
     }
 
+    @Override
+    public boolean requiresMultipleRenderPasses() {
+        return true;
+    }
+
+    @Override
+    public int getRenderPasses(int metadata) {
+        return 1;
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int meta) {
-        if (this.icons != null && this.icons.containsKey(meta)) return this.icons.get(meta);
+    public IIcon getIconIndex(ItemStack stack) {
+        TinkersRebornMaterial material = this.getMaterial(stack);
+        if (this.iconMap != null) return this.iconMap.getOrDefault(material.identifier, this.defaultIcon);
         return this.defaultIcon;
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(ItemStack stack, int pass) {
+        TinkersRebornMaterial material = this.getMaterial(stack);
+        if (this.iconMap != null) return this.iconMap.getOrDefault(material.identifier, this.defaultIcon);
+        return this.defaultIcon;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack stack, int renderpass) {
-        int matId = this.getMaterialId(stack);
-        if (this.icons.containsKey(matId)) {
+        TinkersRebornMaterial material = this.getMaterial(stack);
+        if (this.iconMap != null && this.iconMap.containsKey(material.identifier)) {
             return super.getColorFromItemStack(stack, renderpass);
         } else {
-            return TinkersRebornRegistry.getMaterialById(matId).materialTextColor;
+            return material.materialTextColor;
         }
     }
 
     @Override
-    public int getMaterialId(ItemStack stack) {
-        return stack.getItemDamage();
-    }
-
-    @Override
     public TinkersRebornMaterial getMaterial(ItemStack stack) {
-        return TinkersRebornRegistry.getMaterialById(stack.getItemDamage());
+	return TinkersRebornRegistry.getMaterialByIdentifier(readNBT(stack));
     }
 
     public int getCost() {
         return this.cost;
+    }
+
+    public static ItemStack writeNBT(ItemStack stack, String indetifier) {
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString(ToolTags.IDENTIFIER, indetifier);
+        stack.setTagCompound(nbt);
+        return stack;
+    }
+
+    public static String readNBT(ItemStack stack) {
+	return ToolTagsHelper.getTagSafe(stack).getString(ToolTags.IDENTIFIER);
     }
 }
