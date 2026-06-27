@@ -204,17 +204,7 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
 
     @Override
     public String getTooltip(NBTTagCompound modifierTag, boolean detailed) {
-        StringBuilder sb = new StringBuilder();
-
-        // ModifierNBT data = ModifierNBT.readTag(modifierTag);
-
-        sb.append(getLocalizedName());
-        // if (data.level > 1) {
-        // sb.append(" ");
-        // sb.append(TinkersRebornUtils.getRomanNumeral(data.level));
-        // }
-
-        return sb.toString();
+        return getLocalizedName();
     }
 
     public String getLeveledTooltip(NBTTagCompound modifierTag, boolean detailed) {
@@ -224,14 +214,12 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
 
     public String getLeveledTooltip(int level, String suffix) {
         // the most important function in the whole file!
-
         String basic = getLocalizedName(); // backup
         if (level == 0) {
             return basic;
+        } else if (level > 1) {
+            basic += " " + TinkersRebornUtils.getRomanNumeral(level);
         }
-        // else if (level > 1) {
-        // basic += " " + TinkersRebornUtils.getRomanNumeral(level);
-        // }
 
         for (int i = level; i > 1; i--) {
             if (canTranslate(String.format(LOC_Name + i, getIdentifier()))) {

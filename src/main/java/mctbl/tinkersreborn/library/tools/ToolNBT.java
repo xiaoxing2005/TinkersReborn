@@ -19,6 +19,7 @@ public class ToolNBT {
     public float attackSpeedMultiplier;
     public int modifierSlots;
     public int usedModifiers;
+    public int extraModifiers;
 
     private final NBTTagCompound parent;
 
@@ -30,6 +31,7 @@ public class ToolNBT {
         attackSpeedMultiplier = 1;
         modifierSlots = TinkersRebornConfig.defaultModifiers;
         usedModifiers = 0;
+        extraModifiers = 0;
         parent = new NBTTagCompound();
     }
 
@@ -120,8 +122,9 @@ public class ToolNBT {
         attack = tag.getFloat(ToolTags.ATTACK);
         speed = tag.getFloat(ToolTags.MININGSPEED);
         attackSpeedMultiplier = tag.getFloat(ToolTags.ATTACKSPEEDMULTIPLIER);
-        modifierSlots = tag.getInteger(ToolTags.MODIFIER_SLOTS);
+        modifierSlots = tag.getInteger(ToolTags.MODIFIERSLOTS);
         usedModifiers = tag.getInteger(ToolTags.USEDMODIFIERS);
+        extraModifiers = tag.getInteger(ToolTags.EXTRAMODIFIERS);
     }
 
     public void write(NBTTagCompound tag) {
@@ -130,8 +133,9 @@ public class ToolNBT {
         tag.setFloat(ToolTags.ATTACK, attack);
         tag.setFloat(ToolTags.MININGSPEED, speed);
         tag.setFloat(ToolTags.ATTACKSPEEDMULTIPLIER, attackSpeedMultiplier);
-        tag.setInteger(ToolTags.MODIFIER_SLOTS, modifierSlots);
+        tag.setInteger(ToolTags.MODIFIERSLOTS, modifierSlots);
         tag.setInteger(ToolTags.USEDMODIFIERS, usedModifiers);
+        tag.setInteger(ToolTags.EXTRAMODIFIERS, extraModifiers);
     }
 
     public NBTTagCompound get() {
@@ -164,7 +168,13 @@ public class ToolNBT {
         if (Float.compare(toolNBT.speed, speed) != 0) {
             return false;
         }
-        return modifierSlots == toolNBT.modifierSlots;
+        if (modifierSlots != toolNBT.modifierSlots) {
+            return false;
+        }
+        if (usedModifiers != toolNBT.usedModifiers) {
+            return false;
+        }
+        return extraModifiers == toolNBT.extraModifiers;
 
     }
 
@@ -175,6 +185,8 @@ public class ToolNBT {
         result = 31 * result + (attack != +0.0f ? Float.floatToIntBits(attack) : 0);
         result = 31 * result + (speed != +0.0f ? Float.floatToIntBits(speed) : 0);
         result = 31 * result + modifierSlots;
+        result = 31 * result + usedModifiers;
+        result = 31 * result + extraModifiers;
         return result;
     }
 }

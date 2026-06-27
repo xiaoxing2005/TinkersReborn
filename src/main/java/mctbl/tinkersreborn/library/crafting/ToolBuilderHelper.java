@@ -36,6 +36,7 @@ import mctbl.tinkersreborn.library.tools.ITrait;
 import mctbl.tinkersreborn.library.tools.TinkersRebornEvent;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.tools.ToolCore.ToolPartRecord;
+import mctbl.tinkersreborn.library.tools.ToolNBT;
 import mctbl.tinkersreborn.library.tools.traits.AbstractTrait;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
@@ -409,10 +410,15 @@ public class ToolBuilderHelper {
 
         // save UsedModifiers before Stats gets overwritten
         int oldUsedModifiers = ToolTagsHelper.getUsedModifiers(tool);
+        int oldModifiersSlots = ToolTagsHelper.getModifierSlots(tool);
 
         // the base stats of the tool
-        NBTTagCompound toolTag = tinkersItem.buildToolTag(materials)
-            .get();
+        ToolNBT toolNbt = tinkersItem.buildToolTag(materials);
+        // remaining info, restore UsedModifiers (ModifierSlots is the cap, unchanged by modifiers)
+        toolNbt.modifierSlots = oldModifiersSlots;
+        toolNbt.usedModifiers = oldUsedModifiers;
+
+        NBTTagCompound toolTag = toolNbt.get();
         tinkersTag.setTag(ToolTags.TOOLDATA, toolTag);
         // and its copy for reference
         tinkersTag.setTag(ToolTags.TOOLDATAORIG, toolTag.copy());
@@ -430,7 +436,7 @@ public class ToolBuilderHelper {
             .removeTag("ench"); // and the enchantments tag
 
         // readd traits
-        tinkersItem.addMaterialTraits(tool.getTagCompound(), materials);
+        tinkersItem.addMaterialTraits(ToolTagsHelper.getTagSafe(tool), materials);
 
         // fire event
         TinkersRebornEvent.OnItemBuilding.fireEvent(tinkersTag, materials, tinkersItem);
@@ -456,9 +462,6 @@ public class ToolBuilderHelper {
             modifier.applyEffect(tool.getTagCompound(), modifiers);
 
         }
-
-        // remaining info, restore UsedModifiers (ModifierSlots is the cap, unchanged by modifiers)
-        ToolTagsHelper.setUsedModifiers(tool, oldUsedModifiers);
 
         // broken?
         ToolTagsHelper.setBroken(tool, broken);

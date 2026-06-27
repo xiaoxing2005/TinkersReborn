@@ -21,6 +21,10 @@ import mctbl.tinkersreborn.tools.modifiers.ModFiery;
 import mctbl.tinkersreborn.tools.modifiers.ModHaste;
 import mctbl.tinkersreborn.tools.modifiers.ModKnockback;
 import mctbl.tinkersreborn.tools.modifiers.ModLuck;
+import mctbl.tinkersreborn.tools.modifiers.ModMendingMoss;
+import mctbl.tinkersreborn.tools.modifiers.ModNecrotic;
+import mctbl.tinkersreborn.tools.modifiers.ModReinforced;
+import mctbl.tinkersreborn.tools.modifiers.ModSharpness;
 
 public class TinkersRebornModifiers {
 
@@ -111,6 +115,18 @@ public class TinkersRebornModifiers {
         modLuck.addItem("gemLapis");
         modLuck.addItem("blockLapis", 1, 9);
 
+        modMendingMoss = new ModMendingMoss();
+        modMendingMoss.addItem(TinkersRebornTools.mossball, 1, 1);
+
+        modNecrotic = new ModNecrotic();
+        modNecrotic.addItem("boneWithered");
+
+        modReinforced = new ModReinforced();
+        modReinforced.addItem(TinkersRebornTools.reinforcement, 1, 1);
+
+        modSharpness = new ModSharpness(72);
+        modSharpness.addItem("gemQuartz");
+        modSharpness.addItem("blockQuartz", 1, 4);
     }
 
     public void postInit(FMLPostInitializationEvent e) {

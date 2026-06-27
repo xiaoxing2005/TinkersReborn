@@ -225,6 +225,14 @@ public class ToolTagsHelper {
         return getTagSafe(getToolBaseNBTSafe(compound), ToolTags.TOOLDATAORIG);
     }
 
+    public static ToolNBT getToolOriginStats(ItemStack stack) {
+        return new ToolNBT(getToolOriginDataNBTSafe(stack));
+    }
+
+    public static ToolNBT getToolOriginStats(NBTTagCompound root) {
+        return new ToolNBT(getToolOriginDataNBTSafe(root));
+    }
+
     // stats
     /**
      * @param stack
@@ -254,32 +262,6 @@ public class ToolTagsHelper {
      */
     public static NBTTagList getCategoryList(NBTTagCompound root) {
         return getTagListSafe(getToolBaseNBTSafe(root), ToolTags.TOOLCATEGORY, TAG_TYPE_STRING);
-    }
-
-    /**
-     * @param stack
-     * @return tool -> TinkersRebornTool -> Stats -> ModifierSlots
-     */
-    public static int getModifierSlots(ItemStack stack) {
-        return getToolDataNBTSafe(stack).getInteger(ToolTags.MODIFIER_SLOTS);
-    }
-
-    /**
-     * @param compound
-     * @return tool -> TinkersRebornTool -> Stats -> ModifierSlots
-     */
-    public static int getModifierSlots(NBTTagCompound compound) {
-        return getToolDataNBTSafe(compound).getInteger(ToolTags.MODIFIER_SLOTS);
-    }
-
-    public static void setModifierSlots(ItemStack stack, int slots) {
-        NBTTagCompound baseTag = getToolDataNBTSafe(stack);
-        baseTag.setInteger(ToolTags.MODIFIER_SLOTS, slots);
-    }
-
-    public static void setModifierSlots(NBTTagCompound compound, int slots) {
-        NBTTagCompound baseTag = getToolDataNBTSafe(compound);
-        baseTag.setInteger(ToolTags.MODIFIER_SLOTS, slots);
     }
 
     /**
@@ -394,6 +376,58 @@ public class ToolTagsHelper {
 
     public static void setUsedModifiers(NBTTagCompound compound, int used) {
         getToolDataNBTSafe(compound).setInteger(ToolTags.USEDMODIFIERS, used);
+    }
+
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Stats -> ModifierSlots
+     */
+    public static int getModifierSlots(ItemStack stack) {
+        return getToolDataNBTSafe(stack).getInteger(ToolTags.MODIFIERSLOTS);
+    }
+
+    /**
+     * @param compound
+     * @return tool -> TinkersRebornTool -> Stats -> ModifierSlots
+     */
+    public static int getModifierSlots(NBTTagCompound compound) {
+        return getToolDataNBTSafe(compound).getInteger(ToolTags.MODIFIERSLOTS);
+    }
+
+    public static void setModifierSlots(ItemStack stack, int slots) {
+        NBTTagCompound baseTag = getToolDataNBTSafe(stack);
+        baseTag.setInteger(ToolTags.MODIFIERSLOTS, slots);
+    }
+
+    public static void setModifierSlots(NBTTagCompound compound, int slots) {
+        NBTTagCompound baseTag = getToolDataNBTSafe(compound);
+        baseTag.setInteger(ToolTags.MODIFIERSLOTS, slots);
+    }
+
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Stats -> ExtraModifiers
+     */
+    public static int getExtraModifier(ItemStack stack) {
+        return getToolDataNBTSafe(stack).getInteger(ToolTags.EXTRAMODIFIERS);
+    }
+
+    /**
+     * @param compound
+     * @return tool -> TinkersRebornTool -> Stats -> ExtraModifiers
+     */
+    public static int getExtraModifier(NBTTagCompound compound) {
+        return getToolDataNBTSafe(compound).getInteger(ToolTags.EXTRAMODIFIERS);
+    }
+
+    public static void setExtraModifier(ItemStack stack, int slots) {
+        NBTTagCompound baseTag = getToolDataNBTSafe(stack);
+        baseTag.setInteger(ToolTags.EXTRAMODIFIERS, slots);
+    }
+
+    public static void setExtraModifier(NBTTagCompound compound, int slots) {
+        NBTTagCompound baseTag = getToolDataNBTSafe(compound);
+        baseTag.setInteger(ToolTags.EXTRAMODIFIERS, slots);
     }
 
     /**

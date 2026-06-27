@@ -303,8 +303,9 @@ flowchart TB
     "Attack": 2.1,
     "MiningSpeed": 2.2,
     "HarvestLevel": 3,
-    "ModifierSlots": 3,
-    "UsedModifiers": 1
+    "ModifierSlots": 3, // this never change
+    "ExtraModifiers": 10, // this add by modifier/trait/level up
+    "UsedModifiers": 0
   },
   // this tool's base stats READONLY
   "StatsOriginal":{
@@ -312,7 +313,9 @@ flowchart TB
     "Attack": 2.1,
     "MiningSpeed": 1.0,
     "HarvestLevel": 3,
-    "ModifierSlots": 3
+    "ModifierSlots": 3,
+    "ExtraModifiers": 0,
+    "UsedModifiers": 0
   },
   // for some traits data
   "Special":{

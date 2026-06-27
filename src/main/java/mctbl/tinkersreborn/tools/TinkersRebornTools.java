@@ -883,6 +883,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         OreDictionary.registerOre("dustAluminumBrass", new ItemStack(aluBrassDust));
 
         OreDictionary.registerOre("slimeball", new ItemStack(glueBall));
+
+        OreDictionary.registerOre("boneWithered", new ItemStack(necroticBone));
     }
 
 }

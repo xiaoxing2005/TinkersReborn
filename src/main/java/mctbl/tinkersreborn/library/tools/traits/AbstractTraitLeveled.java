@@ -86,11 +86,8 @@ public abstract class AbstractTraitLeveled extends AbstractTrait {
 
     @Override
     public String getLocalizedName() {
-        String locName = TinkersRebornUtils.translate(String.format(LOC_Name, name));
-        if (levels > 1) {
-            locName += " " + TinkersRebornUtils.getRomanNumeral(levels);
-        }
-        return locName;
+        return TinkersRebornUtils.translate(String.format(LOC_Name, name));
+
     }
 
     @Override
