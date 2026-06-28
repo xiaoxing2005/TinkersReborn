@@ -116,6 +116,13 @@ tinkersreborn.material.AluminumDust.name=Aluminum Dust
 tinkersreborn.material.ManyullynDust.name=Manyullyn Dust
 tinkersreborn.material.AluBrassDust.name=Aluminum Brass Dust
 
+tinkersreborn.Pattern=Pattern
+tinkersreborn.Cast=Cast
+tinkersreborn.CastIngot=Ingot Cast
+tinkersreborn.CastGem=Gem Cast
+tinkersreborn.CastNugget=Nugget Cast
+
+
 
 // materials
 material.wood.name=Wood
@@ -155,7 +162,10 @@ material.slimeleaf_blue.name=Blue Slimeleaf
 
 // tools
 tinkersreborn.tooltip.nameformat=%s %s
+tinkersreborn.tooltip.nameformat=%s %s
+tinkersreborn.tooltip.pattern=Material Cost: %d
 tinkersreborn.tooltip.modifiers=Modifiers
+tinkersreborn.tooltip.holdShift=Hold §e§oShift§r§7 for Stats
 
 tinkersreborn.tool.pickaxe=Pickaxe
 
@@ -347,4 +357,4 @@ tinkersreborn.gui.toolstation.repair.title=Repair & Modify
 tinkersreborn.gui.toolstation.repair.desc=The main way to repair or change your tools. Place a tool and a material on the left to get started.
 tinkersreborn.gui.toolstation.traits.title=Traits
 tinkersreborn.gui.toolstation.components.title=Components
-tinkersreborn.gui.gui.toolstation.noTraits=None :[
+tinkersreborn.gui.toolstation.noTraits=None :[

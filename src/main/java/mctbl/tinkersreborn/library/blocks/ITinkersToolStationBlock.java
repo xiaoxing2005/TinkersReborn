@@ -16,11 +16,11 @@ public interface ITinkersToolStationBlock {
      * Duplicate entries will be treated as the same and their blocks will be ignored.
      *
      * Values used:
-     * 10 - Stencil Table
-     * 15 - Pattern Chest
-     * 20 - Part Builder
-     * 25 - Tool Station/Forge
-     * 50 - Crafting Station
+     * 1 - Part Builder
+     * 2 - Part Chest
+     * 3 - Cast Chest
+     * 0/4 - Tool Station/Forge
+     * 5 - Crafting Station
      */
     int getGuiNumber(Block block);
 

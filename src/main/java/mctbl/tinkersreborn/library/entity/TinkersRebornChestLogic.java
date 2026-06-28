@@ -5,10 +5,31 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
+
 public abstract class TinkersRebornChestLogic extends TinkersRebornInventoryLogic {
 
+    public static final int MAX_INVENTORY = 256;
+    // how big the 'perceived' inventory is
+    public int actualSize;
+
     public TinkersRebornChestLogic() {
-        super(36);
+        this(MAX_INVENTORY);
+    }
+
+    public TinkersRebornChestLogic(int inventorySize) {
+        super(inventorySize);
+        this.actualSize = 1;
+    }
+
+    public TinkersRebornChestLogic(int inventorySize, int maxStackSize) {
+        super(inventorySize, maxStackSize);
+        this.actualSize = 1;
+    }
+
+    @Override
+    public int getSizeInventory() {
+        return MAX_INVENTORY;
     }
 
     @Override
@@ -18,7 +39,7 @@ public abstract class TinkersRebornChestLogic extends TinkersRebornInventoryLogi
 
     @Override
     public String getInventoryName() {
-        return getDefaultName();
+        return TinkersRebornUtils.translate(this.getDefaultName() + ".name");
     }
 
     @Override

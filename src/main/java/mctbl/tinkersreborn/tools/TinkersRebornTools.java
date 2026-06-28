@@ -234,7 +234,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static Item aluBrassDust;
     public static Item reinforcement;
 
-    public static Item patternAndCast;
+    public static Pattern patternAndCast;
     public static Item creativeModifier; // TODO
 
     public static Fluid ironFluid;
@@ -322,6 +322,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerBlock(craftingStation, craftingStation.getUnlocalizedName());
         GameRegistry.registerTileEntity(CraftingStationLogic.class, craftingStation.getUnlocalizedName());
 
+        patternAndCast = new Pattern();
+
         arrowhead = new TinkersRebornToolPart("arrowhead", "ArrowHead", VALUE_Ingot * 2);
         arrowShaft = new TinkersRebornToolPart("arrow_shaft", "ArrowShaft", VALUE_Ingot * 2, MaterialStatusType.SHAFT);
         axeHead = new TinkersRebornToolPart("axe_head", "AxeHead", VALUE_Ingot * 2);
@@ -359,6 +361,39 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         bowString = new BowString();
         fletching = new Fletching();
         boltCore = new BoltCore();
+
+        patternAndCast.addNewPatterntype(arrowhead);
+        patternAndCast.addNewPatterntype(arrowShaft);
+        patternAndCast.addNewPatterntype(axeHead);
+        patternAndCast.addNewPatterntype(battlesignHead);
+        patternAndCast.addNewPatterntype(binding);
+        patternAndCast.addNewPatterntype(bowLimb);
+        patternAndCast.addNewPatterntype(chiselHead);
+        patternAndCast.addNewPatterntype(crossbar);
+        patternAndCast.addNewPatterntype(crossbowBody);
+        patternAndCast.addNewPatterntype(crossbowLimb);
+        patternAndCast.addNewPatterntype(excavatorHead);
+        patternAndCast.addNewPatterntype(frypanHead);
+        patternAndCast.addNewPatterntype(fullGuard);
+        patternAndCast.addNewPatterntype(hammerHead);
+        patternAndCast.addNewPatterntype(knifeBlade);
+        patternAndCast.addNewPatterntype(largeplate);
+        patternAndCast.addNewPatterntype(largeGuard);
+        patternAndCast.addNewPatterntype(largeSwordBlade);
+        patternAndCast.addNewPatterntype(lumberaxeHead);
+        patternAndCast.addNewPatterntype(mediumGuard);
+        patternAndCast.addNewPatterntype(pickaxeHead);
+        patternAndCast.addNewPatterntype(rod);
+        patternAndCast.addNewPatterntype(scytheHead);
+        // patternAndCast.addNewPatterntype(shard);
+        patternAndCast.addNewPatterntype(shovelHead);
+        patternAndCast.addNewPatterntype(shuriken);
+        patternAndCast.addNewPatterntype(swordBlade);
+        patternAndCast.addNewPatterntype(toughbind);
+        patternAndCast.addNewPatterntype(toughrod);
+        patternAndCast.addNewPatterntype(sharpeningKit);
+        patternAndCast.addNewPatterntype(bowString);
+        patternAndCast.addNewPatterntype(fletching);
 
         GameRegistry.registerItem(arrowhead, arrowhead.getUnlocalizedName());
         GameRegistry.registerItem(arrowShaft, arrowShaft.getUnlocalizedName());
@@ -487,8 +522,6 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(aluminumDust, aluminumDust.getUnlocalizedName());
         GameRegistry.registerItem(manyullynDust, manyullynDust.getUnlocalizedName());
         GameRegistry.registerItem(aluBrassDust, aluBrassDust.getUnlocalizedName());
-
-        patternAndCast = new Pattern();
         GameRegistry.registerItem(patternAndCast, patternAndCast.getUnlocalizedName());
 
         this.oreDictRegistry();

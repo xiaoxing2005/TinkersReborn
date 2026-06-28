@@ -38,19 +38,21 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
     public Map<String, IIcon> iconMap;
     public MaterialStatusType allowType; // TODO shard is null (maybe sharpen kit is too)
 
-    public TinkersRebornToolPart(String texture, String name, int cost, MaterialStatusType allowType) {
+    public TinkersRebornToolPart(String texture, String partName, int cost, MaterialStatusType allowType) {
         // texture -> pickaxe_head for texture
         // name -> PickaxeHead for localization
         super(null, null, "tools/parts/" + texture + "/", TinkersRebornRegistry.partsTab);
         this.texture = texture;
-        this.partName = name;
+        this.partName = partName;
         this.allowType = allowType;
-        this.setUnlocalizedName("tinkersreborn." + name); // tinkersreborn.PickaxeHead
+        this.setUnlocalizedName("tinkersreborn." + partName); // tinkersreborn.PickaxeHead
         this.cost = cost;
+
+        TinkersRebornRegistry.registerToolPart(this);
     }
 
-    public TinkersRebornToolPart(String texture, String name, int cost) {
-        this(texture, name, cost, MaterialStatusType.HEAD);
+    public TinkersRebornToolPart(String texture, String partName, int cost) {
+        this(texture, partName, cost, MaterialStatusType.HEAD);
     }
 
     public String getUnlocalizedToolName() {
@@ -84,7 +86,7 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
             .filter(m -> m.statsMap.containsKey(this.allowType))
             .collect(Collectors.toList());
         for (TinkersRebornMaterial m : statsList) {
-            list.add(writeNBT(new ItemStack(this), m.identifier));
+            list.add(this.getNewPartWithMaterial(m));
         }
     }
 
@@ -121,14 +123,6 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconIndex(ItemStack stack) {
-        TinkersRebornMaterial material = this.getMaterial(stack);
-        if (this.iconMap != null) return this.iconMap.getOrDefault(material.identifier, this.defaultIcon);
-        return this.defaultIcon;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
     public IIcon getIcon(ItemStack stack, int pass) {
         TinkersRebornMaterial material = this.getMaterial(stack);
         if (this.iconMap != null) return this.iconMap.getOrDefault(material.identifier, this.defaultIcon);
@@ -155,11 +149,20 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
         return this.cost;
     }
 
-    public static ItemStack writeNBT(ItemStack stack, String indetifier) {
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString(ToolTags.IDENTIFIER, indetifier);
-        stack.setTagCompound(nbt);
+    public ItemStack getNewPartWithMaterial(TinkersRebornMaterial material) {
+        return this.getNewPartWithMaterial(material.identifier);
+    }
+
+    public ItemStack getNewPartWithMaterial(String identifier) {
+        ItemStack stack = new ItemStack(this);
+        stack.setTagCompound(this.getNewPartNBT(identifier));
         return stack;
+    }
+
+    public NBTTagCompound getNewPartNBT(String identifier) {
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString(ToolTags.IDENTIFIER, identifier);
+        return nbt;
     }
 
     public static String readNBT(ItemStack stack) {

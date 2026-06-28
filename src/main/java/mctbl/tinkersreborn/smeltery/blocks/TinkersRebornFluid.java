@@ -17,7 +17,6 @@ import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 
 public class TinkersRebornFluid extends Fluid {
 
-    private Integer materialId;
     private Integer color;
     public String identifier;
     String unlocalizedName;
@@ -56,7 +55,6 @@ public class TinkersRebornFluid extends Fluid {
             .setTemperature(1300)
             .setLuminosity(12);
         this.identifier = m.identifier;
-        this.materialId = m.materialId;
         if (initFluid) {
             FluidRegistry.registerFluid(this);
             m.setFluidAndCastable(this);
@@ -84,15 +82,7 @@ public class TinkersRebornFluid extends Fluid {
         if (this.color != null) {
             return this.color;
         }
-        TinkersRebornMaterial m = TinkersRebornRegistry.getMaterialByIdentifier(identifier);
-        if (materialId != null && m != null) {
-            return m.materialTextColor;
-        }
-        return TinkersRebornMaterial.UNKNOWN.materialTextColor;
+        return TinkersRebornRegistry.getMaterialByIdentifier(identifier).materialTextColor;
 
-    }
-
-    public int getMaterialId() {
-        return this.materialId;
     }
 }

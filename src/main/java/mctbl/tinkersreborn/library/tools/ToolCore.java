@@ -410,7 +410,9 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         for (int i = 0; i < this.partAmount; i++) {
             ToolPartRecord toolPartRecord = this.componentsParts.get(i);
             if (toolPartRecord != null && material.hasStats(toolPartRecord.statusType())) {
-                list.add(TinkersRebornToolPart.writeNBT(new ItemStack(toolPartRecord.toolPart()), material.identifier));
+                list.add(
+                    toolPartRecord.toolPart()
+                        .getNewPartWithMaterial(material));
             }
         }
         return ToolBuilderHelper.buildTool(null, list.toArray(new ItemStack[0]));

@@ -49,14 +49,6 @@ public class CraftingItem extends Item {
         return this;
     }
 
-    // public void updateData(String[] names, String[] tex, String folder, String
-    // modTexturePrefix) {
-    // this.modTexPrefix = modTexturePrefix;
-    // this.textureNames = tex;
-    // this.unlocalizedNames = names;
-    // this.folder = folder;
-    // }
-
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister) {

@@ -9,6 +9,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -17,6 +18,7 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.gui.container.ContainerMultiModule;
+import mctbl.tinkersreborn.library.inventory.slots.SlotWrapper;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 @SideOnly(Side.CLIENT)
@@ -135,12 +137,34 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
         guiTop = cornerY;
         xSize = realWidth;
         ySize = realHeight;
+        this.syncSlotPositions();
         super.drawScreen(mouseX, mouseY, partialTicks);
 
         guiLeft = oldX;
         guiTop = oldY;
         xSize = oldW;
         ySize = oldH;
+    }
+
+    private void syncSlotPositions() {
+        for (Object obj : this.inventorySlots.inventorySlots) {
+            Slot slot = (Slot) obj;
+            GuiModule module = getModuleForSlot(slot.slotNumber);
+            if (module == null) {
+                continue;
+            }
+
+            if (slot instanceof SlotWrapper) {
+                SlotWrapper wrapper = (SlotWrapper) slot;
+                wrapper.xDisplayPosition = wrapper.parent.xDisplayPosition;
+                wrapper.yDisplayPosition = wrapper.parent.yDisplayPosition;
+
+                if (!module.shouldDrawSlot(wrapper.parent)) {
+                    wrapper.xDisplayPosition = -9999;
+                    wrapper.yDisplayPosition = -9999;
+                }
+            }
+        }
     }
 
     public boolean func_146978_c(int left, int top, int right, int bottom, int pointX, int pointY) {

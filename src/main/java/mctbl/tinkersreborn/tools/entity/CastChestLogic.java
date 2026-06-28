@@ -9,16 +9,17 @@ import net.minecraft.world.World;
 import mctbl.tinkersreborn.library.entity.TinkersRebornChestLogic;
 import mctbl.tinkersreborn.tools.gui.GuiCastChest;
 import mctbl.tinkersreborn.tools.inventory.ContainerCastChest;
+import mctbl.tinkersreborn.tools.items.Pattern;
 
 public class CastChestLogic extends TinkersRebornChestLogic {
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
-        return false;
+        return this.isItemValid(itemstack);
     }
 
     public boolean isItemValid(ItemStack itemstack) {
-        return true;
+        return itemstack.getItem() instanceof Pattern;
     }
 
     @Override

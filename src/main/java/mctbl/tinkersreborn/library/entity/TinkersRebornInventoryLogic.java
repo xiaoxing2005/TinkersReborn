@@ -115,7 +115,6 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
     }
 
     public void readInventoryFromNBT(NBTTagCompound tags) {
-        super.readFromNBT(tags);
         NBTTagList nbttaglist = tags.getTagList("Items", 10);
         this.inventory = new ItemStack[this.getSizeInventory()];
 
@@ -141,7 +140,6 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
     }
 
     public void writeInventoryToNBT(NBTTagCompound tags) {
-        super.writeToNBT(tags);
         NBTTagList nbttaglist = new NBTTagList();
 
         for (int i = 0; i < this.inventory.length; ++i) {

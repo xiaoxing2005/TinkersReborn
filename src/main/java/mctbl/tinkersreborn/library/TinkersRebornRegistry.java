@@ -19,6 +19,7 @@ import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.RenderMateria
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
+import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class TinkersRebornRegistry {
@@ -35,12 +36,12 @@ public class TinkersRebornRegistry {
 
     public static List<ToolCore> tools;
     public static Map<String, ToolCore> toolNameMap;
+    public static Map<String, TinkersRebornToolPart> toolPartNameMap;
     public static List<ToolCore> toolStationCrafting;
     public static List<ToolCore> toolForgeCrafting;
 
     public static List<TinkersRebornMaterial> allMaterialsList;
     public static Map<String, TinkersRebornMaterial> materialIdentifierMaps;
-    // public static Map<Integer, TinkersRebornMaterial> materialIdMaps;
     public static Map<String, RenderMaterial> renderMaterials;
 
     public static Map<String, IModifier> modifierAndTraitIdentifierMaps;
@@ -73,11 +74,11 @@ public class TinkersRebornRegistry {
     private void initRegistry() {
         tools = new ArrayList<>();
         toolNameMap = new HashMap<>();
+        toolPartNameMap = new HashMap<>();
         toolStationCrafting = new ArrayList<>();
         toolForgeCrafting = new ArrayList<>();
         allMaterialsList = new ArrayList<>();
         materialIdentifierMaps = new HashMap<>();
-        // materialIdMaps = new HashMap<>();
         modifierAndTraitIdentifierMaps = new LinkedHashMap<>();
         allTinkersFluid = new ArrayList<>();
         headDrops = new HashMap<>();
@@ -94,17 +95,12 @@ public class TinkersRebornRegistry {
 
     public static void addMaterialToMap(TinkersRebornMaterial m) {
         materialIdentifierMaps.put(m.identifier, m);
-        // materialIdMaps.put(m.materialId, m);
         allMaterialsList.add(m);
     }
 
     public static TinkersRebornMaterial getMaterialByIdentifier(String identifier) {
         return materialIdentifierMaps.getOrDefault(identifier, TinkersRebornMaterial.UNKNOWN);
     }
-
-    // public static TinkersRebornMaterial getMaterialById(int id) {
-    // return materialIdMaps.getOrDefault(id, TinkersRebornMaterial.UNKNOWN);
-    // }
 
     public static TinkersRebornFluid getFluidByIndex(int idx) {
         if (idx < allTinkersFluid.size()) {
@@ -149,6 +145,14 @@ public class TinkersRebornRegistry {
 
     public static List<ToolCore> getAllTools() {
         return tools;
+    }
+
+    public static void registerToolPart(TinkersRebornToolPart part) {
+        toolPartNameMap.put(part.texture, part);
+    }
+
+    public static TinkersRebornToolPart getToolPartByPartName(String name) {
+        return toolPartNameMap.getOrDefault(name, null);
     }
 
     /**

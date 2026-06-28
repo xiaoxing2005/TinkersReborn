@@ -16,6 +16,7 @@ public enum TinkersStr {
     tankToolToip2("tank.tooltip2"),
     tankToolToip3("tank.tooltip3"),
     modifierToolTip("tooltip.modifiers"),
+    patternToolTip("tooltip.pattern"),
 
     // gui
     partCrafterTitle("gui.partcrafter.title"),
