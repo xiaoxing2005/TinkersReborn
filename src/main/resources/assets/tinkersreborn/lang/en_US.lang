@@ -165,7 +165,7 @@ tinkersreborn.tooltip.nameformat=%s %s
 tinkersreborn.tooltip.nameformat=%s %s
 tinkersreborn.tooltip.pattern=Material Cost: %d
 tinkersreborn.tooltip.modifiers=Modifiers
-tinkersreborn.tooltip.holdShift=Hold §e§oShift§r§7 for Stats
+tinkersreborn.tooltip.holdShift=Hold §e§oShift§r§7 for more info
 
 tinkersreborn.tool.pickaxe=Pickaxe
 

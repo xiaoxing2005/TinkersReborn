@@ -119,7 +119,8 @@ public class PartChestBlock extends TinkersRebornInventoryBlock implements ITink
             }
 
         }
-        return world.setBlockToAir(x, y, z);
+        world.setBlockToAir(x, y, z);
+        return false;
     }
 
     @Override

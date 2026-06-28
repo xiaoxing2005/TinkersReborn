@@ -1,62 +1,57 @@
 package mctbl.tinkersreborn.tools.inventory;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-import mctbl.tinkersreborn.library.inventory.TinkersRebornContainer;
+import mctbl.tinkersreborn.library.inventory.ContainerSideInventory;
 import mctbl.tinkersreborn.tools.entity.PartChestLogic;
 
-public class ContainerPartChest extends TinkersRebornContainer {
+public class ContainerPartChest extends ContainerTinkerStation<PartChestLogic> {
 
-    public PartChestLogic chest;
+    protected ContainerSideInventory<PartChestLogic> inventory;
 
     public ContainerPartChest(InventoryPlayer inventoryplayer, PartChestLogic chest) {
-        super(inventoryplayer);
-        this.chest = chest;
+        super(chest);
+        // chest inventory. we have it as a module
+        inventory = new DynamicChestInventory(tile, tile, 8, 18, 8); // columns don't matter since they get set by gui
+        this.addSubContainer(inventory, true);
 
-        int startX = 8;
-        int startY = 18;
-        for (int column = 0; column < 4; column++) {
-            for (int row = 0; row < 9; row++) {
-                this.addSlotToContainer(
-                    new SlotForPart(chest, row + column * 9, startX + row * 18, startY + column * 18));
+        // player inventory
+        this.addPlayerInventory(inventoryplayer, 8, 84);
+    }
+
+    public static class DynamicChestInventory extends ContainerSideInventory<PartChestLogic> {
+
+        public DynamicChestInventory(PartChestLogic tile, IInventory inventory, int x, int y, int columns) {
+            super(tile, x, y, columns);
+
+            // add the theoretically possible slots
+            while (this.inventorySlots.size() < PartChestLogic.MAX_INVENTORY) {
+                this.addSlotToContainer(createSlot(tile, this.inventorySlots.size(), 0, 0));
             }
         }
 
-        this.bindPlayerInventory();
+        @Override
+        protected Slot createSlot(IInventory inventory, int index, int x, int y) {
+            return new SlotPartChest(tile, index, x, y);
+        }
     }
 
-    @Override
-    public boolean canInteractWith(EntityPlayer entityplayer) {
-        return chest.isUseableByPlayer(entityplayer);
-    }
+    public static class SlotPartChest extends Slot {
 
-    @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
-        // TODO Auto-generated method stub
-        return super.transferStackInSlot(player, slotID);
-    }
+        public final PartChestLogic castChest;
 
-    @Override
-    protected boolean mergeItemStack(ItemStack stack, int inventorySize, int slotSize, boolean inOrder) {
-        // TODO Auto-generated method stub
-        return super.mergeItemStack(stack, inventorySize, slotSize, inOrder);
-    }
+        public SlotPartChest(PartChestLogic inventoryIn, int index, int xPosition, int yPosition) {
+            super(inventoryIn, index, xPosition, yPosition);
 
-    static class SlotForPart extends Slot {
-
-        public SlotForPart(IInventory builder, int par3, int par4, int par5) {
-            super(builder, par3, par4, par5);
+            this.castChest = inventoryIn;
         }
 
         @Override
         public boolean isItemValid(ItemStack stack) {
-            // TODO
-            return true;
+            return castChest.isItemValidForSlot(getSlotIndex(), stack); // slot parameter is unused
         }
     }
-
 }

@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.library.entity.TinkersRebornChestLogic;
+import mctbl.tinkersreborn.library.tools.IToolPart;
 import mctbl.tinkersreborn.tools.gui.GuiPartChest;
 import mctbl.tinkersreborn.tools.inventory.ContainerPartChest;
 
@@ -14,11 +15,11 @@ public class PartChestLogic extends TinkersRebornChestLogic {
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
-        return false;
+        return this.isItemValid(itemstack);
     }
 
     public boolean isItemValid(ItemStack itemstack) {
-        return true;
+        return itemstack.getItem() instanceof IToolPart;
     }
 
     @Override

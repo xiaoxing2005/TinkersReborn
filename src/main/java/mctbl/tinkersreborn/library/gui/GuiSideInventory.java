@@ -246,6 +246,9 @@ public class GuiSideInventory extends GuiModule {
     public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         if (shouldDrawName()) {
             String name = ((BaseContainer) inventorySlots).getInventoryDisplayName();
+            if (this.fontRendererObj == null) {
+                this.fontRendererObj = this.parent.getFontRender();
+            }
             this.fontRendererObj.drawString(name, border.w, border.h - 1, 0x404040);
         }
     }

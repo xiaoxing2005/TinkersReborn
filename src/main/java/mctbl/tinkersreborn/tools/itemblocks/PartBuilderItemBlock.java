@@ -6,9 +6,9 @@ import net.minecraft.item.ItemStack;
 import mctbl.tinkersreborn.library.itemblocks.TinkersRebornItemBlock;
 import mctbl.tinkersreborn.tools.blocks.PartBuilderBlock;
 
-public class TinkersRebornPartBuilderItemBlock extends TinkersRebornItemBlock {
+public class PartBuilderItemBlock extends TinkersRebornItemBlock {
 
-    public TinkersRebornPartBuilderItemBlock(Block b) {
+    public PartBuilderItemBlock(Block b) {
         super(b, "tinkersreborn.PartBuilder", PartBuilderBlock.materials);
         this.setHasSubtypes(true);
         this.setMaxDamage(0);

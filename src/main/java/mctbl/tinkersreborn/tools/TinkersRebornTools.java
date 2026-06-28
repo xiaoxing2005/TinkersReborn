@@ -111,11 +111,11 @@ import mctbl.tinkersreborn.tools.entity.PartBuilderLogic;
 import mctbl.tinkersreborn.tools.entity.PartChestLogic;
 import mctbl.tinkersreborn.tools.entity.ToolForgeLogic;
 import mctbl.tinkersreborn.tools.entity.ToolStationLogic;
-import mctbl.tinkersreborn.tools.itemblocks.TinkersRebornCastChestItemBlock;
-import mctbl.tinkersreborn.tools.itemblocks.TinkersRebornPartBuilderItemBlock;
-import mctbl.tinkersreborn.tools.itemblocks.TinkersRebornPartChestItemBlock;
-import mctbl.tinkersreborn.tools.itemblocks.TinkersRebornToolForgeItemBlock;
-import mctbl.tinkersreborn.tools.itemblocks.TinkersRebornToolStationItemBlock;
+import mctbl.tinkersreborn.tools.itemblocks.CastChestItemBlock;
+import mctbl.tinkersreborn.tools.itemblocks.PartBuilderItemBlock;
+import mctbl.tinkersreborn.tools.itemblocks.PartChestItemBlock;
+import mctbl.tinkersreborn.tools.itemblocks.ToolForgeItemBlock;
+import mctbl.tinkersreborn.tools.itemblocks.ToolStationItemBlock;
 import mctbl.tinkersreborn.tools.items.BoltCore;
 import mctbl.tinkersreborn.tools.items.BowString;
 import mctbl.tinkersreborn.tools.items.Fletching;
@@ -297,25 +297,23 @@ public class TinkersRebornTools implements ITinkersRebornModule {
             .register(tre);
 
         toolStation = new ToolStationBlock();
-        GameRegistry
-            .registerBlock(toolStation, TinkersRebornToolStationItemBlock.class, toolStation.getUnlocalizedName());
+        GameRegistry.registerBlock(toolStation, ToolStationItemBlock.class, toolStation.getUnlocalizedName());
         GameRegistry.registerTileEntity(ToolStationLogic.class, toolStation.getUnlocalizedName());
 
         toolForge = new ToolForgeBlock();
-        GameRegistry.registerBlock(toolForge, TinkersRebornToolForgeItemBlock.class, toolForge.getUnlocalizedName());
+        GameRegistry.registerBlock(toolForge, ToolForgeItemBlock.class, toolForge.getUnlocalizedName());
         GameRegistry.registerTileEntity(ToolForgeLogic.class, toolForge.getUnlocalizedName());
 
         partBuilder = new PartBuilderBlock();
-        GameRegistry
-            .registerBlock(partBuilder, TinkersRebornPartBuilderItemBlock.class, partBuilder.getUnlocalizedName());
+        GameRegistry.registerBlock(partBuilder, PartBuilderItemBlock.class, partBuilder.getUnlocalizedName());
         GameRegistry.registerTileEntity(PartBuilderLogic.class, partBuilder.getUnlocalizedName());
 
         castChest = new CastChestBlock();
-        GameRegistry.registerBlock(castChest, TinkersRebornCastChestItemBlock.class, castChest.getUnlocalizedName());
+        GameRegistry.registerBlock(castChest, CastChestItemBlock.class, castChest.getUnlocalizedName());
         GameRegistry.registerTileEntity(CastChestLogic.class, castChest.getUnlocalizedName());
 
         partChest = new PartChestBlock();
-        GameRegistry.registerBlock(partChest, TinkersRebornPartChestItemBlock.class, partChest.getUnlocalizedName());
+        GameRegistry.registerBlock(partChest, PartChestItemBlock.class, partChest.getUnlocalizedName());
         GameRegistry.registerTileEntity(PartChestLogic.class, partChest.getUnlocalizedName());
 
         craftingStation = new CraftingStationBlock();

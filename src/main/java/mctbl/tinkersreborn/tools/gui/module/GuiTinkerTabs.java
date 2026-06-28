@@ -91,8 +91,10 @@ public class GuiTinkerTabs extends GuiModule {
             ItemStack stack = new ItemStack(b, 1, meta);
             String name = stack.getDisplayName();
 
+            if (this.fontRendererObj == null) {
+                this.fontRendererObj = this.parent.getFontRender();
+            }
             // the origin has been translated to the top left of this gui rather than the screen, so we have to adjust
-            this.fontRendererObj = parent.getFontRender();
             func_146283_a(Lists.newArrayList(name), mouseX - this.guiLeft, mouseY - this.guiTop);
         }
     }

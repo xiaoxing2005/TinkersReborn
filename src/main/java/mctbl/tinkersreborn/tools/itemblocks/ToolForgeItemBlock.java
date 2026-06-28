@@ -6,9 +6,9 @@ import net.minecraft.item.ItemStack;
 import mctbl.tinkersreborn.library.itemblocks.TinkersRebornItemBlock;
 import mctbl.tinkersreborn.tools.blocks.ToolForgeBlock;
 
-public class TinkersRebornToolForgeItemBlock extends TinkersRebornItemBlock {
+public class ToolForgeItemBlock extends TinkersRebornItemBlock {
 
-    public TinkersRebornToolForgeItemBlock(Block b) {
+    public ToolForgeItemBlock(Block b) {
         super(b, "tinkersreborn.ToolForge", ToolForgeBlock.materials);
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
