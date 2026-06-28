@@ -65,7 +65,7 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
     public String getItemStackDisplayName(ItemStack stack) {
         TinkersRebornMaterial material = this.getMaterial(stack);
         if (material == TinkersRebornMaterial.UNKNOWN) {
-            return super.getItemStackDisplayName(stack);
+            return this.getLocalizedPartName();
         } else {
             return String.format(toolNameFormatter, material.localizedPrefix(), this.getLocalizedPartName());
         }

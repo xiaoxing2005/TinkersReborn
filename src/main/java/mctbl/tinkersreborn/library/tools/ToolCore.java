@@ -87,8 +87,6 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     public final Set<Category> categoryTags = new HashSet<>();
 
-    // public final Set<Material> effectiveMaterials = new HashSet<>();
-
     public static IIcon blankSprite;
     public static IIcon emptyIcon;
 
@@ -595,6 +593,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
             .forEach(trait -> trait.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected));
     }
 
+    // TODO reduce target resistant time
     // @Override
     // public boolean hitEntity(ItemStack stack, EntityLivingBase target,
     // EntityLivingBase attacker) {
@@ -745,10 +744,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         float attack = ToolTagsHelper.getActualAttackDamage(stack, player);
         list.add(HeadMaterialStats.formatAttack(attack));
 
-        int modifierSlots = ToolTagsHelper.getModifierSlots(stack);
-        int extraModifier = ToolTagsHelper.getExtraModifier(stack);
-        int usedModifiers = ToolTagsHelper.getUsedModifiers(stack);
-        int freeModifier = modifierSlots + extraModifier - usedModifiers;
+        int freeModifier = ToolTagsHelper.getModifierSlots(stack) + ToolTagsHelper.getExtraModifier(stack)
+            - ToolTagsHelper.getUsedModifiers(stack);
         if (freeModifier > 0) {
             list.add(String.format("%s: %d", TinkersStr.modifierToolTip.toString(), freeModifier));
         }

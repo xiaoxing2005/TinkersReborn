@@ -13,16 +13,12 @@ import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.gui.GuiCraftingStation;
 import mctbl.tinkersreborn.tools.inventory.ContainerCraftingStation;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class CraftingStationLogic extends TinkersRebornInventoryLogic {
 
     public CraftingStationLogic() {
-        super(10);
-    }
-
-    @Override
-    public boolean canDropInventorySlot(int slot) {
-        return slot != 0;
+        super(9);
     }
 
     @Override
@@ -41,6 +37,11 @@ public class CraftingStationLogic extends TinkersRebornInventoryLogic {
     @Override
     public String getDefaultName() {
         return "tinkersreborn.CraftingStation";
+    }
+
+    @Override
+    public String getInventoryName() {
+        return TinkersRebornUtils.translate(this.getDefaultName() + ".name");
     }
 
     @Override
