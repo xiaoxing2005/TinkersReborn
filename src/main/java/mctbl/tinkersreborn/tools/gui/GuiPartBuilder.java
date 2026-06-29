@@ -90,23 +90,23 @@ public class GuiPartBuilder extends GuiTinkerStation {
         }
     }
 
-    @Override
-    protected void drawContainerName() {
-        ContainerMultiModule<?> multiContainer = (ContainerMultiModule<?>) this.inventorySlots;
-        String localizedName = multiContainer.getInventoryDisplayName();
-        if (localizedName != null) {
-            GL11.glScaled(0.8F, 0.8F, 0.8F);
-            this.fontRendererObj.drawString(localizedName, 5, (int) (6 / 0.8f), 0x404040);
-            GL11.glScaled(1.25F, 1.25F, 1.25F);
-        }
-    }
+//    @Override
+//    protected void drawContainerName() {
+//        ContainerMultiModule<?> multiContainer = (ContainerMultiModule<?>) this.inventorySlots;
+//        String localizedName = multiContainer.getInventoryDisplayName();
+//        if (localizedName != null) {
+//            GL11.glScaled(0.8F, 0.8F, 0.8F);
+//            this.fontRendererObj.drawString(localizedName, 5, (int) (6 / 0.8f), 0x404040);
+//            GL11.glScaled(1.25F, 1.25F, 1.25F);
+//        }
+//    }
 
-    @Override
-    protected void drawPlayerInventoryName() {
-        String localizedName = Minecraft.getMinecraft().thePlayer.inventory.getInventoryName();
-        GL11.glScaled(0.8F, 0.8F, 0.8F);
-        this.fontRendererObj
-            .drawString(TinkersRebornUtils.translate(localizedName), 5, (int) ((this.ySize - 96 + 2) / 0.8f), 0x404040);
-        GL11.glScaled(1.25F, 1.25F, 1.25F);
-    }
+//    @Override
+//    protected void drawPlayerInventoryName() {
+//        String localizedName = Minecraft.getMinecraft().thePlayer.inventory.getInventoryName();
+//        GL11.glScaled(0.8F, 0.8F, 0.8F);
+//        this.fontRendererObj
+//            .drawString(TinkersRebornUtils.translate(localizedName), 5, (int) ((this.ySize - 96 + 2) / 0.8f), 0x404040);
+//        GL11.glScaled(1.25F, 1.25F, 1.25F);
+//    }
 }
