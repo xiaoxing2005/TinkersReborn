@@ -27,6 +27,11 @@ public class CastChestItemBlock extends ItemBlock {
     }
 
     @Override
+    public String getItemStackDisplayName(ItemStack p_77653_1_) {
+        return TinkersRebornUtils.translate("tinkersreborn.CastChest.name");
+    }
+
+    @Override
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean isDetail) {
         if (TinkersRebornUtils.isShiftKeyDown()) {
             List<ItemStack> inventoryFromNBT = this.readInventoryFromNBT(itemStack.getTagCompound());

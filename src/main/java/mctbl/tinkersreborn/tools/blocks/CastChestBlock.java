@@ -99,6 +99,8 @@ public class CastChestBlock extends TinkersRebornInventoryBlock implements ITink
             ItemStack chest = new ItemStack(this, 1);
             CastChestLogic logic = (CastChestLogic) world.getTileEntity(x, y, z);
 
+            if (!anyThingInside(logic)) return world.setBlockToAir(x, y, z);
+
             NBTTagCompound inventory = new NBTTagCompound();
 
             logic.writeInventoryToNBT(inventory);
@@ -120,6 +122,15 @@ public class CastChestBlock extends TinkersRebornInventoryBlock implements ITink
 
         }
         world.setBlockToAir(x, y, z);
+        return false;
+    }
+
+    private boolean anyThingInside(CastChestLogic logic) {
+        for (ItemStack stack : logic.getInventory()) {
+            if (stack != null && stack.stackSize > 0) {
+                return true;
+            }
+        }
         return false;
     }
 
