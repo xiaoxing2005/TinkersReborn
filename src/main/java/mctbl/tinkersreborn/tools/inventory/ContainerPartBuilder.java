@@ -102,8 +102,6 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
     }
 
     public void updateMaterialAndCount() {
-        updateGUI();
-
         ItemStack materialStack = tile.getStackInSlot(1);
         List<ItemStack> materialInputList = Arrays.asList(materialStack);
 
@@ -119,6 +117,8 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
             material = null;
             materialCount = 0;
         }
+
+        updateGUI();
 
         this.updateOutput(materialInputList);
     }
