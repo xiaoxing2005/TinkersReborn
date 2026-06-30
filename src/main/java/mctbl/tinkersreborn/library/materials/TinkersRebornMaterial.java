@@ -1,11 +1,14 @@
 package mctbl.tinkersreborn.library.materials;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -149,6 +152,10 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
         }
     }
 
+    public Set<Entry<MaterialStatusType, IMaterialStats>> getAlltatusType() {
+        return this.statsMap.entrySet();
+    }
+
     public Collection<? extends IMaterialStats> getAllStats() {
         return this.statsMap.values();
     }
@@ -272,13 +279,14 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     public List<ITrait> getAllTraitsForStats(MaterialStatusType staus) {
+        List<ITrait> list = new ArrayList<>();
         if (this.traits.containsKey(staus)) {
-            return this.traits.get(staus);
-        } else if (this.traits.containsKey(null)) {
-            return this.traits.get(null);
-        } else {
-            return new LinkedList<>();
+            list.addAll(this.traits.get(staus));
         }
+        if (this.traits.containsKey(null)) {
+            list.addAll(this.traits.get(null));
+        }
+        return list;
     }
 
     /**
@@ -302,6 +310,15 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
         this.addItem("ingot" + oredictSuffix, 1, VALUE_Ingot);
         this.addItem("nugget" + oredictSuffix, 1, VALUE_Nugget);
         this.addItem("block" + oredictSuffix, 1, VALUE_Block);
+    }
+
+    public TinkersRebornMaterial addShard() {
+        // TODO
+        // this.addItem(
+        // TinkersRebornTools.shard.getNewPartWithMaterial(this.identifier),
+        // 1,
+        // TinkersRebornMaterial.VALUE_Shard);
+        return this;
     }
 
     public static final class RenderMaterial extends TinkersRebornMaterial {

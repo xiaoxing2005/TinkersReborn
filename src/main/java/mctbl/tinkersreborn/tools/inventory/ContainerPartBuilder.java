@@ -1,6 +1,7 @@
 package mctbl.tinkersreborn.tools.inventory;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,11 +14,15 @@ import net.minecraft.world.WorldServer;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.inventory.slots.SlotOnlyTake;
 import mctbl.tinkersreborn.library.items.IPattern;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.library.utils.RecipeMatch.Match;
+import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.entity.PartBuilderLogic;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogic> {
 
@@ -42,12 +47,22 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
 
         this.addPlayerInventory(inventoryplayer, 8, 84);
 
-        onCraftMatrixChanged(inventoryplayer);
+        this.onCraftMatrixChanged(inventoryplayer);
     }
 
     // Called when the crafting result is taken out of its slot
     public void onResultTaken(EntityPlayer playerIn, ItemStack stack) {
+        ItemStack materialStack = tile.getStackInSlot(1);
+        List<ItemStack> materialInputList = Arrays.asList(materialStack);
 
+        tile.decrStackSize(0, 1);
+
+        tryBuildToolPart(materialInputList, true);
+
+        if (materialStack.stackSize <= 0) tile.setInventorySlotContents(1, null);
+
+        this.updateMaterialAndCount();
+        this.tile.markDirty();
     }
 
     public ItemStack getResult() {
@@ -72,7 +87,7 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
     public void onCraftMatrixChanged(IInventory inventoryIn) {
         updateGUI();
 
-        updateMaterialAndCount();
+        this.updateMaterialAndCount();
 
         // sync output with other open containers on the server
         if (!this.world.isRemote) {
@@ -89,9 +104,11 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
 
     public void updateMaterialAndCount() {
         ItemStack materialStack = tile.getStackInSlot(1);
+        List<ItemStack> materialInputList = Arrays.asList(materialStack);
+
         if (materialStack != null) {
             for (TinkersRebornMaterial m : TinkersRebornRegistry.allMaterialsList) {
-                Optional<Match> matches = m.matchesRecursively(Arrays.asList(materialStack));
+                Optional<Match> matches = m.matchesRecursively(materialInputList);
                 if (matches.isPresent() && matches.get().amount > 0) {
                     material = m;
                     materialCount = matches.get().amount;
@@ -102,19 +119,52 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
             materialCount = 0;
         }
 
-        this.updateOutput();
+        this.updateOutput(materialInputList);
     }
 
-    public void updateOutput() {
+    public void updateOutput(List<ItemStack> materialInputList) {
         // have pattern or cast
         if (tile.getStackInSlot(0) != null && tile.getStackInSlot(0)
             .getItem() instanceof IPattern) {
-            if (part != null && material != null && materialCount >= part.cost) {
-                out.inventory.setInventorySlotContents(0, part.getNewPartWithMaterial(material));
-                return;
-            }
+            out.inventory.setInventorySlotContents(0, tryBuildToolPart(materialInputList, false));
         }
-        out.inventory.setInventorySlotContents(0, null);
+    }
+
+    private ItemStack tryBuildToolPart(List<ItemStack> materialInputList, boolean removeItems) {
+        if (!removeItems) {
+            materialInputList = TinkersRebornUtils.copyItemStackList(materialInputList);
+        }
+
+        if (part != null && material != null && materialCount >= part.cost && material.isCraftable()) {
+            Optional<RecipeMatch.Match> match = material.matches(materialInputList, part.getCost());
+
+            if (!match.isPresent()) {
+                return null;
+            }
+
+            ItemStack output = part.getNewPartWithMaterial(material);
+            RecipeMatch.removeMatch(materialInputList, match.get());
+
+            // check if we have secondary output
+            ItemStack secondary = null;
+            int leftover = (match.get().amount - part.getCost()) / TinkersRebornMaterial.VALUE_Shard;
+            if (leftover > 0) {
+                secondary = TinkersRebornTools.shard.getNewPartWithMaterial(material);
+                if (secondary != null) {
+                    secondary.stackSize = leftover;
+                }
+            }
+            if (removeItems && !player.worldObj.isRemote) {
+                if (!player.inventory.addItemStackToInventory(secondary)) {
+                    player.dropPlayerItemWithRandomChoice(secondary, false);
+                }
+                this.player.inventory.markDirty();
+            }
+
+            return output;
+        }
+
+        return null;
     }
 
     public TinkersRebornMaterial getInputMaterial() {
@@ -153,7 +203,7 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
         }
     }
 
-    public static class SlotPartBuilderOut extends Slot {
+    public static class SlotPartBuilderOut extends SlotOnlyTake {
 
         public ContainerPartBuilder parent;
 

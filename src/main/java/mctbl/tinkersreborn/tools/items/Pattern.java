@@ -170,6 +170,10 @@ public class Pattern extends Item implements IPattern {
         this.patternType.add(identifier);
     }
 
+    public List<String> getAllPatternType() {
+        return this.patternType;
+    }
+
     // NBT
     public TinkersRebornToolPart getToolPart(ItemStack stack) {
         return TinkersRebornRegistry.getToolPartByPartName(this.getIdentifier(stack));

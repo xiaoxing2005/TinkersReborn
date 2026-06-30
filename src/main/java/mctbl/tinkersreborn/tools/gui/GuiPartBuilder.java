@@ -1,7 +1,9 @@
 package mctbl.tinkersreborn.tools.gui;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -16,7 +18,9 @@ import mctbl.tinkersreborn.library.gui.GuiDynButtons;
 import mctbl.tinkersreborn.library.gui.GuiElement;
 import mctbl.tinkersreborn.library.materials.IMaterialStats;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.library.tools.ITrait;
 import mctbl.tinkersreborn.library.utils.BlockPos;
+import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.entity.PartBuilderLogic;
 import mctbl.tinkersreborn.tools.gui.module.GuiInfoPanel;
 import mctbl.tinkersreborn.tools.inventory.ContainerPartBuilder;
@@ -34,6 +38,8 @@ public class GuiPartBuilder extends GuiTinkerStation {
         TinkersReborn.MODID,
         "textures/gui/partbuilder.png");
 
+    public static final DecimalFormat df = TinkersRebornUtils.df;
+
     private static final GuiElement PatternOutline = new GuiElement(177, 70, 18, 18, 256, 256);
     private static final GuiElement MaterialOutline = new GuiElement(177, 88, 18, 18, 256, 256);
 
@@ -49,7 +55,13 @@ public class GuiPartBuilder extends GuiTinkerStation {
         this.addModule(materialInfo);
         materialInfo.ySizeBias(83);
 
-        partSelector = new GuiDynButtons(this, new ArrayList<>(TinkersRebornRegistry.toolPartNameMap.values()));
+        partSelector = new GuiDynButtons(
+            this,
+            TinkersRebornTools.patternAndCast.getAllPatternType()
+                .stream()
+                .map(TinkersRebornRegistry::getToolPartByPartName)
+                .collect(Collectors.toList()));
+
         this.addModuleFirst(partSelector);
     }
 
@@ -81,33 +93,35 @@ public class GuiPartBuilder extends GuiTinkerStation {
     }
 
     protected void drawSlotIcons() {
-        PatternOutline.draw(this.guiLeft + 8, this.guiTop + 35);
         ContainerPartBuilder container = (ContainerPartBuilder) inventorySlots;
-        if (container.getInputMaterial() == null) {
-            MaterialOutline.draw(this.guiLeft + 29, this.guiTop + 35);
-        }
+        if (container.getIInventory()
+            .getStackInSlot(0) == null) PatternOutline.draw(this.guiLeft + 8, this.guiTop + 35);
+
+        if (container.getIInventory()
+            .getStackInSlot(1) == null) MaterialOutline.draw(this.guiLeft + 29, this.guiTop + 35);
+
     }
 
     @Override
     public void updateDisplay() {
         ContainerPartBuilder container = (ContainerPartBuilder) inventorySlots;
         TinkersRebornMaterial inputMaterial = container.getInputMaterial();
+
         if (inputMaterial != null) {
+            String materialEncodeColor = ColorUtil.encodeColor(inputMaterial.materialTextColor);
             List<String> materialInfoText = new ArrayList<>();
             List<String> materialInfoTooltips = new ArrayList<>();
 
-            materialInfoText.add(
-                ColorUtil.addGold(
-                    String.format(
-                        TinkersStr.patternToolTip.toString(),
-                        container.getSelectedToolPart()
-                            .getCost() / TinkersRebornMaterial.VALUE_Ingot)));
+            float cost = container.getSelectedToolPart()
+                .getCost() / (float) TinkersRebornMaterial.VALUE_Ingot;
+            float materialValue = container.getMaterialValue() / (float) TinkersRebornMaterial.VALUE_Ingot;
+
+            materialInfoText
+                .add(ColorUtil.addGold(String.format(TinkersStr.patternToolTip.toString(), df.format(cost))));
             materialInfoTooltips.add(null);
             materialInfoText.add(
-                ColorUtil.addAqua(
-                    String.format(
-                        TinkersStr.partCrafterMaterialValue.toString(),
-                        container.getMaterialValue() / TinkersRebornMaterial.VALUE_Ingot)));
+                ColorUtil
+                    .addAqua(String.format(TinkersStr.partCrafterMaterialValue.toString(), df.format(materialValue))));
             materialInfoTooltips.add(null);
 
             materialInfoText.add("");
@@ -120,12 +134,19 @@ public class GuiPartBuilder extends GuiTinkerStation {
                 materialInfoText.addAll(stats.getLocalizedInfo());
                 materialInfoTooltips.addAll(stats.getLocalizedDesc());
 
+                // Traits
+                for (ITrait trait : inputMaterial.getAllTraitsForStats(stats.getIdentifier())) {
+                    if (!trait.isHidden()) {
+                        materialInfoText.add(ColorUtil.addUnderLine(materialEncodeColor + trait.getLocalizedName()));
+                        materialInfoTooltips.add(materialEncodeColor + trait.getLocalizedDesc());
+                    }
+                }
+
                 materialInfoText.add("");
                 materialInfoTooltips.add(null);
             }
 
-            materialInfo
-                .setCaption(ColorUtil.encodeColor(inputMaterial.materialTextColor) + inputMaterial.localizedName());
+            materialInfo.setCaption(materialEncodeColor + inputMaterial.localizedName());
             materialInfo.setText(materialInfoText, materialInfoTooltips);
         } else {
             materialInfo.setCaption(TinkersRebornUtils.translate("tinkersreborn.PartBuilder.name"));
