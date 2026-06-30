@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
 import net.minecraft.block.Block;
@@ -22,6 +23,7 @@ import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.ITrait;
+import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.library.utils.RecipeMatchRegistry;
 import mctbl.tinkersreborn.util.ColorUtil;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
@@ -239,7 +241,9 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     public TinkersRebornMaterial setRepresentativeItem(ItemStack representativeItem) {
-        this.representativeItem = representativeItem;
+        if (this.representativeItem == null) {
+            this.representativeItem = representativeItem;
+        }
         return this;
     }
 
@@ -290,7 +294,8 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     /**
-     * Adds the trait as the default trait, will be used if no more specific one is present time.
+     * Adds the trait as the default trait, will be used if no more specific one is
+     * present time.
      */
     public TinkersRebornMaterial addTrait(IModifier materialTrait) {
         return addTrait(materialTrait, null);
@@ -312,12 +317,17 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
         this.addItem("block" + oredictSuffix, 1, VALUE_Block);
     }
 
-    public TinkersRebornMaterial addShard() {
-        // TODO
-        // this.addItem(
-        // TinkersRebornTools.shard.getNewPartWithMaterial(this.identifier),
-        // 1,
-        // TinkersRebornMaterial.VALUE_Shard);
+    public TinkersRebornMaterial setShard(ItemStack shard) {
+        Optional<RecipeMatch.Match> matchOptional = matches(shard);
+        if (matchOptional.isPresent()) {
+            RecipeMatch.Match match = matchOptional.get();
+            if (match.amount == VALUE_Shard) {
+                this.shardItem = shard;
+                if (TinkersRebornUtils.isStackEmpty(representativeItem)) {
+                    this.setRepresentativeItem(shardItem.copy());
+                }
+            }
+        }
         return this;
     }
 

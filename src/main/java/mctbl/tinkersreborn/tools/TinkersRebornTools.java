@@ -98,6 +98,7 @@ import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.utils.MiningLevelHelper;
+import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
 import mctbl.tinkersreborn.tools.blocks.CastChestBlock;
 import mctbl.tinkersreborn.tools.blocks.CraftingStationBlock;
@@ -539,8 +540,15 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
     @Override
     public void postInit(FMLPostInitializationEvent e) {
-        // TODO Auto-generated method stub
         TinkersRebornModifiers.INSTANCE.postInit(e);
+
+        if (shard != null) {
+            for (TinkersRebornMaterial material : TinkersRebornRegistry.allMaterialsList) {
+                ItemStack shardStack = shard.getNewPartWithMaterial(material.identifier);
+                material.addRecipeMatch(new RecipeMatch.ItemCombination(VALUE_Shard, shardStack));
+                material.setShard(shardStack);
+            }
+        }
     }
 
     /**
