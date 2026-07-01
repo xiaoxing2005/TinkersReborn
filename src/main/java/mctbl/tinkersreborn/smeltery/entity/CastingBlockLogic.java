@@ -442,7 +442,7 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
         this.castingDelay = tags.getInteger("castingDelay");
         this.maxCastingDelay = tags.getInteger("maxCastingDelay");
         this.renderOffset = tags.getInteger("RenderOffset");
-        this.direction = tags.getByte("direction");
+        this.direction = tags.getByte("Direction");
     }
 
     @Override
@@ -463,7 +463,7 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
         tags.setInteger("castingDelay", castingDelay);
         tags.setInteger("maxCastingDelay", maxCastingDelay);
         tags.setInteger("RenderOffset", renderOffset);
-        tags.setByte("direction", direction);
+        tags.setByte("Direction", direction);
     }
 
     /* Packets */
