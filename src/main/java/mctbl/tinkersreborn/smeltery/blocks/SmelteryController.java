@@ -2,7 +2,6 @@ package mctbl.tinkersreborn.smeltery.blocks;
 
 import java.util.Random;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -13,7 +12,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
@@ -21,11 +19,7 @@ import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 public class SmelteryController extends TinkersRebornMultiBlock {
 
     public SmelteryController() {
-        super(Material.rock);
-        this.setHardness(3F);
-        this.setResistance(20F);
-        this.setStepSound(soundTypeMetal);
-        this.setCreativeTab(TinkersRebornRegistry.blockTab);
+        super();
         this.setBlockName("tinkersreborn.SmelteryController");
         this.TEXTURENAMES = new String[] { "smeltery/smeltery_inactive", "smeltery/smeltery_active" };
     }

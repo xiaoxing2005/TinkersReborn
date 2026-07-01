@@ -7,16 +7,22 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.entity.IMasterLogic;
 import mctbl.tinkersreborn.library.entity.IServantLogic;
+import mctbl.tinkersreborn.smeltery.entity.MultiServantLogic;
 import mctbl.tinkersreborn.smeltery.model.SmelteryRender;
 
 public abstract class TinkersRebornMultiBlock extends TinkersRebornInventoryBlock {
 
     protected IIcon sideIcon;
 
-    public TinkersRebornMultiBlock(Material m) {
-        super(m);
+    public TinkersRebornMultiBlock() {
+        super(Material.rock);
+        this.setHardness(3F);
+        this.setResistance(20F);
+        this.setStepSound(soundTypeMetal);
+        this.setCreativeTab(TinkersRebornRegistry.blockTab);
     }
 
     @Override
@@ -49,5 +55,7 @@ public abstract class TinkersRebornMultiBlock extends TinkersRebornInventoryBloc
         super.breakBlock(world, x, y, z, blockID, meta);
     }
 
-    public abstract TileEntity createNewTileEntity(World world, int metadata);
+    public TileEntity createNewTileEntity(World world, int metadata) {
+        return new MultiServantLogic();
+    }
 }

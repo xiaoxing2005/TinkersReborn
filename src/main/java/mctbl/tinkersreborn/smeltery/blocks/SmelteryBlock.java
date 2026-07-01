@@ -1,32 +1,20 @@
 package mctbl.tinkersreborn.smeltery.blocks;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
-import mctbl.tinkersreborn.smeltery.entity.MultiServantLogic;
 
 public class SmelteryBlock extends TinkersRebornMultiBlock {
 
     public SmelteryBlock() {
-        super(Material.rock);
-        this.setHardness(3F);
-        this.setResistance(20F);
-        this.setStepSound(soundTypeMetal);
-        this.setCreativeTab(TinkersRebornRegistry.blockTab);
+        super();
         this.setBlockName("tinkersreborn.SmelteryBlock");
-        this.TEXTURENAMES = new String[] { "smeltery/searedbrick", "smeltery/searedcobble" };
-    }
-
-    public SmelteryBlock(Material m) {
-        super(m);
+        this.TEXTURENAMES = new String[] { "smeltery/searedbrick", "smeltery/searedcobble", "smeltery/stone" };
     }
 
     @Override
@@ -43,11 +31,6 @@ public class SmelteryBlock extends TinkersRebornMultiBlock {
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
         return this.icons[meta];
-    }
-
-    @Override
-    public TileEntity createNewTileEntity(World world, int metadata) {
-        return new MultiServantLogic();
     }
 
     @Override

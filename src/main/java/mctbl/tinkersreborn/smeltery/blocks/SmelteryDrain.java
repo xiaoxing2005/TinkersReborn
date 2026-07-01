@@ -1,13 +1,11 @@
 package mctbl.tinkersreborn.smeltery.blocks;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryDrainLogic;
@@ -15,11 +13,7 @@ import mctbl.tinkersreborn.smeltery.entity.SmelteryDrainLogic;
 public class SmelteryDrain extends TinkersRebornMultiBlock {
 
     public SmelteryDrain() {
-        super(Material.rock);
-        this.setHardness(3F);
-        this.setResistance(20F);
-        this.setStepSound(soundTypeMetal);
-        this.setCreativeTab(TinkersRebornRegistry.blockTab);
+        super();
         this.setBlockName("tinkersreborn.Drain");
         this.TEXTURENAMES = new String[] { "smeltery/drain_basin", "smeltery/drain_out" };
     }

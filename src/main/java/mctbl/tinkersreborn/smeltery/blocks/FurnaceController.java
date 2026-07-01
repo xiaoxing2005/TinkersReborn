@@ -1,6 +1,5 @@
 package mctbl.tinkersreborn.smeltery.blocks;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -11,18 +10,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
 
 public class FurnaceController extends TinkersRebornMultiBlock {
 
     public FurnaceController() {
-        super(Material.rock);
-        this.setHardness(3F);
-        this.setResistance(20F);
-        this.setStepSound(soundTypeMetal);
-        this.setCreativeTab(TinkersRebornRegistry.blockTab);
+        super();
         this.setBlockName("tinkersreborn.FurnaceController");
         this.TEXTURENAMES = new String[] { "smeltery/furnace_inactive", "smeltery/furnace_active" };
     }
