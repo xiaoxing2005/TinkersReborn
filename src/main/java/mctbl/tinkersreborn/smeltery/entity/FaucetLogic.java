@@ -19,28 +19,15 @@ import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 
 public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogic, IActiveLogic, IFluidHandler {
 
-    byte direction = 0;
+    public ForgeDirection faceDirection;
+
     boolean active;
     public FluidStack liquid;
     public boolean hasRedstonePower = false;
 
     public boolean activateFaucet() {
         if (liquid == null && active) {
-            int x = xCoord, z = zCoord;
-            switch (getRenderDirection()) {
-                case 2:
-                    z++;
-                    break;
-                case 3:
-                    z--;
-                    break;
-                case 4:
-                    x++;
-                    break;
-                case 5:
-                    x--;
-                    break;
-            }
+            int x = xCoord - getForgeDirection().offsetX, z = zCoord - getForgeDirection().offsetZ;
 
             TileEntity drainte = worldObj.getTileEntity(x, yCoord, z);
             TileEntity tankte = worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
@@ -79,23 +66,13 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
     }
 
     @Override
-    public byte getRenderDirection() {
-        return direction;
-    }
-
-    @Override
-    public ForgeDirection getForgeDirection() {
-        return ForgeDirection.getOrientation(direction);
-    }
-
-    @Override
     public void readFromNBT(NBTTagCompound tags) {
         super.readFromNBT(tags);
         readCustomNBT(tags);
     }
 
     public void readCustomNBT(NBTTagCompound tags) {
-        direction = tags.getByte("Direction");
+        this.faceDirection = ForgeDirection.getOrientation(tags.getByte("Direction"));
         if (tags.getBoolean("hasLiquid")) {
             this.liquid = FluidStack.loadFluidStackFromNBT(tags.getCompoundTag("Fluid"));
         } else this.liquid = null;
@@ -108,7 +85,7 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
     }
 
     public void writeCustomNBT(NBTTagCompound tags) {
-        tags.setByte("Direction", direction);
+        tags.setByte("Direction", (byte) this.faceDirection.ordinal());
         tags.setBoolean("hasLiquid", liquid != null);
         if (liquid != null) {
             NBTTagCompound nbt = new NBTTagCompound();
@@ -177,25 +154,25 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
     }
 
     @Override
-    public void setFrogeDirection(ForgeDirection direction) {}
-
-    @Override
-    public void setRenderDirection(int side) {
-        if (side != 0 && side != 1) {
-            direction = (byte) side;
-        }
+    public ForgeDirection getForgeDirection() {
+        return this.faceDirection;
     }
 
     @Override
-    public void setRenderDirection(float yaw, float pitch, EntityLivingBase player) {
-        if (direction > 1) return;
+    public void setFrogeDirection(ForgeDirection direction) {
+        this.faceDirection = direction;
+    }
 
-        int facing = MathHelper.floor_double((double) (yaw / 360) + 0.5D) & 3;
+    @Override
+    public void setFacedDirection(EntityLivingBase player) {
+        int facing = player != null ? MathHelper.floor_double((double) (player.rotationYaw / 90F) + 0.5D) & 3 : 0;
         switch (facing) {
-            case 1 -> direction = 5;
-            case 2 -> direction = 3;
-            case 3 -> direction = 4;
-            default -> direction = 2;
+            case 0 -> this.faceDirection = ForgeDirection.NORTH;
+            case 1 -> this.faceDirection = ForgeDirection.EAST;
+            case 2 -> this.faceDirection = ForgeDirection.SOUTH;
+            case 3 -> this.faceDirection = ForgeDirection.WEST;
+            default -> this.faceDirection = ForgeDirection.NORTH;
         }
     }
+
 }

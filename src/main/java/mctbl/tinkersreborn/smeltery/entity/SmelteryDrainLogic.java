@@ -17,17 +17,7 @@ import mctbl.tinkersreborn.library.world.CoordTuple;
 
 public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandler, ITinkersRebornIFacingLogic {
 
-    byte direction;
-
-    @Override
-    public byte getRenderDirection() {
-        return direction;
-    }
-
-    @Override
-    public ForgeDirection getForgeDirection() {
-        return ForgeDirection.getOrientation(direction);
-    }
+    public ForgeDirection faceDirection;
 
     @Override
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
@@ -102,47 +92,15 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
     }
 
     @Override
-    public void setRenderDirection(float yaw, float pitch, EntityLivingBase player) {
-        if (pitch > 45) direction = 1;
-        else if (pitch < -45) direction = 0;
-        else {
-            int facing = MathHelper.floor_double((double) (yaw / 360) + 0.5D) & 3;
-            switch (facing) {
-                case 0:
-                    direction = 2;
-                    break;
-
-                case 1:
-                    direction = 5;
-                    break;
-
-                case 2:
-                    direction = 3;
-                    break;
-
-                case 3:
-                    direction = 4;
-                    break;
-            }
-        }
+    public void writeCustomNBT(NBTTagCompound tags) {
+        super.writeCustomNBT(tags);
+        tags.setByte("Direction", (byte) this.faceDirection.ordinal());
     }
 
     @Override
-    public void setFrogeDirection(ForgeDirection direction) {}
-
-    @Override
-    public void setRenderDirection(int side) {}
-
-    @Override
-    public void readFromNBT(NBTTagCompound tags) {
-        super.readFromNBT(tags);
-        direction = tags.getByte("Direction");
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound tags) {
-        super.writeToNBT(tags);
-        tags.setByte("Direction", direction);
+    public void readCustomNBT(NBTTagCompound tags) {
+        super.readCustomNBT(tags);
+        this.faceDirection = ForgeDirection.getOrientation(tags.getByte("Direction"));
     }
 
     /* Packets */
@@ -172,6 +130,28 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
         if (smeltery.maxLiquid == 0) return 0;
 
         return MathHelper.ceiling_float_int(15f * smeltery.currentLiquid / smeltery.maxLiquid);
+    }
+
+    @Override
+    public void setFacedDirection(EntityLivingBase player) {
+        int facing = player != null ? MathHelper.floor_double((double) (player.rotationYaw / 90F) + 0.5D) & 3 : 0;
+        switch (facing) {
+            case 0 -> this.faceDirection = ForgeDirection.NORTH;
+            case 1 -> this.faceDirection = ForgeDirection.EAST;
+            case 2 -> this.faceDirection = ForgeDirection.SOUTH;
+            case 3 -> this.faceDirection = ForgeDirection.WEST;
+            default -> this.faceDirection = ForgeDirection.NORTH;
+        }
+    }
+
+    @Override
+    public ForgeDirection getForgeDirection() {
+        return this.faceDirection;
+    }
+
+    @Override
+    public void setFrogeDirection(ForgeDirection direction) {
+        this.faceDirection = direction;
     }
 
 }

@@ -12,7 +12,6 @@ import net.minecraft.world.World;
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import mctbl.tinkersreborn.tools.gui.GuiPartBuilder;
 import mctbl.tinkersreborn.tools.inventory.ContainerPartBuilder;
-import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class PartBuilderLogic extends TinkersRebornInventoryLogic implements ISidedInventory {
 
@@ -61,11 +60,6 @@ public class PartBuilderLogic extends TinkersRebornInventoryLogic implements ISi
     @Override
     public boolean canExtractItem(int i, ItemStack itemstack, int j) {
         return false;
-    }
-
-    @Override
-    public String getInventoryName() {
-        return TinkersRebornUtils.translate(this.getDefaultName() + ".name");
     }
 
     @Override

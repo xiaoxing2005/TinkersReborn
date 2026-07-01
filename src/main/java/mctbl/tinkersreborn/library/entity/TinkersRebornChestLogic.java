@@ -5,8 +5,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import mctbl.tinkersreborn.util.TinkersRebornUtils;
-
 public abstract class TinkersRebornChestLogic extends TinkersRebornInventoryLogic {
 
     public static final int MAX_INVENTORY = 256;
@@ -35,11 +33,6 @@ public abstract class TinkersRebornChestLogic extends TinkersRebornInventoryLogi
     @Override
     public boolean canUpdate() {
         return false;
-    }
-
-    @Override
-    public String getInventoryName() {
-        return TinkersRebornUtils.translate(this.getDefaultName() + ".name");
     }
 
     @Override

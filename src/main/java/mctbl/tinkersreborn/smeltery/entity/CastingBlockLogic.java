@@ -1,7 +1,6 @@
 package mctbl.tinkersreborn.smeltery.entity;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -11,7 +10,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -488,30 +486,4 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
         return (int) (((maxCastingDelay - castingDelay) / (double) maxCastingDelay) * 100);
     }
 
-    @Override
-    public byte getRenderDirection() {
-        return direction;
-    }
-
-    @Override
-    public ForgeDirection getForgeDirection() {
-        return ForgeDirection.getOrientation(direction);
-    }
-
-    @Override
-    public void setFrogeDirection(ForgeDirection direction) {}
-
-    @Override
-    public void setRenderDirection(int side) {}
-
-    @Override
-    public void setRenderDirection(float yaw, float pitch, EntityLivingBase player) {
-        int facing = MathHelper.floor_double((double) (yaw / 360) + 0.5D) & 3;
-        switch (facing) {
-            case 1 -> direction = 5;
-            case 2 -> direction = 3;
-            case 3 -> direction = 4;
-            default -> direction = 2;
-        }
-    }
 }

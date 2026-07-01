@@ -14,7 +14,7 @@ import mctbl.tinkersreborn.library.itemblocks.TinkersRebornItemBlock;
 public class SmelteryItemBlock extends TinkersRebornItemBlock {
 
     public SmelteryItemBlock(Block b) {
-        super(b, "tinkersreborn.MultiBlock", new String[] { "Cobblestone", "Brick" });
+        super(b, "tinkersreborn.MultiBlock", new String[] { "Brick", "Cobblestone", "Stone" });
         setMaxDamage(0);
         setHasSubtypes(true);
     }

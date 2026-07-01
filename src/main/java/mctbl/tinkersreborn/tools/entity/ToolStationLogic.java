@@ -17,7 +17,6 @@ import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.gui.GuiToolStation;
 import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
 import mctbl.tinkersreborn.tools.inventory.ContainerToolStation;
-import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class ToolStationLogic extends TinkersRebornInventoryLogic implements ISidedInventory {
 
@@ -75,11 +74,6 @@ public class ToolStationLogic extends TinkersRebornInventoryLogic implements ISi
     @Override
     public boolean canExtractItem(int i, ItemStack itemstack, int j) {
         return false;
-    }
-
-    @Override
-    public String getInventoryName() {
-        return TinkersRebornUtils.translate(this.getDefaultName() + ".name");
     }
 
     @Override

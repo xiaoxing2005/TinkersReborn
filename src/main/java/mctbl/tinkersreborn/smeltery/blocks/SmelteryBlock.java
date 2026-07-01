@@ -1,6 +1,11 @@
 package mctbl.tinkersreborn.smeltery.blocks;
 
+import java.util.List;
+
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -14,7 +19,7 @@ public class SmelteryBlock extends TinkersRebornMultiBlock {
     public SmelteryBlock() {
         super();
         this.setBlockName("tinkersreborn.SmelteryBlock");
-        this.TEXTURENAMES = new String[] { "smeltery/searedbrick", "smeltery/searedcobble", "smeltery/stone" };
+        this.TEXTURENAMES = new String[] { "smeltery/searedbrick", "smeltery/searedcobble", "smeltery/seared_stone" };
     }
 
     @Override
@@ -37,6 +42,13 @@ public class SmelteryBlock extends TinkersRebornMultiBlock {
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float clickX,
         float clickY, float clickZ) {
         return false;
+    }
+
+    @Override
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
+        for (int i = 0; i < this.TEXTURENAMES.length; i++) {
+            list.add(new ItemStack(itemIn, 1, i));
+        }
     }
 
 }

@@ -31,9 +31,6 @@ public abstract class TinkersRebornInventoryBlock extends BlockContainer {
     /* Textures */
     public IIcon[] icons;
 
-    /* Placement */
-    int side = -1;
-
     protected TinkersRebornInventoryBlock(Material m) {
         super(m);
     }
@@ -120,7 +117,6 @@ public abstract class TinkersRebornInventoryBlock extends BlockContainer {
     // This class does not have an actual block placed in the world
     @Override
     public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int meta) {
-        this.side = side;
         return meta;
     }
 
@@ -129,15 +125,7 @@ public abstract class TinkersRebornInventoryBlock extends BlockContainer {
         TileEntity logic = world.getTileEntity(x, y, z);
 
         if (logic instanceof ITinkersRebornIFacingLogic direction) {
-            if (side != -1) {
-                direction.setRenderDirection(side);
-                side = -1;
-            }
-            if (entityliving == null) {
-                direction.setRenderDirection(0F, 0F, null);
-            } else {
-                direction.setRenderDirection(entityliving.rotationYaw * 4F, entityliving.rotationPitch, entityliving);
-            }
+            direction.setFacedDirection(entityliving);
         }
 
         if (logic instanceof TinkersRebornInventoryLogic inv) {

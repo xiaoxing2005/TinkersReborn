@@ -162,8 +162,8 @@ public class CastingBlockRender implements ISimpleBlockRenderingHandler {
             } else if (metadata == 1) {
                 if (world.getTileEntity(x, y, z) instanceof FaucetLogic logic) {
                     float xMin = 0.375F, zMin = 0.375F, xMax = 0.625F, zMax = 0.625F;
-                    switch (logic.getRenderDirection()) {
-                        case 2:
+                    switch (logic.getForgeDirection()) {
+                        case NORTH:
                             renderer.setRenderBounds(0.25, 0.25, 0.625, 0.75, 0.375, 1);
                             renderer.renderStandardBlock(block, x, y, z);
                             renderer.setRenderBounds(0.25, 0.375, 0.625, 0.375, 0.625, 1);
@@ -174,7 +174,7 @@ public class CastingBlockRender implements ISimpleBlockRenderingHandler {
                             zMin = 0.5F;
                             // zMin = 0.625F;
                             break;
-                        case 3:
+                        case SOUTH:
                             renderer.setRenderBounds(0.25, 0.25, 0, 0.75, 0.375, 0.375);
                             renderer.renderStandardBlock(block, x, y, z);
                             renderer.setRenderBounds(0.25, 0.375, 0, 0.375, 0.625, 0.375);
@@ -184,7 +184,7 @@ public class CastingBlockRender implements ISimpleBlockRenderingHandler {
                             renderer.setRenderBounds(0.375, 0.375, 0, 0.625, 0.625, 0.375);
                             zMax = 0.5F;
                             break;
-                        case 4:
+                        case WEST:
                             renderer.setRenderBounds(0.625, 0.25, 0.25, 1, 0.375, 0.75);
                             renderer.renderStandardBlock(block, x, y, z);
                             renderer.setRenderBounds(0.625, 0.375, 0.25, 1, 0.625, 0.375);
@@ -194,7 +194,8 @@ public class CastingBlockRender implements ISimpleBlockRenderingHandler {
                             renderer.setRenderBounds(0.625, 0.375, 0.375, 1, 0.625, 0.625);
                             xMin = 0.5F;
                             break;
-                        case 5:
+                        case EAST:
+                        default:
                             renderer.setRenderBounds(0, 0.25, 0.25, 0.375, 0.375, 0.75);
                             renderer.renderStandardBlock(block, x, y, z);
                             renderer.setRenderBounds(0, 0.375, 0.25, 0.375, 0.625, 0.375);
@@ -235,20 +236,21 @@ public class CastingBlockRender implements ISimpleBlockRenderingHandler {
 
                         // float xMin = 0.375F, zMin = 0.375F, xMax = 0.625F,
                         // zMax = 0.625F;
-                        switch (logic.getRenderDirection()) {
-                            case 3:
+                        switch (logic.getForgeDirection()) {
+                            case SOUTH:
                                 zMin = 0.0F;
                                 zMax = 0.375F;
                                 break;
-                            case 2:
+                            case NORTH:
                                 zMin = 0.625F;
                                 zMax = 1.0F;
                                 break;
-                            case 5:
+                            case EAST:
                                 xMin = 0.0F;
                                 xMax = 0.375F;
                                 break;
-                            case 4:
+                            case WEST:
+                            default:
                                 xMin = 0.625F;
                                 xMax = 1.0F;
                                 break;

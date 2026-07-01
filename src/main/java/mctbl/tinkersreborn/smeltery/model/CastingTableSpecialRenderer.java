@@ -53,21 +53,20 @@ public class CastingTableSpecialRenderer extends TileEntitySpecialRenderer {
         GL11.glPushMatrix();
         GL11.glTranslatef(1F, 1.48F, 0.55F);
 
-        float rotationY = switch (logic.getRenderDirection()) {
-            case 3 -> 180F;
-            case 4 -> 90F;
-            case 5 -> 270F;
+        float rotationY = switch (logic.getForgeDirection()) {
+            case SOUTH -> 180F;
+            case WEST -> 90F;
+            case EAST -> 270F;
             default -> 0F;
         };
         GL11.glRotatef(rotationY, 0F, 1F, 0F);
 
-        if (logic.getRenderDirection() == 3) {
-            GL11.glTranslatef(0F, 0F, -0.9F);
-        } else if (logic.getRenderDirection() == 4) {
-            GL11.glTranslatef(-0.45F, 0F, -0.45F);
-        } else if (logic.getRenderDirection() == 5) {
-            GL11.glTranslatef(0.45F, 0F, -0.45F);
-        }
+        switch (logic.getForgeDirection()) {
+            case SOUTH -> GL11.glTranslatef(0F, 0F, -0.9F);
+            case WEST -> GL11.glTranslatef(-0.45F, 0F, -0.45F);
+            case EAST -> GL11.glTranslatef(0.45F, 0F, -0.45F);
+            default -> {}
+        };
 
         GL11.glRotatef(90F, 1F, 0F, 0F);
         GL11.glScalef(2F, 2F, 2F);

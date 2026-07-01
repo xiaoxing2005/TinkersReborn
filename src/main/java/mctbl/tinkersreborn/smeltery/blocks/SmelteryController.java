@@ -38,13 +38,12 @@ public class SmelteryController extends TinkersRebornMultiBlock {
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
         TileEntity logic = world.getTileEntity(x, y, z);
-        ForgeDirection sideDirection = ForgeDirection.getOrientation(side);
         ForgeDirection faceingDirection = (logic instanceof ITinkersRebornIFacingLogic)
             ? ((ITinkersRebornIFacingLogic) logic).getForgeDirection()
-            : ForgeDirection.getOrientation(0);
+            : ForgeDirection.NORTH;
 
         // smeltry or furnace
-        if (sideDirection == faceingDirection) {
+        if (ForgeDirection.getOrientation(side) == faceingDirection) {
             return this.icons[isActive(world, x, y, z) ? 1 : 0];
         }
 
@@ -64,33 +63,34 @@ public class SmelteryController extends TinkersRebornMultiBlock {
     public void randomDisplayTick(World world, int x, int y, int z, Random random) {
         if (isActive(world, x, y, z)) {
             TileEntity logic = world.getTileEntity(x, y, z);
-            byte face = 0;
+            ForgeDirection face = ForgeDirection.NORTH;
             if (logic instanceof ITinkersRebornIFacingLogic)
-                face = ((ITinkersRebornIFacingLogic) logic).getRenderDirection();
+                face = ((ITinkersRebornIFacingLogic) logic).getForgeDirection();
             float f = (float) x + 0.5F;
             float f1 = (float) y + 0.5F + (random.nextFloat() * 6F) / 16F;
             float f2 = (float) z + 0.5F;
             float f3 = 0.52F;
             float f4 = random.nextFloat() * 0.6F - 0.3F;
             switch (face) {
-                case 4:
+                case WEST:
                     world.spawnParticle("smoke", f - f3, f1, f2 + f4, 0.0D, 0.0D, 0.0D);
                     world.spawnParticle("flame", f - f3, f1, f2 + f4, 0.0D, 0.0D, 0.0D);
                     break;
 
-                case 5:
+                case EAST:
                     world.spawnParticle("smoke", f + f3, f1, f2 + f4, 0.0D, 0.0D, 0.0D);
                     world.spawnParticle("flame", f + f3, f1, f2 + f4, 0.0D, 0.0D, 0.0D);
                     break;
 
-                case 2:
-                    world.spawnParticle("smoke", f + f4, f1, f2 - f3, 0.0D, 0.0D, 0.0D);
-                    world.spawnParticle("flame", f + f4, f1, f2 - f3, 0.0D, 0.0D, 0.0D);
-                    break;
-
-                case 3:
+                case SOUTH:
                     world.spawnParticle("smoke", f + f4, f1, f2 + f3, 0.0D, 0.0D, 0.0D);
                     world.spawnParticle("flame", f + f4, f1, f2 + f3, 0.0D, 0.0D, 0.0D);
+                    break;
+
+                case NORTH:
+                default:
+                    world.spawnParticle("smoke", f + f4, f1, f2 - f3, 0.0D, 0.0D, 0.0D);
+                    world.spawnParticle("flame", f + f4, f1, f2 - f3, 0.0D, 0.0D, 0.0D);
                     break;
             }
         }

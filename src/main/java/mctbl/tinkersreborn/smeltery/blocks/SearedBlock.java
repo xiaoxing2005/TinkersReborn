@@ -139,22 +139,23 @@ public class SearedBlock extends TinkersRebornInventoryBlock {
             float zMax = 0.75F;
 
             if (te instanceof FaucetLogic logic) {
-                switch (logic.getRenderDirection()) {
-                    case 2:
-                        zMin = 0.625F;
-                        zMax = 1.0F;
-                        break;
-                    case 3:
+                switch (logic.getForgeDirection()) {
+                    case SOUTH:
                         zMax = 0.375F;
                         zMin = 0F;
                         break;
-                    case 4:
+                    case WEST:
                         xMin = 0.625F;
                         xMax = 1.0F;
                         break;
-                    case 5:
+                    case EAST:
                         xMax = 0.375F;
                         xMin = 0F;
+                        break;
+                    case NORTH:
+                    default:
+                        zMin = 0.625F;
+                        zMax = 1.0F;
                         break;
                 }
             }
@@ -176,22 +177,23 @@ public class SearedBlock extends TinkersRebornInventoryBlock {
                 float zMin = 0.25F;
                 float zMax = 0.75F;
 
-                switch (logic.getRenderDirection()) {
-                    case 2:
-                        zMin = 0.625F;
-                        zMax = 1.0F;
-                        break;
-                    case 3:
+                switch (logic.getForgeDirection()) {
+                    case SOUTH:
                         zMax = 0.375F;
                         zMin = 0F;
                         break;
-                    case 4:
+                    case WEST:
                         xMin = 0.625F;
                         xMax = 1.0F;
                         break;
-                    case 5:
+                    case EAST:
                         xMax = 0.375F;
                         xMin = 0F;
+                        break;
+                    case NORTH:
+                    default:
+                        zMin = 0.625F;
+                        zMax = 1.0F;
                         break;
                 }
 

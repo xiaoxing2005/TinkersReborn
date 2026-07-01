@@ -48,10 +48,10 @@ public class CastingBasinSpecialRender extends TileEntitySpecialRenderer {
         GL11.glPushMatrix();
         GL11.glTranslatef(1F, 0.675F, 1.0F);
 
-        float rotationY = switch (logic.getRenderDirection()) {
-            case 2 -> 90F;
-            case 3 -> 270F;
-            case 4 -> 180F;
+        float rotationY = switch (logic.getForgeDirection()) {
+            case NORTH -> 90F;
+            case SOUTH -> 270F;
+            case WEST -> 180F;
             default -> 0F;
         };
 

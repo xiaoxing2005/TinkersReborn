@@ -6,7 +6,6 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -17,7 +16,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -48,8 +46,6 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic
 
     private static final int MAX_SMELTERY_SIZE = 7;
     public static final int MB_PER_BLOCK_CAPACITY = TinkersRebornMaterial.VALUE_Ingot * 10;
-
-    protected byte direction;
 
     public CoordTuple minPos = new CoordTuple(0, 0, 0);
     public CoordTuple maxPos = new CoordTuple(0, 0, 0);
@@ -92,18 +88,19 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic
     }
 
     public void checkValidPlacement() {
-        switch (getRenderDirection()) {
-            case 2: // +z
-                alignInitialPlacement(xCoord, yCoord, zCoord + 1);
-                break;
-            case 3: // -z
+        switch (getForgeDirection()) {
+            case SOUTH: // -z
                 alignInitialPlacement(xCoord, yCoord, zCoord - 1);
                 break;
-            case 4: // +x
+            case WEST: // +x
                 alignInitialPlacement(xCoord + 1, yCoord, zCoord);
                 break;
-            case 5: // -x
+            case EAST: // -x
                 alignInitialPlacement(xCoord - 1, yCoord, zCoord);
+                break;
+            case NORTH: // +z
+            default:
+                alignInitialPlacement(xCoord, yCoord, zCoord + 1);
                 break;
         }
     }
@@ -408,22 +405,8 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic
                         float jumpY = rand.nextFloat() * 0.8F + 0.1F;
                         float jumpZ = rand.nextFloat() * 0.8F + 0.1F;
 
-                        int offsetX = 0;
-                        int offsetZ = 0;
-                        switch (getRenderDirection()) {
-                            case 2: // +z
-                                offsetZ = -1;
-                                break;
-                            case 3: // -z
-                                offsetZ = 1;
-                                break;
-                            case 4: // +x
-                                offsetX = -1;
-                                break;
-                            case 5: // -x
-                                offsetX = 1;
-                                break;
-                        }
+                        int offsetX = getForgeDirection().offsetX;
+                        int offsetZ = getForgeDirection().offsetZ;
 
                         while (stack.stackSize > 0) {
                             int itemSize = rand.nextInt(21) + 10;
@@ -605,38 +588,6 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic
     }
 
     @Override
-    public byte getRenderDirection() {
-        return direction;
-    }
-
-    @Override
-    public ForgeDirection getForgeDirection() {
-        return ForgeDirection.getOrientation(direction);
-    }
-
-    @Override
-    public void setRenderDirection(float yaw, float pitch, EntityLivingBase player) {
-        int facing = MathHelper.floor_double((double) (yaw / 360) + 0.5D) & 3;
-        switch (facing) {
-            case 0:
-                direction = 2;
-                break;
-
-            case 1:
-                direction = 5;
-                break;
-
-            case 2:
-                direction = 3;
-                break;
-
-            case 3:
-                direction = 4;
-                break;
-        }
-    }
-
-    @Override
     public boolean getActive() {
         return validStructure;
     }
@@ -680,7 +631,6 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic
         internalTemp = tags.getInteger("InternalTemp");
         inUse = tags.getBoolean("InUse");
 
-        direction = tags.getByte("Direction");
         useTime = tags.getInteger("UseTime");
         currentLiquid = tags.getInteger("CurrentLiquid");
         drainComparatorOutputDirty = true;
@@ -728,7 +678,6 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic
         else pos = new int[] { maxPos.x, maxPos.y, maxPos.z };
         tags.setIntArray("MaxPos", pos);
 
-        tags.setByte("Direction", direction);
         tags.setInteger("UseTime", useTime);
         tags.setInteger("CurrentLiquid", currentLiquid);
         tags.setInteger("MaxLiquid", maxLiquid);
@@ -763,11 +712,6 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic
     }
 
     @Override
-    public String getInventoryName() {
-        return getDefaultName();
-    }
-
-    @Override
     public boolean hasCustomInventoryName() {
         return true;
     }
@@ -779,12 +723,6 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic
     public int getTempForSlot(int slot) {
         return activeTemps[slot] / 10;
     }
-
-    @Override
-    public void setFrogeDirection(ForgeDirection direction) {}
-
-    @Override
-    public void setRenderDirection(int side) {}
 
     // newer
     public int getFuel() {

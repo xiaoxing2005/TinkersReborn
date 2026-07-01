@@ -13,13 +13,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
-public abstract class TinkersRebornInventoryLogic extends TileEntity implements IInventory {
+public abstract class TinkersRebornInventoryLogic extends TileEntity implements IInventory, ITinkersRebornIFacingLogic {
+
+    public ForgeDirection faceDirection;
 
     protected ItemStack[] inventory;
     protected String invName;
@@ -99,7 +104,6 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
 
         else return entityplayer.getDistance((double) xCoord + 0.5D, (double) yCoord + 0.5D, (double) zCoord + 0.5D)
             <= 64D;
-
     }
 
     public abstract Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z);
@@ -115,6 +119,7 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
     }
 
     public void readInventoryFromNBT(NBTTagCompound tags) {
+        this.faceDirection = ForgeDirection.getOrientation(tags.getByte("Direction"));
         NBTTagList nbttaglist = tags.getTagList("Items", 10);
         this.inventory = new ItemStack[this.getSizeInventory()];
 
@@ -140,6 +145,7 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
     }
 
     public void writeInventoryToNBT(NBTTagCompound tags) {
+        tags.setByte("Direction", (byte) this.faceDirection.ordinal());
         NBTTagList nbttaglist = new NBTTagList();
 
         for (int i = 0; i < this.inventory.length; ++i) {
@@ -196,7 +202,7 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
 
     @Override
     public String getInventoryName() {
-        return getDefaultName();
+        return TinkersRebornUtils.translate(this.getDefaultName() + ".name");
     }
 
     public void placeBlock(EntityLivingBase entity, ItemStack stack) {}
@@ -215,10 +221,32 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
                 return false;
             }
         }
-
         return true;
     }
 
+    @Override
+    public void setFacedDirection(EntityLivingBase player) {
+        int facing = player != null ? MathHelper.floor_double((double) (player.rotationYaw / 90F) + 0.5D) & 3 : 0;
+        switch (facing) {
+            case 0 -> this.faceDirection = ForgeDirection.NORTH;
+            case 1 -> this.faceDirection = ForgeDirection.EAST;
+            case 2 -> this.faceDirection = ForgeDirection.SOUTH;
+            case 3 -> this.faceDirection = ForgeDirection.WEST;
+            default -> this.faceDirection = ForgeDirection.NORTH;
+        }
+    }
+
+    @Override
+    public ForgeDirection getForgeDirection() {
+        return this.faceDirection;
+    }
+
+    @Override
+    public void setFrogeDirection(ForgeDirection direction) {
+        this.faceDirection = direction;
+    }
+
+    // for render item in world
     public List<DisplayItem> getDisplayItems() {
         return Collections.emptyList();
     }
