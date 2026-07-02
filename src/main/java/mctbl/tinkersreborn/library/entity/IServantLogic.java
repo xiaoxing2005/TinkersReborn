@@ -2,11 +2,11 @@ package mctbl.tinkersreborn.library.entity;
 
 import net.minecraft.world.World;
 
-import mctbl.tinkersreborn.library.world.CoordTuple;
+import mctbl.tinkersreborn.library.utils.BlockPos;
 
 public interface IServantLogic {
 
-    public CoordTuple getMasterPosition();
+    public BlockPos getMasterPosition();
 
     /** The block should already have a valid master */
     public void notifyMasterOfChange();

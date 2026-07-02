@@ -11,12 +11,12 @@ import net.minecraft.world.World;
 import cpw.mods.fml.common.registry.GameData;
 import mctbl.tinkersreborn.library.entity.IMasterLogic;
 import mctbl.tinkersreborn.library.entity.IServantLogic;
-import mctbl.tinkersreborn.library.world.CoordTuple;
+import mctbl.tinkersreborn.library.utils.BlockPos;
 
 public class MultiServantLogic extends TileEntity implements IServantLogic {
 
     boolean hasMaster;
-    CoordTuple master;
+    BlockPos master;
     Block masterBlock;
     byte masterMate;
 
@@ -41,13 +41,13 @@ public class MultiServantLogic extends TileEntity implements IServantLogic {
         }
     }
 
-    public CoordTuple getMasterPosition() {
+    public BlockPos getMasterPosition() {
         return master;
     }
 
     public void overrideMaster(int x, int y, int z) {
         hasMaster = true;
-        master = new CoordTuple(x, y, z);
+        master = new BlockPos(x, y, z);
         masterBlock = worldObj.getBlock(x, y, z);
         masterMate = (byte) worldObj.getBlockMetadata(x, y, z);
     }
@@ -93,7 +93,7 @@ public class MultiServantLogic extends TileEntity implements IServantLogic {
             int xCenter = tags.getInteger("xCenter");
             int yCenter = tags.getInteger("yCenter");
             int zCenter = tags.getInteger("zCenter");
-            master = new CoordTuple(xCenter, yCenter, zCenter);
+            master = new BlockPos(xCenter, yCenter, zCenter);
             masterBlock = GameData.getBlockRegistry()
                 .getObject(tags.getString("MasterBlockName"));
             masterMate = tags.getByte("masterMate");

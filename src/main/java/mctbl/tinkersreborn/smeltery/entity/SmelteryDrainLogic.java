@@ -13,7 +13,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
-import mctbl.tinkersreborn.library.world.CoordTuple;
+import mctbl.tinkersreborn.library.utils.BlockPos;
 
 public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandler, ITinkersRebornIFacingLogic {
 
@@ -118,7 +118,7 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
     }
 
     public int comparatorStrength() {
-        CoordTuple master = this.getMasterPosition();
+        BlockPos master = this.getMasterPosition();
         // invalid smeltery
         if (master == null) return 0;
         SmelteryLogic smeltery = (SmelteryLogic) worldObj.getTileEntity(master.x, master.y, master.z);

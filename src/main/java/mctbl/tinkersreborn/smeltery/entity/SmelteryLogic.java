@@ -36,7 +36,6 @@ import mctbl.tinkersreborn.library.entity.TinkersRebornMultiBlockInvenotryLogic;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.library.utils.FuelInfo;
-import mctbl.tinkersreborn.library.world.CoordTuple;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.smeltery.gui.GuiSmeltery;
 import mctbl.tinkersreborn.smeltery.inventory.ContainerSmeltery;
@@ -47,8 +46,8 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic
     private static final int MAX_SMELTERY_SIZE = 7;
     public static final int MB_PER_BLOCK_CAPACITY = TinkersRebornMaterial.VALUE_Ingot * 10;
 
-    public CoordTuple minPos = new CoordTuple(0, 0, 0);
-    public CoordTuple maxPos = new CoordTuple(0, 0, 0);
+    public BlockPos minPos = new BlockPos(0, 0, 0);
+    public BlockPos maxPos = new BlockPos(0, 0, 0);
     public int layers;
     public int maxBlockCapacity;
 
@@ -316,8 +315,8 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic
 
         if (bottomBricks == neededBricks) {
             tempValidStructure = true;
-            minPos = new CoordTuple(xMin, y + 1, zMin);
-            maxPos = new CoordTuple(xMax, y + 1, zMax);
+            minPos = new BlockPos(xMin, y + 1, zMin);
+            maxPos = new BlockPos(xMax, y + 1, zMax);
         }
         return count;
     }
@@ -617,12 +616,12 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic
     public void readFromNBT(NBTTagCompound tags) {
         layers = tags.getInteger("Layers");
         int[] pos = tags.getIntArray("MinPos");
-        if (pos.length > 2) minPos = new CoordTuple(pos[0], pos[1], pos[2]);
-        else minPos = new CoordTuple(xCoord, yCoord, zCoord);
+        if (pos.length > 2) minPos = new BlockPos(pos[0], pos[1], pos[2]);
+        else minPos = new BlockPos(xCoord, yCoord, zCoord);
 
         pos = tags.getIntArray("MaxPos");
-        if (pos.length > 2) maxPos = new CoordTuple(pos[0], pos[1], pos[2]);
-        else maxPos = new CoordTuple(xCoord, yCoord, zCoord);
+        if (pos.length > 2) maxPos = new BlockPos(pos[0], pos[1], pos[2]);
+        else maxPos = new BlockPos(xCoord, yCoord, zCoord);
 
         maxBlockCapacity = getBlocksPerLayer() * layers;
         inventory = new ItemStack[maxBlockCapacity];

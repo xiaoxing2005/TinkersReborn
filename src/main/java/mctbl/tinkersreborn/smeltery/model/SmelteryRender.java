@@ -11,8 +11,8 @@ import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import mctbl.tinkersreborn.library.crafting.Smeltery;
+import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.library.utils.BlockSkinRenderHelper;
-import mctbl.tinkersreborn.library.world.CoordTuple;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 import mctbl.tinkersreborn.util.ItemHelper;
@@ -44,8 +44,8 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
         boolean ret = renderer.renderStandardBlock(block, x, y, z);
         final SmelteryLogic logic = (SmelteryLogic) world.getTileEntity(x, y, z);
         if (logic != null && logic.validStructure) {
-            CoordTuple from = logic.minPos;
-            CoordTuple to = logic.maxPos;
+            BlockPos from = logic.minPos;
+            BlockPos to = logic.maxPos;
 
             // Melting
             if (logic.getSizeInventory() > 0) {
@@ -111,7 +111,7 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
         return ret;
     }
 
-    void renderLayer(SmelteryLogic logic, int start, CoordTuple from, CoordTuple to, int posY, RenderBlocks renderer,
+    void renderLayer(SmelteryLogic logic, int start, BlockPos from, BlockPos to, int posY, RenderBlocks renderer,
         IBlockAccess world) {
         renderer.setRenderBounds(-0.001F, -0.001F, -0.001F, 1.001F, 1.001F, 1.001F);
         int i = start;
