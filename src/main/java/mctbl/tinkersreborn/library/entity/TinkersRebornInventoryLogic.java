@@ -2,6 +2,7 @@ package mctbl.tinkersreborn.library.entity;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,11 +20,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public abstract class TinkersRebornInventoryLogic extends TileEntity implements IInventory, ITinkersRebornIFacingLogic {
 
+    public Random rand = TinkersReborn.random;
     public ForgeDirection faceDirection;
 
     protected ItemStack[] inventory;

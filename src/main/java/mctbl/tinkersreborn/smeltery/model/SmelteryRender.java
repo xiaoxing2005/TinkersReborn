@@ -45,9 +45,9 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
 
             // Melting
             if (logic.getSizeInventory() > 0) {
-                for (int i = 0; i < logic.layers; i++) {
+//                for (int i = 0; i < logic.layers; i++) {
                     // renderLayer(logic, i * logic.getBlocksPerLayer(), from, to, from.y + i, renderer, world);
-                }
+//                }
             }
 
             // Liquids

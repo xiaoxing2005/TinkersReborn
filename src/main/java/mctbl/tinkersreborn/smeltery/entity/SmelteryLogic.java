@@ -25,7 +25,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
     public BlockPos minPos = new BlockPos(0, 0, 0);
     public BlockPos maxPos = new BlockPos(0, 0, 0);
 
-    protected List<BlockPos> drains;
+    protected final List<BlockPos> drains;
 
     public final List<FluidStack> moltenMetal = new ArrayList<>();
     public int maxLiquid;
@@ -33,7 +33,13 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
 
     public SmelteryLogic() {
         super("Smeltery");
-        drains = new ArrayList<>();
+        this.drains = new ArrayList<>();
+    }
+    
+    @Override
+    public void updateEntity() {
+	super.updateEntity();
+	
     }
 
     @Override
@@ -79,12 +85,6 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
 
     @Override
     public void checkWholeStructureValid() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void updateEntity() {
         // TODO Auto-generated method stub
 
     }
