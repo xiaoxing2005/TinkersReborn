@@ -95,7 +95,7 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
         drawGuiTank(smeltery, 8 + cornerX, 16 + cornerY, scala.w, scala.h, this.zLevel);
 
         // update fuel info
-        fuelInfo = smeltery.getFuelDisplay();
+//        fuelInfo = smeltery.getFuelDisplay();
         drawFuel(71, 16, 12, 52);
 
         // draw the scala
@@ -114,10 +114,10 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
             int bottom = y + w;
             for (int i = 0; i < heights.length; i++) {
                 int h = heights[i];
-                FluidStack liquid = liquids.getFluid(i);
-                drawFluidIcon(x, bottom - h, w, h, zLevel, liquid);
-
-                bottom -= h;
+//                FluidStack liquid = liquids.getFluid(i);
+//                drawFluidIcon(x, bottom - h, w, h, zLevel, liquid);
+//
+//                bottom -= h;
             }
         }
     }
@@ -199,12 +199,12 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
     private FluidStack getFluidHovered(SmelteryLogic tank, int y, int height) {
         int[] heights = calcLiquidHeights(tank.moltenMetal, tank.getCapacity(), height);
 
-        for (int i = 0; i < heights.length; i++) {
-            if (y < heights[i]) {
-                return tank.getFluid(i);
-            }
-            y -= heights[i];
-        }
+//        for (int i = 0; i < heights.length; i++) {
+//            if (y < heights[i]) {
+//                return tank.getFluid(i);
+//            }
+//            y -= heights[i];
+//        }
 
         return null;
     }

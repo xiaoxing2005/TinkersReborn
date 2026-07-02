@@ -81,13 +81,13 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
 
     @Override
     public FluidTankInfo[] getTankInfo(ForgeDirection from) {
-        if (hasValidMaster() && (from == getForgeDirection() || from == getForgeDirection().getOpposite()
-            || from == ForgeDirection.UNKNOWN)) {
-            SmelteryLogic smeltery = (SmelteryLogic) worldObj
-                .getTileEntity(getMasterPosition().x, getMasterPosition().y, getMasterPosition().z);
-            return smeltery.getMultiTankInfo();
-            // return new FluidTankInfo[] { smeltery.getInfo() };
-        }
+//        if (hasValidMaster() && (from == getForgeDirection() || from == getForgeDirection().getOpposite()
+//            || from == ForgeDirection.UNKNOWN)) {
+//            SmelteryLogic smeltery = (SmelteryLogic) worldObj
+//                .getTileEntity(getMasterPosition().x, getMasterPosition().y, getMasterPosition().z);
+//            return smeltery.getMultiTankInfo();
+//            // return new FluidTankInfo[] { smeltery.getInfo() };
+//        }
         return null;
     }
 

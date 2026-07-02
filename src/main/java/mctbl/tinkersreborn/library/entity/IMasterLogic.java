@@ -10,5 +10,15 @@ public interface IMasterLogic {
      * @param z Servant Z
      */
     public void notifyChange(IServantLogic servant, int x, int y, int z);
+    
+    /**
+     * check the whole structure
+     */
+    public abstract void checkWholeStructureValid();
+    
+    /**
+     * check one block inside of structure
+     */
+    public default void checkSteepingValid() {};
 
 }

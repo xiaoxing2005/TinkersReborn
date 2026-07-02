@@ -155,8 +155,8 @@ public abstract class TinkersRebornInventoryBlock extends BlockContainer {
 
     public static boolean isActive(IBlockAccess world, int x, int y, int z) {
         TileEntity logic = world.getTileEntity(x, y, z);
-        if (logic instanceof IActiveLogic) {
-            return ((IActiveLogic) logic).getActive();
+        if (logic instanceof IActiveLogic l) {
+            return l.getActive();
         }
         return false;
     }

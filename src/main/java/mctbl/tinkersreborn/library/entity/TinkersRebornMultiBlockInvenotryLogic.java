@@ -1,18 +1,60 @@
 package mctbl.tinkersreborn.library.entity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.library.blocks.IActiveLogic;
+import mctbl.tinkersreborn.library.utils.BlockPos;
 
-public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebornInventoryLogic {
+public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebornInventoryLogic implements IMasterLogic, IActiveLogic {
 
     public boolean validStructure;
-    public boolean tempValidStructure;
-
     public Random rand = TinkersReborn.random;
+    public int fuelAmount;
+    public int fuelCapacity;
+    protected final List<BlockPos> lavaTanks;
+    protected BlockPos activeLavaTank;
+    
+    protected int tickCounter = 0;
+    protected int secondCounter = 0;
+    
+    protected boolean needsUpdate;
+    
+    protected int fuel; // Ticks left until the current fuel is depleted and fuel is taken from the tanks. Depletes every tick
+    protected int temperature; // internal temperature of the heater == speed of the heater
+    protected boolean needsFuel; // If the last tick executed an operation that required fuel.
+
+    protected int[] itemTemperatures; // current temperature of each item in the corresponding slot
+    protected int[] itemTempRequired; // Temperature where the items want to goooooo
+    
+    public boolean isHeating = false;
 
     public TinkersRebornMultiBlockInvenotryLogic(int invSize) {
         super(invSize);
+        itemTemperatures = new int[0];
+        itemTempRequired = new int[0];
+        lavaTanks = new ArrayList<>();
     }
 
+    @Override
+    public void notifyChange(IServantLogic servant, int x, int y, int z) {
+	checkWholeStructureValid();
+    }
+    
+    @Override
+    public boolean getActive() {
+        return validStructure;
+    }
+    
+    @Override
+    public void setActive(boolean flag) {
+	this.validStructure = flag;
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+    }
+    
+    @Override
+    public abstract void updateEntity();
+    
 }

@@ -18,7 +18,6 @@ public class MultiServantLogic extends TileEntity implements IServantLogic {
     boolean hasMaster;
     BlockPos master;
     Block masterBlock;
-    byte masterMate;
 
     public boolean canUpdate() {
         return false;
@@ -31,8 +30,7 @@ public class MultiServantLogic extends TileEntity implements IServantLogic {
     public boolean hasValidMaster() {
         if (!hasMaster) return false;
 
-        if (worldObj.getBlock(master.x, master.y, master.z) == masterBlock
-            && worldObj.getBlockMetadata(master.x, master.y, master.z) == masterMate) return true;
+        if (worldObj.getBlock(master.x, master.y, master.z) == masterBlock) return true;
 
         else {
             hasMaster = false;
@@ -49,14 +47,12 @@ public class MultiServantLogic extends TileEntity implements IServantLogic {
         hasMaster = true;
         master = new BlockPos(x, y, z);
         masterBlock = worldObj.getBlock(x, y, z);
-        masterMate = (byte) worldObj.getBlockMetadata(x, y, z);
     }
 
     public void removeMaster() {
         hasMaster = false;
         master = null;
         masterBlock = null;
-        masterMate = 0;
     }
 
     @Override
@@ -81,8 +77,7 @@ public class MultiServantLogic extends TileEntity implements IServantLogic {
     }
 
     public void notifyMasterOfChange() {
-        if (hasValidMaster()) {
-            IMasterLogic logic = (IMasterLogic) worldObj.getTileEntity(master.x, master.y, master.z);
+        if (hasValidMaster() && worldObj.getTileEntity(master.x, master.y, master.z) instanceof IMasterLogic logic) {
             logic.notifyChange(this, xCoord, yCoord, zCoord);
         }
     }
@@ -96,7 +91,6 @@ public class MultiServantLogic extends TileEntity implements IServantLogic {
             master = new BlockPos(xCenter, yCenter, zCenter);
             masterBlock = GameData.getBlockRegistry()
                 .getObject(tags.getString("MasterBlockName"));
-            masterMate = tags.getByte("masterMate");
         }
     }
 
@@ -110,7 +104,6 @@ public class MultiServantLogic extends TileEntity implements IServantLogic {
                 "MasterBlockName",
                 GameData.getBlockRegistry()
                     .getNameForObject(masterBlock));
-            tags.setByte("masterMate", masterMate);
         }
     }
 

@@ -14,6 +14,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
+import mctbl.tinkersreborn.library.entity.IMasterLogic;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 
 public class SmelteryController extends TinkersRebornMultiBlock {
@@ -104,6 +105,6 @@ public class SmelteryController extends TinkersRebornMultiBlock {
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack stack) {
         super.onBlockPlacedBy(world, x, y, z, entityliving, stack);
-        ((SmelteryLogic) world.getTileEntity(x, y, z)).checkValidPlacement();
+        ((IMasterLogic) world.getTileEntity(x, y, z)).checkWholeStructureValid();
     }
 }
