@@ -368,6 +368,29 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         return this.itemTempRequired[i];
     }
 
+    public float getHeatingProgress(int index) {
+        if (index < 0 || index > getSizeInventory() - 1) {
+            return -1f;
+        }
+
+        if (!canHeat(index)) {
+            return -1f;
+        }
+
+        return getProgress(index);
+    }
+
+    public boolean canHeat(int index) {
+        return temperature >= getTempRequired(index);
+    }
+
+    public float getProgress(int index) {
+        if (index >= itemTemperatures.length) {
+            return 0f;
+        }
+        return (float) itemTemperatures[index] / (float) itemTempRequired[index];
+    }
+
     @SideOnly(Side.CLIENT)
     public void updateFuelTemperatureFromPacket(HeatingStructureFuelUpdatePacket packet) {
         this.temperature = packet.temperature;
