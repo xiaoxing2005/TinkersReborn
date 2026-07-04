@@ -177,7 +177,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
 
     /**
      * used by click in gui make that fluid to first output
-     * 
+     *
      * @param fluid
      */
     public void moveFluidToFirst(FluidStack fluid) {
@@ -299,8 +299,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
 
             for (BlockPos b : tempValidBlockList) {
                 TileEntity tempEntiry = this.worldObj.getTileEntity(b.x, b.y, b.z);
-                if (tempEntiry instanceof MultiServantLogic servant)
-                    servant.verifyMaster(this, this.worldObj, masterPos);
+                if (tempEntiry instanceof MultiServantLogic servant) servant.overrideMaster(masterPos);
             }
         } else {
             this.setActive(false);
