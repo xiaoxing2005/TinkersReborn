@@ -95,7 +95,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         this.itemTemperatures = new int[0];
         this.itemTempRequired = new int[0];
         this.lavaTanks = new ArrayList<>();
-        this.name = "tinkersreborn.multi." + name;
+        this.name = "tinkersreborn.gui." + name;
     }
 
     @Override
