@@ -53,7 +53,7 @@ public class MeltingRecipe {
 
     // seriously, who thought kelvin is a good unit for this?
     public int getUsableTemperature() {
-        return Math.max(1, temperature - 300);
+        return Math.max(1, temperature - 273);
     }
 
     public boolean matches(ItemStack stack) {
@@ -72,7 +72,7 @@ public class MeltingRecipe {
 
     private static int calcTemperature(int temp, int timeAmount) {
         int base = TinkersRebornMaterial.VALUE_Block;
-        int max_tmp = Math.max(0, temp - 300); // we use 0 as baseline, not 300
+        double maxTemp = Math.max(0.0d, temp - 273.0d); // we use 0 as baseline, not 273
         double f = (double) timeAmount / (double) base;
 
         // we calculate 2^log9(f), which effectively gives us 2^(1 for each multiple of 9)
@@ -80,7 +80,7 @@ public class MeltingRecipe {
         // we simplify it to f^log9(2) to make calculation simpler
         f = Math.pow(f, LOG9_2);
 
-        return 300 + (int) (f * (double) max_tmp);
+        return 273 + (int) (f * maxTemp);
     }
 
     public static MeltingRecipe registerFor(RecipeMatch recipeMatch, Fluid fluid) {

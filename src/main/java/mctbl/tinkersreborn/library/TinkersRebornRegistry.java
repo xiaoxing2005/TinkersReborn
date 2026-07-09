@@ -122,6 +122,10 @@ public class TinkersRebornRegistry {
         return allTinkersFluidMap.get(identifier);
     }
 
+    public static void registerFluid(TinkersRebornFluid fluid) {
+        allTinkersFluidMap.put(fluid.identifier, fluid);
+    }
+
     /**
      * Call before adding a trait to a material. Checks consistency and takes care
      * everything is in a consistent state. Registers the trait if it's not

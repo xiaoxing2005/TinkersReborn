@@ -19,15 +19,20 @@ public class TinkersRebornFluid extends Fluid {
     }
 
     public static TinkersRebornFluid createMolten(String name, int color, String identifier) {
+        return createMolten(name, color, identifier, 300);
+    }
+
+    public static TinkersRebornFluid createMolten(String name, int color, String identifier, int temperature) {
         TinkersRebornFluid f = new TinkersRebornFluid("molten_" + name, color, identifier);
         f.setDensity(3000)
             .setViscosity(6000)
-            .setTemperature(1300)
+            .setTemperature(temperature)
             .setLuminosity(12);
         return f;
     }
 
+    @Override
     public int getColor() {
-        return color;
+        return this.color;
     }
 }

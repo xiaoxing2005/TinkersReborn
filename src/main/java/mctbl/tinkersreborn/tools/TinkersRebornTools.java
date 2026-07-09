@@ -618,15 +618,18 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
         ironMaterial = new TinkersRebornMaterial("Iron", 0xDADADA);
         ironFluid = TinkersRebornFluid
-            .createMolten(ironMaterial.identifier, ironMaterial.materialTextColor, ironMaterial.identifier);
+            .createMolten(ironMaterial.identifier, ironMaterial.materialTextColor, ironMaterial.identifier, 769);
         ironMaterial.addCommonItems("Iron");
         ironMaterial.setRepresentativeItem(Items.iron_ingot);
         ironMaterial.addTrait(magnetic2, MaterialStatusType.HEAD);
         ironMaterial.addTrait(magnetic);
 
         pigIronMaterial = new TinkersRebornMaterial("PigIron", 0xF0A8A4);
-        pigIronFluid = TinkersRebornFluid
-            .createMolten(pigIronMaterial.identifier, pigIronMaterial.materialTextColor, pigIronMaterial.identifier);
+        pigIronFluid = TinkersRebornFluid.createMolten(
+            pigIronMaterial.identifier,
+            pigIronMaterial.materialTextColor,
+            pigIronMaterial.identifier,
+            600);
         pigIronMaterial.addCommonItems("Pigiron");
         pigIronMaterial.addTrait(baconlicious, MaterialStatusType.HEAD);
         pigIronMaterial.addTrait(tasty, MaterialStatusType.HEAD);
@@ -634,14 +637,14 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
         cobaltMaterial = new TinkersRebornMaterial("Cobalt", 0x2376DD);
         cobaltFluid = TinkersRebornFluid
-            .createMolten(cobaltMaterial.identifier, cobaltMaterial.materialTextColor, cobaltMaterial.identifier);
+            .createMolten(cobaltMaterial.identifier, cobaltMaterial.materialTextColor, cobaltMaterial.identifier, 950);
         cobaltMaterial.addCommonItems("Cobalt");
         cobaltMaterial.addTrait(momentum, MaterialStatusType.HEAD);
         cobaltMaterial.addTrait(lightweight);
 
         arditeMaterial = new TinkersRebornMaterial("Ardite", 0xF18D2A);
         arditeFluid = TinkersRebornFluid
-            .createMolten(arditeMaterial.identifier, arditeMaterial.materialTextColor, arditeMaterial.identifier);
+            .createMolten(arditeMaterial.identifier, arditeMaterial.materialTextColor, arditeMaterial.identifier, 860);
         arditeMaterial.addCommonItems("Ardite");
         arditeMaterial.addTrait(stonebound, MaterialStatusType.HEAD);
         arditeMaterial.addTrait(petramor);
@@ -650,46 +653,50 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         manyullynFluid = TinkersRebornFluid.createMolten(
             manyullynMaterial.identifier,
             manyullynMaterial.materialTextColor,
-            manyullynMaterial.identifier);
+            manyullynMaterial.identifier,
+            1000);
         manyullynMaterial.addCommonItems("Manyullyn");
         manyullynMaterial.addTrait(insatiable, MaterialStatusType.HEAD);
         manyullynMaterial.addTrait(coldblooded);
 
         copperMaterial = new TinkersRebornMaterial("Copper", 0xCC6410);
         copperFluid = TinkersRebornFluid
-            .createMolten(copperMaterial.identifier, copperMaterial.materialTextColor, copperMaterial.identifier);
+            .createMolten(copperMaterial.identifier, copperMaterial.materialTextColor, copperMaterial.identifier, 542);
         copperMaterial.addCommonItems("Copper");
         copperMaterial.addTrait(established);
 
         bronzeMaterial = new TinkersRebornMaterial("Bronze", 0xCA9956);
         bronzeFluid = TinkersRebornFluid
-            .createMolten(bronzeMaterial.identifier, bronzeMaterial.materialTextColor, bronzeMaterial.identifier);
+            .createMolten(bronzeMaterial.identifier, bronzeMaterial.materialTextColor, bronzeMaterial.identifier, 475);
         bronzeMaterial.addCommonItems("Bronze");
         bronzeMaterial.addTrait(dense);
 
         alumiteMaterial = new TinkersRebornMaterial("Alumite", 0xFFA7E9);
-        alumiteFluid = TinkersRebornFluid
-            .createMolten(alumiteMaterial.identifier, alumiteMaterial.materialTextColor, alumiteMaterial.identifier);
+        alumiteFluid = TinkersRebornFluid.createMolten(
+            alumiteMaterial.identifier,
+            alumiteMaterial.materialTextColor,
+            alumiteMaterial.identifier,
+            900);
         alumiteMaterial.addCommonItems("Alumite");
         alumiteMaterial.addTrait(duritos);
 
         steelMaterial = new TinkersRebornMaterial("Steel", 0xA0A0A0);
         steelFluid = TinkersRebornFluid
-            .createMolten(steelMaterial.identifier, steelMaterial.materialTextColor, steelMaterial.identifier);
+            .createMolten(steelMaterial.identifier, steelMaterial.materialTextColor, steelMaterial.identifier, 681);
         steelMaterial.addCommonItems("Steel");
         steelMaterial.addTrait(sharp, MaterialStatusType.HEAD);
         steelMaterial.addTrait(stiff);
 
         leadMaterial = new TinkersRebornMaterial("Lead", 0x4D4968);
         leadFluid = TinkersRebornFluid
-            .createMolten(leadMaterial.identifier, leadMaterial.materialTextColor, leadMaterial.identifier);
+            .createMolten(leadMaterial.identifier, leadMaterial.materialTextColor, leadMaterial.identifier, 400);
         leadMaterial.addCommonItems("Lead");
         leadMaterial.addTrait(poisonous);
         leadMaterial.addTrait(heavy);
 
         silverMaterial = new TinkersRebornMaterial("Silver", 0xD1ECF6);
         silverFluid = TinkersRebornFluid
-            .createMolten(silverMaterial.identifier, silverMaterial.materialTextColor, silverMaterial.identifier);
+            .createMolten(silverMaterial.identifier, silverMaterial.materialTextColor, silverMaterial.identifier, 480);
         silverMaterial.addTrait(holy);
 
         bloodBoneMaterial = new TinkersRebornMaterial("BloodBone", 0xC70000).setCastable(true);
@@ -737,10 +744,10 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         slimeleafMaterial.addItem(new ItemStack(TinkersRebornGeneral.slimeLeaves), 1, VALUE_Shard);
         slimeleafMaterial.setRepresentativeItem(TinkersRebornGeneral.slimeLeaves);
 
-        goldFluid = TinkersRebornFluid.createMolten("gold", 0xFFD700, "gold");
-        tinFluid = TinkersRebornFluid.createMolten("tin", 0xE6E6FA, "tin");
-        emeraldFluid = TinkersRebornFluid.createMolten("emerald", 0x00AA2C, "emerald");
-        aluminumFluid = TinkersRebornFluid.createMolten("aluminum", 0xCCCCCC, "aluminum");
+        goldFluid = TinkersRebornFluid.createMolten("gold", 0xFFD700, "gold", 532);
+        tinFluid = TinkersRebornFluid.createMolten("tin", 0xE6E6FA, "tin", 350);
+        emeraldFluid = TinkersRebornFluid.createMolten("emerald", 0x00AA2C, "emerald", 500);
+        aluminumFluid = TinkersRebornFluid.createMolten("aluminum", 0xCCCCCC, "aluminum", 330);
 
         this.registerBaseMaterialsStats();
 

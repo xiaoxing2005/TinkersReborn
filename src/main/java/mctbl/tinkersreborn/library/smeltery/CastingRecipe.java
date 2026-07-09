@@ -110,7 +110,7 @@ public class CastingRecipe implements ICastingRecipe {
     public static int calcCooldownTime(Fluid fluid, int amount) {
         // minimum time = faucet animation time :I
         int time = 24;
-        int temperature = fluid.getTemperature() - 300;
+        int temperature = fluid.getTemperature() - 273;
 
         return time + (temperature * amount) / 1600;
     }

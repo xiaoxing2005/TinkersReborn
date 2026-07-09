@@ -195,11 +195,11 @@ public class FilledBucket extends ItemBucket {
 
     public ItemStack getNewFluidBucketWithMaterial(String identifier) {
         ItemStack stack = new ItemStack(this);
-        stack.setTagCompound(this.getNewPartNBT(identifier));
+        stack.setTagCompound(this.getNewFluidNBT(identifier));
         return stack;
     }
 
-    public NBTTagCompound getNewPartNBT(String identifier) {
+    public NBTTagCompound getNewFluidNBT(String identifier) {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString(ToolTags.IDENTIFIER, identifier);
         return nbt;

@@ -195,12 +195,12 @@ public class TinkersRebornUtils {
         if (celsius) {
             return String.format(
                 translate("tinkersreborn.gui.general.temperature.celsius"),
-                df.format(transferFahrenheitToCelsius(temperature)));
+                df.format(transferKelvinToCelsius(temperature)));
         }
-        return String.format(translate("tinkersreborn.gui.general.temperature.fahrenheit"), temperature);
+        return String.format(translate("tinkersreborn.gui.general.temperature.kelvin"), temperature);
     }
 
-    public static float transferFahrenheitToCelsius(int fahrenheit) {
-        return (fahrenheit - 32) * 1.0F / 1.8F;
+    public static float transferKelvinToCelsius(int kelvin) {
+        return kelvin - 273.15F;
     }
 }

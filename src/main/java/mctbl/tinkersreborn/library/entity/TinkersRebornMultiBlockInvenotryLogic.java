@@ -41,6 +41,8 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
     public static final String TAG_ITEM_TEMP_REQUIRED = "itemTempRequired";
     public static final String TAG_IS_HEATING = "isHeating";
 
+    protected static final int TIME_FACTOR = 8;
+
     public static final BlockPos DEFAULT_POS = BlockPos.of(0, 0, 0);
 
     /** smallest coordinate INSIDE the multiblock */
@@ -151,7 +153,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
                         this.addFuel(
                             bonusFuel,
                             Math.round(
-                                TinkersRebornUtils.transferFahrenheitToCelsius(
+                                TinkersRebornUtils.transferKelvinToCelsius(
                                     drained.getFluid()
                                         .getTemperature())));
                         // convert to degree celcius
@@ -234,8 +236,8 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
      */
     private IFluidTank getTankAt(BlockPos pos) {
         TileEntity te = this.worldObj.getTileEntity(pos.x, pos.y, pos.z);
-        if (te instanceof LavaTankLogic) {
-            return ((LavaTankLogic) te).tank;
+        if (te instanceof LavaTankLogic logic) {
+            return logic.tank;
         }
 
         return null;
@@ -244,7 +246,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
     /**
      * Calculate the heat required for the given slot
      */
-    protected abstract void updateHeatRequired(int index);
+    protected abstract void updateTempRequired(int index);
 
     @Override
     public void writeToNBT(NBTTagCompound tags) {
@@ -301,7 +303,6 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         }
         currentFuel = FluidStack.loadFluidStackFromNBT(tags.getCompoundTag(TAG_CURRENT_FUEL));
 
-        // needsUpdate = !worldObj.isRemote;
         needsUpdate = true;
     }
 
@@ -354,6 +355,12 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         }
     }
 
+    protected void setTempRequiredForSlot(int index, int heat) {
+        if (index < itemTempRequired.length) {
+            itemTempRequired[index] = heat * TIME_FACTOR;
+        }
+    }
+
     public int getTemperature(int i) {
         if (i < 0 || i >= this.itemTemperatures.length) {
             return 0;
@@ -365,7 +372,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         if (i < 0 || i >= this.itemTempRequired.length) {
             return 0;
         }
-        return this.itemTempRequired[i];
+        return this.itemTempRequired[i] / TIME_FACTOR;
     }
 
     public float getHeatingProgress(int index) {
@@ -384,12 +391,35 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         return temperature >= getTempRequired(index);
     }
 
+    protected int heatSlot(int i) {
+        return temperature / 100; // if your heater has <100 heat then it deserves to not create any heat .
+    }
+
     public float getProgress(int index) {
         if (index >= itemTemperatures.length) {
             return 0f;
         }
         return (float) itemTemperatures[index] / (float) itemTempRequired[index];
     }
+
+    @Override
+    public void setInventorySlotContents(int slot, ItemStack itemstack) {
+        // reset heat if set to null or a different item
+        if (TinkersRebornUtils.isStackEmpty(itemstack) || (!TinkersRebornUtils.isStackEmpty(getStackInSlot(slot))
+            && !ItemStack.areItemStacksEqual(itemstack, getStackInSlot(slot)))) {
+            itemTemperatures[slot] = 0;
+        }
+        super.setInventorySlotContents(slot, itemstack);
+
+        // when an item gets added, check for its heat required
+        updateTempRequired(slot);
+    }
+
+    /**
+     * Called when an item finished heating up. Return true if the processing was
+     * successful, then the heating data will be cleared.
+     */
+    protected abstract boolean onItemFinishedHeating(ItemStack stack, int slot);
 
     @SideOnly(Side.CLIENT)
     public void updateFuelTemperatureFromPacket(HeatingStructureFuelUpdatePacket packet) {
@@ -442,7 +472,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
                 info.fluid.amount = 0;
                 info.maxCap = currentFuel.amount;
             }
-            info.heat = this.temperature + 300;
+            info.heat = this.temperature + 273;
         } else if (this.activeLavaTank != null) {
             // we need to consume fuel, check the current tank
             if (hasTankWithFuel(activeLavaTank)) {
@@ -451,7 +481,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
                 FluidStack tankFluid = tank.getFluid();
                 assert tankFluid != null;
                 info.fluid = tankFluid.copy();
-                info.heat = temperature + 300;
+                info.heat = temperature + 273;
                 info.maxCap = tank.getCapacity();
             }
         }
@@ -485,5 +515,52 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         }
 
         return info;
+    }
+
+    protected void heatItems() {
+        boolean heatedItem = false;
+        for (int i = 0; i < getSizeInventory(); i++) {
+            ItemStack stack = getStackInSlot(i);
+            if (!TinkersRebornUtils.isStackEmpty(stack)) {
+                // heat item if possible
+                if (itemTempRequired[i] > 0) {
+                    // fuel is present, turn up the heat
+                    if (fuelReleaseTicks > 0) {
+                        // if the temperature is high enough for the slot
+                        if (canHeat(i)) {
+                            // are we done heating?
+                            if (itemTemperatures[i] >= itemTempRequired[i]) {
+                                if (onItemFinishedHeating(stack, i)) {
+                                    itemTemperatures[i] = 0;
+                                    itemTempRequired[i] = 0;
+                                }
+                            }
+                            // otherwise turn up the heat
+                            else {
+                                itemTemperatures[i] += heatSlot(i);
+                                heatedItem = true;
+                            }
+                        }
+                    } else {
+                        // can't heat. no fuel. abort and try to get fuel for next tick
+                        this.needsFuel = true;
+                        break;
+                    }
+                }
+            } else {
+                itemTemperatures[i] = 0;
+            }
+        }
+
+        if (heatedItem) {
+            fuelReleaseTicks--;
+        }
+        updateIfChanged(heatedItem);
+    }
+
+    protected void updateIfChanged(boolean heatedItem) {
+        if (heatedItem != isHeating) {
+            isHeating = heatedItem;
+        }
     }
 }

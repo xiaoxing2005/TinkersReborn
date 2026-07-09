@@ -1,5 +1,6 @@
 package mctbl.tinkersreborn.smeltery.utils;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
@@ -9,9 +10,12 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
+import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluidBlock;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class MaterialIntegration {
@@ -84,6 +88,10 @@ public class MaterialIntegration {
                     new FluidStack(fluid, 1000),
                     new ItemStack(TinkersRebornGeneral.tinkersBucket, 1),
                     new ItemStack(Items.bucket)));
+            this.registerFluidBlock();
+            if (fluid instanceof TinkersRebornFluid trf) {
+                TinkersRebornRegistry.registerFluid(trf);
+            }
         }
 
         // register material
@@ -135,6 +143,18 @@ public class MaterialIntegration {
         if (TinkersRebornUtils.isStackEmpty(material.getRepresentativeItem()) && representativeItem != null
             && !representativeItem.isEmpty()) {
             material.setRepresentativeItem(representativeItem);
+        }
+    }
+
+    public void registerFluidBlock() {
+        // ensure the fluid block is not already registered
+        if (!addedFluidBlock && fluid != null && fluid.getBlock() == null && fluid instanceof TinkersRebornFluid trf) {
+            addedFluidBlock = true;
+            TinkersRebornFluidBlock tinkersRebornFluidBlock = new TinkersRebornFluidBlock(
+                trf,
+                trf.getTemperature() > 300 ? Material.lava : Material.water,
+                trf.getUnlocalizedName());
+            GameRegistry.registerBlock(tinkersRebornFluidBlock, tinkersRebornFluidBlock.getUnlocalizedName());
         }
     }
 }

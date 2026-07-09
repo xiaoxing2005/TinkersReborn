@@ -10,24 +10,32 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.entity.TinkersRebornMultiBlockInvenotryLogic;
+import mctbl.tinkersreborn.library.event.TinkerSmelteryEvent;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.smeltery.gui.GuiSmeltery;
 import mctbl.tinkersreborn.smeltery.inventory.ContainerSmeltery;
 import mctbl.tinkersreborn.smeltery.network.SmelteryFluidUpdatePacket;
+import mctbl.tinkersreborn.smeltery.utils.MeltingRecipe;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic implements IFluidTank {
 
@@ -61,10 +69,10 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
             // this also updates the needsFuel flag, which causes us to consume fuel at the
             // end.
             // This way fuel is only consumed if it's actually needed
-            // if (tick % Config.heatItemsTickrateSmeltery == 0) {
-            // heatItems();
-            // alloyAlloys();
-            // }
+            if (tickCounter % TinkersRebornConfig.heatItemsTickrateSmeltery == 0) {
+                heatItems();
+                // alloyAlloys();
+            }
 
             if (this.needsFuel) {
                 this.consumeFuel();
@@ -109,7 +117,9 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
 
     @Override
     public FluidStack getFluid() {
-        if (this.moltenMetal.size() > 0) return this.moltenMetal.get(0);
+        if (!this.moltenMetal.isEmpty()) {
+            return this.moltenMetal.get(0);
+        }
 
         return null;
     }
@@ -382,9 +392,23 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
     }
 
     @Override
-    protected void updateHeatRequired(int index) {
-        // TODO Auto-generated method stub
+    protected void updateTempRequired(int index) {
+        ItemStack stack = getStackInSlot(index);
+        if (!TinkersRebornUtils.isStackEmpty(stack)) {
+            MeltingRecipe melting = TinkersRebornRegistry.getMelting(stack);
+            if (melting != null) {
+                setTempRequiredForSlot(index, Math.max(5, melting.getUsableTemperature()));
 
+                // instantly consume fuel if required
+                if (fuelReleaseTicks <= 0) {
+                    consumeFuel();
+                }
+
+                return;
+            }
+        }
+
+        setTempRequiredForSlot(index, 0);
     }
 
     public void onTankChanged(List<FluidStack> fluids, FluidStack changed) {
@@ -411,5 +435,72 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
     @Override
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
         return new GuiSmeltery((ContainerSmeltery) getGuiContainer(inventoryplayer, world, x, y, z), this);
+    }
+
+    // melt stuff
+    @Override
+    protected boolean onItemFinishedHeating(ItemStack stack, int slot) {
+        // skip if full, as there is no case where we can melt an item into a full
+        // smeltery
+        // TODO: might be better to instead cache the amount of space needed per slot,
+        // so for a less than full smeltery we don't need to find the recipe again if
+        // still full
+        if (currentMoltenMetalAmount >= maxMoltenMetalAmount) {
+            // set error state for the UI
+            itemTemperatures[slot] = itemTempRequired[slot] * 2 + 1;
+            return false;
+        }
+        MeltingRecipe recipe = TinkersRebornRegistry.getMelting(stack);
+
+        if (recipe == null) {
+            return false;
+        }
+
+        TinkerSmelteryEvent.OnMelting event = TinkerSmelteryEvent.OnMelting
+            .fireEvent(this, stack, recipe.output.copy());
+
+        FluidStack fluidStack = getValidFluidStackOrNull(event.result);
+        int filled = fill(fluidStack, false);
+
+        if (filled == fluidStack.amount) {
+            fill(fluidStack, true);
+
+            // only clear out items n stuff if it was successful
+            setInventorySlotContents(slot, null);
+            return true;
+        } else {
+            // can't fill into the smeltery, set error state
+            itemTemperatures[slot] = itemTempRequired[slot] * 2 + 1;
+        }
+
+        return false;
+    }
+
+    /**
+     * Used to ensure that a fluidstack is valid. Basically when you return a
+     * fluidstack, you should ALWAYS take the fluid from the FluidRegistry. This
+     * isn't possible in all cases for us hence we replace the FluidStack with a
+     * FluidStack containing the correct fluid.
+     *
+     * Example: Entity X melts into a specific fluid with specific NBT. However in
+     * game Fluid X is not the default fluid anymore. We change the returned stack
+     * to contain the default fluid instead of the fluid used during setup.
+     *
+     * @return A save FluidStack or null if there is no valid fluid for the
+     *         fluidstack
+     */
+    public static FluidStack getValidFluidStackOrNull(FluidStack possiblyInvalidFluidstack) {
+        FluidStack fluidStack = possiblyInvalidFluidstack;
+        if (!FluidRegistry.isFluidDefault(fluidStack.getFluid())) {
+            Fluid fluid = FluidRegistry.getFluid(
+                fluidStack.getFluid()
+                    .getName());
+            if (fluid != null) {
+                fluidStack = new FluidStack(fluid, fluidStack.amount, fluidStack.tag);
+            } else {
+                fluidStack = null;
+            }
+        }
+        return fluidStack;
     }
 }

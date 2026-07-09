@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
@@ -161,6 +163,7 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
         return Optional.empty();
     }
 
+    @Nullable
     private List<String> getTankTooltip(SmelteryLogic tank, int mouseX, int mouseY, int xmin, int ymin, int xmax,
         int ymax) {
 
@@ -222,12 +225,12 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
      * @return Array with heights corresponding to input-list liquids
      */
     private int[] calcLiquidHeights(List<FluidStack> liquids, int capacity, int height) {
-        int fluidHeights[] = new int[liquids.size()];
+        int[] fluidHeights = new int[liquids.size()];
 
         int totalFluidAmount = 0;
         int min = 3;
 
-        if (liquids.size() > 0) {
+        if (!liquids.isEmpty()) {
 
             for (int i = 0; i < liquids.size(); i++) {
                 FluidStack liquid = liquids.get(i);
