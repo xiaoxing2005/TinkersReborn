@@ -44,10 +44,10 @@ public class TinkerNetwork {
         registerPacketClient(SpawnParticlePacket.class);
         registerPacketClient(HeatingStructureFuelUpdatePacket.class);
         registerPacketClient(FluidUpdatePacket.class);
+        registerPacketClient(SmelteryFluidUpdatePacket.class);
 
         registerPacketServer(TinkerStationTabPacket.class);
         registerPacketServer(SmelteryFluidClicked.class);
-        registerPacketServer(SmelteryFluidUpdatePacket.class);
     }
 
     /**

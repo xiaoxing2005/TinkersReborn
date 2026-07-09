@@ -11,6 +11,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -41,6 +43,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
 
     private static final int MAX_SMELTERY_SIZE = 7;
     public static final int MB_PER_BLOCK_CAPACITY = TinkersRebornMaterial.VALUE_Ingot * 10;
+    public static final String MOLTEN_METAL_LIST = "MoltenMetal";
 
     protected final List<BlockPos> drains;
 
@@ -57,14 +60,12 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
     public void updateEntity() {
         if (this.worldObj.isRemote) return;
 
-        if (!this.getActive() || this.needsUpdate) {
-            this.needsUpdate = false;
+        if ((!this.getActive() && this.tickCounter == 0) || this.needsUpdate) {
             // check for smeltery once per second
-            if (this.tickCounter == 0) {
-                this.checkWholeStructureValid();
-            }
+            this.needsUpdate = false;
+            this.checkWholeStructureValid();
             this.isHeating = false;
-        } else {
+        } else if (this.getActive()) {
             // smeltery structure is there.. do stuff with the current fuel
             // this also updates the needsFuel flag, which causes us to consume fuel at the
             // end.
@@ -160,7 +161,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
             }
 
             this.currentMoltenMetalAmount += canFill;
-            this.markDirty();
+            this.onTankChanged(moltenMetal);
         }
 
         return canFill;
@@ -179,6 +180,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
                 fluid.amount -= drainAmount;
                 this.currentMoltenMetalAmount -= drainAmount;
                 if (fluid.amount <= 0) this.moltenMetal.remove(fluid);
+                this.onTankChanged(moltenMetal);
             }
             return copy;
         }
@@ -274,8 +276,10 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
         int validLayerCount = 0;
         int[] range = new int[] { -xd1, xd2, -zd1, zd2 };
         // upper check this layer at same time
-        boolean checkUpper = true, checkLower = true;
-        int yd1 = 0, yd2 = 1;
+        boolean checkUpper = true;
+        boolean checkLower = true;
+        int yd1 = 0;
+        int yd2 = 1;
 
         List<BlockPos> tempValidBlockList = new ArrayList<>();
 
@@ -298,7 +302,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
             }
         }
 
-        if (hasBottmLayer && validLayerCount > 0 && this.lavaTanks.size() > 0) {
+        if (hasBottmLayer && validLayerCount > 0 && !this.lavaTanks.isEmpty()) {
             this.activeLavaTank = this.lavaTanks.get(0);
             this.setActive(true);
 
@@ -314,6 +318,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
         } else {
             this.setActive(false);
             this.temperature = INIT_TEMPERATURES;
+            this.maxMoltenMetalAmount = 0;
             for (BlockPos b : tempValidBlockList) {
                 TileEntity tempEntiry = this.worldObj.getTileEntity(b.x, b.y, b.z);
                 if (tempEntiry instanceof MultiServantLogic servant && servant.getHasMaster()
@@ -411,7 +416,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
         setTempRequiredForSlot(index, 0);
     }
 
-    public void onTankChanged(List<FluidStack> fluids, FluidStack changed) {
+    public void onTankChanged(List<FluidStack> fluids) {
         // notify clients of liquid changes.
         // the null check is to prevent potential crashes during loading
         if (!this.worldObj.isRemote) {
@@ -425,6 +430,9 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
     public void updateFluidsFromPacket(List<FluidStack> fluids) {
         this.moltenMetal.clear();
         this.moltenMetal.addAll(fluids);
+        this.currentMoltenMetalAmount = fluids.stream()
+            .map(s -> s.amount)
+            .reduce(0, Integer::sum);
     }
 
     @Override
@@ -462,7 +470,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
         FluidStack fluidStack = getValidFluidStackOrNull(event.result);
         int filled = fill(fluidStack, false);
 
-        if (filled == fluidStack.amount) {
+        if (fluidStack != null && filled == fluidStack.amount) {
             fill(fluidStack, true);
 
             // only clear out items n stuff if it was successful
@@ -502,5 +510,43 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
             }
         }
         return fluidStack;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tags) {
+        super.readFromNBT(tags);
+        this.readMoltenFluidFromNBT(tags);
+    }
+
+    private void readMoltenFluidFromNBT(NBTTagCompound tags) {
+        NBTTagList fluidList = tags.getTagList(MOLTEN_METAL_LIST, 10);
+        this.moltenMetal.clear();
+        int tagCount = fluidList.tagCount();
+        for (int i = 0; i < tagCount; i++) {
+            FluidStack fs = FluidStack.loadFluidStackFromNBT(fluidList.getCompoundTagAt(i));
+            if (fs != null) {
+                this.moltenMetal.add(fs);
+            }
+        }
+        this.maxMoltenMetalAmount = tags.getInteger("MaxMoltenMetalAmount");
+        this.currentMoltenMetalAmount = tags.getInteger("CurrentMoltenMetalAmount");
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound tags) {
+        super.writeToNBT(tags);
+        this.writeMoltenFluidFromNBT(tags);
+    }
+
+    private void writeMoltenFluidFromNBT(NBTTagCompound tags) {
+        NBTTagList fluidList = new NBTTagList();
+        for (FluidStack fs : this.moltenMetal) {
+            NBTTagCompound fluidTag = new NBTTagCompound();
+            fs.writeToNBT(fluidTag);
+            fluidList.appendTag(fluidTag);
+        }
+        tags.setTag(MOLTEN_METAL_LIST, fluidList);
+        tags.setInteger("MaxMoltenMetalAmount", this.maxMoltenMetalAmount);
+        tags.setInteger("CurrentMoltenMetalAmount", this.currentMoltenMetalAmount);
     }
 }
