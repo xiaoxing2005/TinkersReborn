@@ -6,6 +6,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -54,54 +55,58 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
             int yBase = 0;
             int liquidBase = 0;
 
-            synchronized (logic.moltenMetal) {
-                for (FluidStack liquid : logic.moltenMetal) {
-                    int liquidSize = liquid.amount;
-                    // while (liquidSize > 0) {
-                    // int cap = logic.getCapacityPerLayer();
-                    // int room = cap - liquidBase;
-                    // int countSize = Math.min(liquidSize, room);
-                    // liquidSize -= countSize;
-                    //
-                    // float height = countSize > cap ? 1.0F : (float) countSize / (float) cap;
-                    // float renderBase = base;
-                    // float renderHeight = height + base;
-                    // base += height;
-                    // liquidBase += countSize;
-                    //
-                    // if (renderHeight < 0.01) renderHeight = 0.01f;
-                    //
-                    // renderer.setRenderBounds(0, renderBase, 0, 1, renderHeight, 1);
-                    // Fluid fluid = liquid.getFluid();
-                    // for (int xi = from.x; xi <= to.x; xi++) for (int zi = from.z; zi <= to.z;
-                    // zi++) {
-                    // float minX = xi == from.x ? -0.001F : 0F;
-                    // float minZ = zi == from.z ? -0.001F : 0F;
-                    // float maxX = xi == to.x ? 1.001F : 1F;
-                    // float maxZ = zi == to.z ? 1.001F : 1F;
-                    // renderer.setRenderBounds(minX, renderBase, minZ, maxX, renderHeight, maxZ);
-                    // if (fluid.canBePlacedInWorld()) BlockSkinRenderHelper
-                    // .renderMetadataBlock(fluid.getBlock(), 0, xi, from.y + yBase, zi, renderer,
-                    // world);
-                    // else BlockSkinRenderHelper.renderLiquidBlock(
-                    // fluid.getStillIcon(),
-                    // fluid.getFlowingIcon(),
-                    // xi,
-                    // from.y + yBase,
-                    // zi,
-                    // renderer,
-                    // world,
-                    // false,
-                    // fluid.getColor(liquid));
-                    // }
-                    //
-                    // if (countSize == room) {
-                    // base = 0F;
-                    // yBase++;
-                    // liquidBase = 0;
-                    // }
-                    // ret = true;
-                    // }
+            for (FluidStack liquid : logic.moltenMetal) {
+                int liquidSize = liquid.amount;
+                while (liquidSize > 0) {
+                    int cap = logic.blocksPerLayer * SmelteryLogic.MB_PER_BLOCK_CAPACITY;
+                    int room = cap - liquidBase;
+                    int countSize = Math.min(liquidSize, room);
+                    liquidSize -= countSize;
+
+                    float height = countSize > cap ? 1.0F : (float) countSize / (float) cap;
+                    float renderBase = base;
+                    float renderHeight = height + base;
+                    base += height;
+                    liquidBase += countSize;
+
+                    if (renderHeight < 0.01) {
+                        renderHeight = 0.01f;
+                    }
+
+                    renderer.setRenderBounds(0, renderBase, 0, 1, renderHeight, 1);
+                    Fluid fluid = liquid.getFluid();
+                    for (int xi = from.x; xi <= to.x; xi++) {
+                        for (int zi = from.z; zi <= to.z; zi++) {
+                            float minX = xi == from.x ? -0.001F : 0F;
+                            float minZ = zi == from.z ? -0.001F : 0F;
+                            float maxX = xi == to.x ? 1.001F : 1F;
+                            float maxZ = zi == to.z ? 1.001F : 1F;
+                            renderer.setRenderBounds(minX, renderBase, minZ, maxX, renderHeight, maxZ);
+                            if (fluid.canBePlacedInWorld()) {
+                                BlockSkinRenderHelper
+                                    .renderMetadataBlock(fluid.getBlock(), 0, xi, from.y + yBase, zi, renderer, world);
+                            } else {
+                                BlockSkinRenderHelper.renderLiquidBlock(
+                                    fluid.getStillIcon(),
+                                    fluid.getFlowingIcon(),
+                                    xi,
+                                    from.y + yBase,
+                                    zi,
+                                    renderer,
+                                    world,
+                                    false,
+                                    fluid.getColor(liquid));
+
+                            }
+                        }
+                    }
+
+                    if (countSize == room) {
+                        base = 0F;
+                        yBase++;
+                        liquidBase = 0;
+                    }
+                    ret = true;
                 }
             }
         }
@@ -118,7 +123,6 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
             ItemStack input = logic.getStackInSlot(i);
             if (input != null && logic.getTempRequired(i) > 20 && input.getItem() instanceof ItemBlock) {
                 ItemStack blockToRender = input;
-                // ItemStack blockToRender = Smeltery.getRenderIndex(input);
                 if (blockToRender != null) {
                     float blockHeight = input.stackSize / (float) blockToRender.stackSize;
                     renderer.setRenderBounds(

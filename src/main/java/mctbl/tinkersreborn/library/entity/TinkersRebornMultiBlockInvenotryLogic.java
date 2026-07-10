@@ -135,8 +135,8 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
             // consume fuel!
             TileEntity te = this.worldObj
                 .getTileEntity(this.activeLavaTank.x, this.activeLavaTank.y, this.activeLavaTank.z);
-            if (te instanceof LavaTankLogic) {
-                IFluidTank tank = ((LavaTankLogic) te).tank;
+            if (te instanceof LavaTankLogic tankLogic) {
+                IFluidTank tank = tankLogic.tank;
 
                 FluidStack liquid = tank.getFluid();
                 if (liquid != null) {
@@ -473,11 +473,10 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
                 info.maxCap = currentFuel.amount;
             }
             info.heat = this.temperature + 273;
-        } else if (this.activeLavaTank != null) {
+        } else if (this.activeLavaTank != null && hasTankWithFuel(activeLavaTank)) {
             // we need to consume fuel, check the current tank
-            if (hasTankWithFuel(activeLavaTank)) {
-                IFluidTank tank = getTankAt(activeLavaTank);
-                assert tank != null;
+            IFluidTank tank = getTankAt(activeLavaTank);
+            if (tank != null) {
                 FluidStack tankFluid = tank.getFluid();
                 assert tankFluid != null;
                 info.fluid = tankFluid.copy();

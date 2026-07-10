@@ -321,6 +321,12 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
             this.setActive(false);
             this.temperature = INIT_TEMPERATURES;
             this.maxMoltenMetalAmount = 0;
+            // reset fuel state to prevent stale values when structure is rebuilt
+            this.fuelReleaseTicks = 0;
+            this.fuelTotalTicks = 0;
+            this.currentFuel = null;
+            this.needsFuel = false;
+            this.activeLavaTank = null;
             for (BlockPos b : tempValidBlockList) {
                 TileEntity tempEntiry = this.worldObj.getTileEntity(b.x, b.y, b.z);
                 if (tempEntiry instanceof MultiServantLogic servant && servant.getHasMaster()
@@ -438,6 +444,10 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
         this.currentMoltenMetalAmount = fluids.stream()
             .map(s -> s.amount)
             .reduce(0, Integer::sum);
+        // Trigger chunk re-render so SmelteryRender reflects the updated fluid order
+        if (this.worldObj != null) {
+            this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        }
     }
 
     @Override
