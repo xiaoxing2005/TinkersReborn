@@ -23,6 +23,8 @@ public class TinkersRebornFluidBlock extends BlockFluidClassic {
         super(fluid, material);
         this.fluid = fluid;
         this.unlocalizedName = "fluid." + unlocalizedName;
+        this.lightOpacity = this.fluid.getTemperature() > 300 ? 255 : 0;
+        this.lightValue = this.fluid.getTemperature() > 300 ? 15 : 0;
     }
 
     @Override
@@ -35,14 +37,22 @@ public class TinkersRebornFluidBlock extends BlockFluidClassic {
         if (TextureHelper.itemTextureExists("tinkersreborn:" + this.fluid.identifier)) {
             stillIcon = iconRegister.registerIcon("tinkersreborn:" + this.fluid.identifier);
         } else {
-            stillIcon = iconRegister.registerIcon("tinkersreborn:liquid");
+            if (this.fluid.getTemperature() <= 300) {
+                stillIcon = iconRegister.registerIcon("tinkersreborn:liquid");
+            } else {
+                stillIcon = iconRegister.registerIcon("tinkersreborn:liquid_molten");
+            }
         }
         if (TextureHelper.itemTextureExists("tinkersreborn:" + this.fluid.identifier + "_flow")) {
             flowIcon = iconRegister.registerIcon("tinkersreborn:" + this.fluid.identifier + "_flow");
         } else {
-            flowIcon = iconRegister.registerIcon("tinkersreborn:liquid_flow");
+            if (this.fluid.getTemperature() <= 300) {
+                flowIcon = iconRegister.registerIcon("tinkersreborn:liquid_flow");
+            } else {
+                flowIcon = iconRegister.registerIcon("tinkersreborn:liquid_molten_flow");
+            }
         }
-        if (this.fluid != null) this.fluid.setIcons(stillIcon, flowIcon);
+        this.fluid.setIcons(stillIcon, flowIcon);
     }
 
     @Override

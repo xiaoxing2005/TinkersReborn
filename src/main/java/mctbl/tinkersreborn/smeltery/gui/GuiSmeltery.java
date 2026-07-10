@@ -173,8 +173,8 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
             FluidStack hovered = getFluidHovered(tank, ymax - mouseY - 1, ymax - ymin);
             List<String> text = Lists.newArrayList();
 
-            Consumer<Integer> stringFn = TinkersRebornUtils.isShiftKeyDown() ? (i) -> amountToString(i, text)
-                : (i) -> amountToIngotString(i, text);
+            Consumer<Integer> stringFn = TinkersRebornUtils.isShiftKeyDown() ? i -> amountToString(i, text)
+                : i -> amountToIngotString(i, text);
 
             if (hovered == null) {
                 int usedCap = tank.getFluidAmount();
