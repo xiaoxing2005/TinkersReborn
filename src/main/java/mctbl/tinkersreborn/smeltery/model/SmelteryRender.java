@@ -121,9 +121,9 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
             // safety because of changes.
             if (i > logic.getSizeInventory()) return;
             ItemStack input = logic.getStackInSlot(i);
-            if (input != null && logic.getTempRequired(i) > 20 && input.getItem() instanceof ItemBlock) {
-                ItemStack blockToRender = input;
-                if (blockToRender != null) {
+            if (input != null && logic.getTempRequired(i) > 20) {
+                if (input.getItem() instanceof ItemBlock) {
+                    ItemStack blockToRender = input;
                     float blockHeight = input.stackSize / (float) blockToRender.stackSize;
                     renderer.setRenderBounds(
                         0.0F,
@@ -136,6 +136,8 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
                     Block liquidBlock = Block.getBlockFromItem(blockToRender.getItem());
                     BlockSkinRenderHelper
                         .renderMetadataBlock(liquidBlock, blockToRender.getItemDamage(), x, posY, z, renderer, world);
+                } else {
+                    // TODO render item
                 }
             }
             i++;
