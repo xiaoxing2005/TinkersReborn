@@ -18,6 +18,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidEvent;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
@@ -89,14 +90,15 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
         if (this.getFluidAmount() == 0) {
             int newCapacity = this.initNewCasting(fluid, doFill);
             if (newCapacity > 0) {
-                // no extra checks needed for the tank since it's empty and we have to set the
-                // capacity anyway
+                // new tank with the wanted capacity so we can simulate fill with the correct capacity
+                IFluidTank calcTank = new FluidTank(resource.getFluid(), 0, newCapacity);
+
                 if (doFill) {
-                    this.capacity = newCapacity;
-                    this.liquid = new FluidStack(resource.getFluid(), 0);
+                    this.capacity = calcTank.getCapacity();
+                    this.liquid = calcTank.getFluid();
                 }
 
-                return this.fillInternal(resource, doFill);
+                return calcTank.fill(resource, doFill);
             }
         }
 
@@ -276,7 +278,6 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
     }
 
     /* Inventory, inserting/extracting */
-
     public void interact(EntityPlayer player) {
         // only server side
         // if(worldObj.isRemote)
@@ -286,14 +287,12 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
         // todo: maybe let it interact with a bucket or tank!
         if (liquid != null) return;
 
-        // put stuff in?
+        // completely empty -> insert current item into input
         if (!isStackInSlot(0) && !isStackInSlot(1)) {
             ItemStack stack = player.inventory.decrStackSize(player.inventory.currentItem, stackSizeLimit);
 
             setInventorySlotContents(0, stack);
-        }
-        // take stuff out.
-        else {
+        } else {
             // take out of stack 1 if something is in there, 0 otherwise
             int slot = isStackInSlot(1) ? 1 : 0;
 

@@ -37,14 +37,14 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
             TileEntity drainte = worldObj.getTileEntity(x, yCoord, z);
             TileEntity tankte = worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
 
-            if (drainte instanceof IFluidHandler && tankte instanceof IFluidHandler) {
-                FluidStack templiquid = ((IFluidHandler) drainte)
+            if (drainte instanceof IFluidHandler sourceTile && tankte instanceof IFluidHandler targetTile) {
+                FluidStack templiquid = sourceTile
                     .drain(getForgeDirection(), TinkersRebornConfig.smelteryDrainEachTick, false);
                 if (templiquid != null) {
-                    int drained = ((IFluidHandler) tankte).fill(ForgeDirection.UP, templiquid, false);
+                    int drained = targetTile.fill(ForgeDirection.UP, templiquid, false);
                     if (drained > 0) {
-                        liquid = ((IFluidHandler) drainte).drain(getForgeDirection(), drained, true);
-                        ((IFluidHandler) tankte).fill(ForgeDirection.UP, liquid, true);
+                        liquid = sourceTile.drain(getForgeDirection(), drained, true);
+                        targetTile.fill(ForgeDirection.UP, liquid, true);
                         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                         return true;
                     } else {
