@@ -24,5 +24,6 @@ public class TinkersRebornToolsProxyClient extends TinkersRebornToolsProxyCommon
 
         ToolRender render = new ToolRender();
         MinecraftForgeClient.registerItemRenderer(TinkersRebornTools.pickaxe, render);
+        MinecraftForgeClient.registerItemRenderer(TinkersRebornTools.shovel, render);
     }
 }

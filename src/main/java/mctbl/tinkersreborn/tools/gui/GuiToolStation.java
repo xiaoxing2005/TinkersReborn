@@ -488,9 +488,7 @@ public class GuiToolStation extends GuiTinkerStation {
         currentInfo = info;
 
         ToolCore tool = null;
-        if (info == ToolBuildGuiInfo.repairInfo) {
-            tool = null;
-        } else if (info.tool.getItem() instanceof ToolCore t) {
+        if (info != ToolBuildGuiInfo.repairInfo && info.tool.getItem() instanceof ToolCore t) {
             tool = t;
         }
 

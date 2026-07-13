@@ -45,8 +45,7 @@ public class Sounds {
     }
 
     public static void playSoundForPlayer(Entity entity, String sound, float volume, float pitch) {
-        if (entity instanceof EntityPlayerMP) {
-            EntityPlayerMP player = (EntityPlayerMP) entity;
+        if (entity instanceof EntityPlayerMP player) {
             player.playerNetServerHandler
                 .sendPacket(new S29PacketSoundEffect(sound, entity.posX, entity.posY, entity.posZ, volume, pitch));
         }

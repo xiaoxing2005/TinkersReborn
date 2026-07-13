@@ -108,7 +108,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         this.setNoRepair();
         this.toolTypeName = toolTypeName.toLowerCase();
 
-        this.toolModifierEffect = "_" + this.toolTypeName + "_effect";
+        this.toolModifierEffect = "_effect";
 
         // extra 2 map for broken
         for (int i = 0; i < this.partAmount + 1; i++) {

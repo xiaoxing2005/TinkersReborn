@@ -92,9 +92,10 @@ import mctbl.tinkersreborn.tools.items.BowString;
 import mctbl.tinkersreborn.tools.items.Fletching;
 import mctbl.tinkersreborn.tools.items.MaterialItem;
 import mctbl.tinkersreborn.tools.items.Pattern;
-import mctbl.tinkersreborn.tools.items.Pickaxe;
 import mctbl.tinkersreborn.tools.items.SharpeningKit;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
+import mctbl.tinkersreborn.tools.items.tools.Pickaxe;
+import mctbl.tinkersreborn.tools.items.tools.Shovel;
 import mctbl.tinkersreborn.tools.materials.ExtraMaterialStats;
 import mctbl.tinkersreborn.tools.materials.FletchingMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HandleMaterialStats;
@@ -160,6 +161,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
     // Tools
     public static ToolCore pickaxe;
+    public static ToolCore shovel;
 
     // other items
     public static Item paperStack;
@@ -413,6 +415,11 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(pickaxe, pickaxe.getUnlocalizedName());
         TinkersRebornRegistry.registerTool(pickaxe);
         TinkersRebornRegistry.registerToolCrafting(pickaxe);
+
+        shovel = new Shovel();
+        GameRegistry.registerItem(shovel, shovel.getUnlocalizedName());
+        TinkersRebornRegistry.registerTool(shovel);
+        TinkersRebornRegistry.registerToolCrafting(shovel);
 
         mossball = new MaterialItem("Mossball", "mossball");
         slimeCrystal = new MaterialItem("SlimeCrystal", "slimecrystal");

@@ -1,4 +1,4 @@
-package mctbl.tinkersreborn.tools.items;
+package mctbl.tinkersreborn.tools.items.tools;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
@@ -17,7 +17,7 @@ import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
 public class Pickaxe extends HarvestTool {
 
     public final Set<Material> effectiveMaterials = new HashSet<>();
-    public final static Set<Block> pickaxeEffective = new HashSet<>();
+    public final Set<Block> pickaxeEffective = new HashSet<>();
 
     public Pickaxe() {
         super("Pickaxe", 3);
