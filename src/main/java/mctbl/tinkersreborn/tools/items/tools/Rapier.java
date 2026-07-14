@@ -32,7 +32,7 @@ public class Rapier extends SwordCore {
         this.componentsParts
             .add(new ToolPartRecord(TinkersRebornTools.rod, MaterialStatusType.HANDLE, "_rapier_handle"));
         this.componentsParts
-            .add(new ToolPartRecord(TinkersRebornTools.mediumGuard, MaterialStatusType.EXTRA, "_rapier_accessory"));
+            .add(new ToolPartRecord(TinkersRebornTools.crossbar, MaterialStatusType.EXTRA, "_rapier_accessory"));
     }
 
     @Override

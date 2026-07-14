@@ -31,7 +31,7 @@ public class LongSword extends SwordCore {
         this.componentsParts
             .add(new ToolPartRecord(TinkersRebornTools.rod, MaterialStatusType.HANDLE, "_longsword_handle"));
         this.componentsParts
-            .add(new ToolPartRecord(TinkersRebornTools.fullGuard, MaterialStatusType.EXTRA, "_longsword_accessory"));
+            .add(new ToolPartRecord(TinkersRebornTools.mediumGuard, MaterialStatusType.EXTRA, "_longsword_accessory"));
     }
 
     @Override
