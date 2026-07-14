@@ -366,6 +366,16 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         return false;
     }
 
+    @Override
+    public boolean onItemUse(ItemStack toolStack, EntityPlayer player, World world, int x, int y, int z, int side,
+        float hitX, float hitY, float hitZ) {
+        if (world.isRemote) {
+            return true;
+        }
+
+        return super.onItemUse(toolStack, player, world, x, y, z, side, hitX, hitY, hitZ);
+    }
+
     /**
      * Actually deal damage to the entity we hit. Can be overridden for special
      * behaviour
