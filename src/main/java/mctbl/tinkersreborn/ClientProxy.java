@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.world.World;
 
+import mctbl.tinkersreborn.common.particle.ParticleAttackHatchet;
 import mctbl.tinkersreborn.common.particle.Particles;
 import mctbl.tinkersreborn.common.particle.TinkersRebornParticle;
 
@@ -43,8 +44,8 @@ public class ClientProxy extends CommonProxy {
             // return new ParticleAttackLongsword(world, x, y, z, xSpeed, ySpeed, zSpeed, mc.getTextureManager());
             // case RAPIER_ATTACK:
             // return new ParticleAttackRapier(world, x, y, z, xSpeed, ySpeed, zSpeed, mc.getTextureManager());
-            // case HATCHET_ATTACK:
-            // return new ParticleAttackHatchet(world, x, y, z, xSpeed, ySpeed, zSpeed, mc.getTextureManager());
+            case HATCHET_ATTACK:
+                return new ParticleAttackHatchet(world, x, y, z, xSpeed, ySpeed, zSpeed, mc.getTextureManager());
             // case LUMBERAXE_ATTACK:
             // return new ParticleAttackLumberAxe(world, x, y, z, xSpeed, ySpeed, zSpeed, mc.getTextureManager());
             // case FRYPAN_ATTACK:
