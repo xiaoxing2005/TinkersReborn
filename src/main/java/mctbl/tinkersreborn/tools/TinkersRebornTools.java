@@ -98,6 +98,7 @@ import mctbl.tinkersreborn.tools.items.tools.BroadSword;
 import mctbl.tinkersreborn.tools.items.tools.Excavator;
 import mctbl.tinkersreborn.tools.items.tools.Hammer;
 import mctbl.tinkersreborn.tools.items.tools.Hatchet;
+import mctbl.tinkersreborn.tools.items.tools.Kama;
 import mctbl.tinkersreborn.tools.items.tools.LongSword;
 import mctbl.tinkersreborn.tools.items.tools.LumberAxe;
 import mctbl.tinkersreborn.tools.items.tools.Mattock;
@@ -160,6 +161,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static TinkersRebornToolPart swordBlade;
     public static TinkersRebornToolPart toughbind;
     public static TinkersRebornToolPart toughrod;
+    public static TinkersRebornToolPart kamaHead;
 
     public static TinkersRebornToolPart bowString;
     public static TinkersRebornToolPart fletching;
@@ -171,6 +173,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static ToolCore pickaxe;
     public static ToolCore shovel;
     public static ToolCore hatchet;
+    public static ToolCore kama;
     public static ToolCore mattock;
     public static ToolCore hammer;
     public static ToolCore excavator;
@@ -356,6 +359,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         swordBlade = new TinkersRebornToolPart("sword_blade", "SwordBlade", VALUE_Ingot * 2);
         toughbind = new TinkersRebornToolPart("toughbind", "ToughBinding", VALUE_Ingot * 3);
         toughrod = new TinkersRebornToolPart("toughrod", "ToughRod", VALUE_Ingot * 3);
+        kamaHead = new TinkersRebornToolPart("kama_head", "KamaHead", VALUE_Ingot * 2);
         sharpeningKit = new SharpeningKit("sharpening_kit", "SharpeningKit");
         bowString = new BowString();
         fletching = new Fletching();
@@ -393,6 +397,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         patternAndCast.addNewPatterntype(sharpeningKit);
         patternAndCast.addNewPatterntype(bowString);
         patternAndCast.addNewPatterntype(fletching);
+        patternAndCast.addNewPatterntype(kamaHead);
 
         GameRegistry.registerItem(arrowhead, arrowhead.getUnlocalizedName());
         GameRegistry.registerItem(arrowShaft, arrowShaft.getUnlocalizedName());
@@ -427,6 +432,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(fletching, fletching.getUnlocalizedName());
         GameRegistry.registerItem(boltCore, boltCore.getUnlocalizedName());
         GameRegistry.registerItem(sharpeningKit, sharpeningKit.getUnlocalizedName());
+        GameRegistry.registerItem(kamaHead, kamaHead.getUnlocalizedName());
 
         pickaxe = new Pickaxe();
         GameRegistry.registerItem(pickaxe, pickaxe.getUnlocalizedName());
@@ -442,6 +448,11 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(hatchet, hatchet.getUnlocalizedName());
         TinkersRebornRegistry.registerTool(hatchet);
         TinkersRebornRegistry.registerToolCrafting(hatchet);
+
+        kama = new Kama();
+        GameRegistry.registerItem(kama, kama.getUnlocalizedName());
+        TinkersRebornRegistry.registerTool(kama);
+        TinkersRebornRegistry.registerToolCrafting(kama);
 
         mattock = new Mattock();
         GameRegistry.registerItem(mattock, mattock.getUnlocalizedName());

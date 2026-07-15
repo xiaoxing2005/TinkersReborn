@@ -24,6 +24,8 @@ public abstract class HarvestTool extends ToolCore {
     protected static final Set<Material> axeEffectiveMaterials = new HashSet<>();
     protected static final Set<Block> axeEffectiveBlocks = new HashSet<>();
 
+    protected static final Set<Material> kamaEffectiveMaterials = new HashSet<>();
+
     static {
         pickaxeEffectiveMaterials.add(Material.rock);
         pickaxeEffectiveMaterials.add(Material.iron);
@@ -76,6 +78,15 @@ public abstract class HarvestTool extends ToolCore {
         } catch (Exception e) {
             TinkersReborn.LOG.warn("Tinkers Hatchet get error when try to get vanila axe's effective block list");
         }
+
+        kamaEffectiveMaterials.add(Material.web);
+        kamaEffectiveMaterials.add(Material.leaves);
+        kamaEffectiveMaterials.add(Material.plants);
+        kamaEffectiveMaterials.add(Material.vine);
+        kamaEffectiveMaterials.add(Material.gourd);
+        kamaEffectiveMaterials.add(Material.cactus);
+        kamaEffectiveMaterials.add(Material.cloth);
+        kamaEffectiveMaterials.add(Material.sponge);
     }
 
     protected HarvestTool(String toolTypeName, int partAmount) {

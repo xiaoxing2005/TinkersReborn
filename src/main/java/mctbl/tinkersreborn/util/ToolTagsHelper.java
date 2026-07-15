@@ -6,10 +6,13 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -23,6 +26,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.BlockEvent;
@@ -1230,5 +1234,72 @@ public class ToolTagsHelper {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Attempts to shear a block using IShearable logic
+     * 
+     * @param itemstack
+     * @param world
+     * @param player
+     * @param pos
+     * @return true if the block was successfully sheared
+     */
+    public static boolean shearBlock(ItemStack itemstack, World world, EntityPlayer player, BlockPos pos) {
+        // only serverside since it creates entities
+        if (world.isRemote) {
+            return false;
+        }
+
+        Block block = world.getBlock(pos.x, pos.y, pos.z);
+        if (block instanceof IShearable target) {
+            if (target.isShearable(itemstack, world, pos.x, pos.y, pos.z)) {
+                int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, itemstack);
+                List<ItemStack> drops = target.onSheared(itemstack, world, pos.x, pos.y, pos.z, fortune);
+
+                for (ItemStack stack : drops) {
+                    float f = 0.7F;
+                    double d = TinkersReborn.random.nextFloat() * f + (1.0F - f) * 0.5D;
+                    double d1 = TinkersReborn.random.nextFloat() * f + (1.0F - f) * 0.5D;
+                    double d2 = TinkersReborn.random.nextFloat() * f + (1.0F - f) * 0.5D;
+                    EntityItem entityitem = new EntityItem(
+                        player.getEntityWorld(),
+                        pos.x + d,
+                        pos.y + d1,
+                        pos.z + d2,
+                        stack);
+                    entityitem.delayBeforeCanPickup = 10;
+                    world.spawnEntityInWorld(entityitem);
+                }
+
+                itemstack.func_150999_a(world, block, pos.x, pos.y, pos.z, player);
+
+                world.setBlockToAir(pos.x, pos.y, pos.z);
+
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Same as {@link #breakExtraBlock(ItemStack, World, EntityPlayer, BlockPos, BlockPos)}, but attempts to shear the
+     * block first
+     * 
+     * @param stack
+     * @param world
+     * @param player
+     * @param pos
+     * @param refPos
+     */
+    public static void shearExtraBlock(ItemStack stack, World world, EntityPlayer player, BlockPos pos,
+        BlockPos refPos) {
+        if (!canBreakExtraBlock(stack, world, player, pos, refPos)) {
+            return;
+        }
+        // if we cannot shear the block, just run normal block break code
+        if (!shearBlock(stack, world, player, pos)) {
+            breakExtraBlock(stack, world, player, pos, refPos);
+        }
     }
 }
