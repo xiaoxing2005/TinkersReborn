@@ -379,6 +379,12 @@ flowchart TB
   
   use like hoe
 
+### Kama
+
+  harvest crop then replant them
+
+  work as scissors
+
 ### Hammer
 
   mining speed * 0.4
@@ -412,6 +418,14 @@ flowchart TB
   base damage + 2
 
   chop the whole tree
+
+### Scythe
+
+  Durability * 2.2
+
+  like Kama but have aoe(have some bug...)
+  
+  may need balance
 
 ### BroadSword
 
