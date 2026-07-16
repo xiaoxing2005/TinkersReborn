@@ -458,3 +458,17 @@ flowchart TB
   knock back * 0.6
 
   half damage will by pass armor
+
+### Cleaver
+
+  Durability * 2
+
+  damage * 1.2
+
+  damage cutoff over 25
+
+  use large blade's material fix can get 2x durability, large plate's material can fix 1.5x
+
+  (base damage * 1.3) + 3
+
+  (ModBeheading have some issue wait to fix)

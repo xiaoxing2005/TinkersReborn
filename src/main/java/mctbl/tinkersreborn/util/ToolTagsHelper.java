@@ -18,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.potion.Potion;
 import net.minecraft.stats.StatList;
@@ -868,12 +869,11 @@ public class ToolTagsHelper {
             // I guess this is to allow better handling at the hit players side? No idea why
             // it resets the motion though.
             if (targetEntity instanceof EntityPlayerMP && targetEntity.velocityChanged) {
-                // TinkerNetwork.sendPacket(targetEntity, new
-                // SPacketEntityVelocity(targetEntity));
-                // targetEntity.velocityChanged = false;
-                // targetEntity.motionX = oldVelX;
-                // targetEntity.motionY = oldVelY;
-                // targetEntity.motionZ = oldVelZ;
+                TinkerNetwork.sendPacket(targetEntity, new S12PacketEntityVelocity(targetEntity));
+                targetEntity.velocityChanged = false;
+                targetEntity.motionX = oldVelX;
+                targetEntity.motionY = oldVelY;
+                targetEntity.motionZ = oldVelZ;
             }
 
             if (player != null) {
@@ -896,7 +896,7 @@ public class ToolTagsHelper {
                 // player.addStat(AchievementList.OVERKILL);
                 // }
             }
-            // attacker.setLastAttacker(target);
+
             target.setLastAttacker(attacker);
 
             // Damage indicator particles

@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.common.particle.ParticleAttackBroadsword;
+import mctbl.tinkersreborn.common.particle.ParticleAttackCleaver;
 import mctbl.tinkersreborn.common.particle.ParticleAttackHammer;
 import mctbl.tinkersreborn.common.particle.ParticleAttackHatchet;
 import mctbl.tinkersreborn.common.particle.ParticleAttackLongsword;
@@ -48,8 +49,8 @@ public class ClientProxy extends CommonProxy {
             // return new EntitySlimeFx(world, x, y, z, TinkerCommons.matSlimeBallPurple.getItem(),
             // TinkerCommons.matSlimeBallPurple.getItemDamage());
             // // attack
-            // case CLEAVER_ATTACK:
-            // return new ParticleAttackCleaver(world, x, y, z, xSpeed, ySpeed, zSpeed, mc.getTextureManager());
+            case CLEAVER_ATTACK:
+                return new ParticleAttackCleaver(world, x, y, z, xSpeed, ySpeed, zSpeed);
             case LONGSWORD_ATTACK:
                 return new ParticleAttackLongsword(world, x, y, z, xSpeed, ySpeed, zSpeed);
             case BROADSWORD_ATTACK:
@@ -61,7 +62,7 @@ public class ClientProxy extends CommonProxy {
             case LUMBERAXE_ATTACK:
                 return new ParticleAttackLumberAxe(world, x, y, z, xSpeed, ySpeed, zSpeed);
             // case FRYPAN_ATTACK:
-            // return new ParticleAttackFrypan(world, x, y, z, xSpeed, ySpeed, zSpeed, mc.getTextureManager());
+            // return new ParticleAttackFrypan(world, x, y, z, xSpeed, ySpeed, zSpeed);
             case HAMMER_ATTACK:
                 return new ParticleAttackHammer(world, x, y, z, xSpeed, ySpeed, zSpeed);
             // effects

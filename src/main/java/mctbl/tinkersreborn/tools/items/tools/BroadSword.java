@@ -106,5 +106,4 @@ public class BroadSword extends SwordCore {
         }
         return this.toolBuildGuiInfo;
     }
-
 }
