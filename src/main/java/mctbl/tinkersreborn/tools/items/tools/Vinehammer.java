@@ -157,8 +157,14 @@ public class Vinehammer extends AoeHarvestTool {
 
     @Override
     public ToolBuildGuiInfo getToolBuildGuiInfo() {
-        // TODO Auto-generated method stub
-        return null;
+        if (this.toolBuildGuiInfo == null) {
+            this.toolBuildGuiInfo = new ToolBuildGuiInfo(this).addSlotPosition(20 + 1, 55 - 30) // pickaxe
+                .addSlotPosition(20 + 39, 55 - 10) // hammer
+                .addSlotPosition(20, 55) // rod
+                .addSlotPosition(20 + 20, 55 - 20); // plate
+
+        }
+        return this.toolBuildGuiInfo;
     }
 
 }
