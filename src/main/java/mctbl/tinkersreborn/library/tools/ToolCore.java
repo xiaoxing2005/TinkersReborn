@@ -627,7 +627,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
             BlockPos blockPos = BlockPos.of(x, y, z);
             for (BlockPos extraPos : ((IAoeTool) this)
                 .getAOEBlocks(itemstack, player.getEntityWorld(), player, blockPos)) {
-                this.breakExtraBlock(itemstack, player.getEntityWorld(), player, extraPos, blockPos);
+                this.breakExtraBlock(itemstack, player.worldObj, player, extraPos, blockPos);
             }
         }
         return breakBlock(itemstack, x, y, z, player);
@@ -643,7 +643,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
      * @param refPos Base position
      */
     protected void breakExtraBlock(ItemStack tool, World world, EntityPlayer player, BlockPos pos, BlockPos refPos) {
-        ToolTagsHelper.breakExtraBlock(tool, player.getEntityWorld(), player, pos, refPos);
+        ToolTagsHelper.breakExtraBlock(tool, world, player, pos, refPos);
     }
 
     /**

@@ -54,6 +54,8 @@ public class TinkersRebornConfig {
 
     public static String[] entityMelting;
     public static int smelteryDrainEachTick;
+    public static int vineHammerMaxOreMine;
+    public static int vineHammerMineEachTick;
 
     public static void setupConfig(File location) {
         metalTypes = new String[] { "Cobalt", "Ardite", "Manyullyn", "Copper", "Bronze", "Tin", "Aluminum", "AluBrass",
@@ -63,7 +65,7 @@ public class TinkersRebornConfig {
 
         gravelOreTypes = new String[] { "iron", "gold", "copper", "tin", "aluminum" };
 
-        Configuration config = new Configuration(new File(location + "/TinkersReborn"));
+        Configuration config = new Configuration(new File(location + "/TinkersReborn.cfg"));
 
         disableAllRecipes = config
             .get(
@@ -177,6 +179,12 @@ public class TinkersRebornConfig {
             .getStringList();
 
         smelteryDrainEachTick = config.get("Smeltery", "smelteryDrainEachTick", 6)
+            .getInt();
+
+        vineHammerMaxOreMine = config.get("Tools", "Vine Hammer can mine ores each time", 25)
+            .getInt();
+        // does this really need?
+        vineHammerMineEachTick = config.get("Tools", "Vine Hammer each tick can mine howmany ore block", 25)
             .getInt();
     }
 
