@@ -57,6 +57,6 @@ public final class TinkersRebornCrosshairRenderEvents {
     }
 
     private boolean isValidItem(ItemStack itemStack) {
-        return itemStack.getItem() instanceof ICustomCrosshairUser;
+        return itemStack != null && itemStack.getItem() instanceof ICustomCrosshairUser;
     }
 }
