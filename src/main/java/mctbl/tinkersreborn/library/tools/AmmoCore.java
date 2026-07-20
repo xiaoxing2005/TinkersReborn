@@ -21,6 +21,12 @@ import mctbl.tinkersreborn.tools.TinkersRebornTraits;
 import mctbl.tinkersreborn.tools.traits.TraitEnderference;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
+/**
+ * This class is a tool that has ammo. Durability works like usually, but ammo
+ * is abstracted on top of durability. So durability controls the interaction
+ * with materials, and ammo-ratio controls the interaction betweer durability
+ * and ammo
+ */
 public abstract class AmmoCore extends ToolCore {
 
     public static final String DAMAGE_TYPE_PROJECTILE = "arrow";
@@ -29,6 +35,10 @@ public abstract class AmmoCore extends ToolCore {
     protected AmmoCore(String toolTypeName, int partAmount) {
         super(toolTypeName, partAmount);
         durabilityPerAmmo = 10;
+    }
+
+    public int getDurabilityPerAmmo() {
+        return durabilityPerAmmo;
     }
 
     public int getCurrentAmmo(ItemStack stack) {
@@ -75,7 +85,7 @@ public abstract class AmmoCore extends ToolCore {
     /**
      * Gets the projectile to fire, matching the itemstacks data.
      */
-    abstract EntityProjectileBase getProjectile(ItemStack stack, @Nonnull ItemStack launcher, World world,
+    public abstract EntityProjectileBase getProjectile(ItemStack stack, @Nonnull ItemStack launcher, World world,
         EntityPlayer player, float speed, float inaccuracy, float power, boolean usedAmmo);
 
     public Multimap<String, AttributeModifier> getProjectileAttributeModifier(ItemStack stack) {
@@ -111,5 +121,21 @@ public abstract class AmmoCore extends ToolCore {
             return projectile;
         }
 
+    }
+
+    protected ItemStack getProjectileStack(ItemStack itemStack, World world, EntityPlayer player, boolean usedAmmo) {
+        ItemStack reference = itemStack.copy();
+        reference.stackSize = 1;
+        setAmmo(1, reference);
+
+        // prevent a positive feedback loop with picking up ammo + durability retaining
+        // modifiers like reinforced
+        if (!player.capabilities.isCreativeMode && !world.isRemote && !usedAmmo) {
+            setAmmo(0, reference);
+        }
+
+        // never broken
+        ToolTagsHelper.unbreakTool(reference);
+        return reference;
     }
 }
