@@ -1049,7 +1049,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         NBTTagList mods1 = ToolTagsHelper.getModifiersTagList(tag1);
         NBTTagList mods2 = ToolTagsHelper.getModifiersTagList(tag2);
 
-        if (mods1.tagCount() != mods1.tagCount()) {
+        if (mods1.tagCount() != mods2.tagCount()) {
             return false;
         }
         // check modifiers
