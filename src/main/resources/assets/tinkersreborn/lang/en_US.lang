@@ -189,6 +189,9 @@ tinkersreborn.tool.rapier=Rapier
 tinkersreborn.tool.cleaver=Cleaver
 tinkersreborn.tool.vinehammer=Vine Hammer
 tinkersreborn.tool.arrow=Arrow
+tinkersreborn.tool.shortbow=Shortbow
+tinkersreborn.tool.longbow=Longbow
+tinkersreborn.tool.crossbow=Crossbow
 
 tinkersreborn.toolpart.ToolRod=Tool Rod
 tinkersreborn.toolpart.PickaxeHead=Pickaxe Head

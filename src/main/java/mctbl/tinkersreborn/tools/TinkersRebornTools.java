@@ -107,8 +107,10 @@ import mctbl.tinkersreborn.tools.items.tools.Mattock;
 import mctbl.tinkersreborn.tools.items.tools.Pickaxe;
 import mctbl.tinkersreborn.tools.items.tools.Rapier;
 import mctbl.tinkersreborn.tools.items.tools.Scythe;
+import mctbl.tinkersreborn.tools.items.tools.ShortBow;
 import mctbl.tinkersreborn.tools.items.tools.Shovel;
 import mctbl.tinkersreborn.tools.items.tools.Vinehammer;
+import mctbl.tinkersreborn.tools.materials.BowMaterialStats;
 import mctbl.tinkersreborn.tools.materials.ExtraMaterialStats;
 import mctbl.tinkersreborn.tools.materials.FletchingMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HandleMaterialStats;
@@ -190,6 +192,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static ToolCore longSword;
     public static ToolCore rapier;
 
+    public static ToolCore shortBow;
     public static ToolCore arrow;
 
     // other items
@@ -517,6 +520,11 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(arrow, arrow.getUnlocalizedName());
         TinkersRebornRegistry.registerTool(arrow);
         TinkersRebornRegistry.registerToolCrafting(arrow);
+
+        shortBow = new ShortBow();
+        GameRegistry.registerItem(shortBow, shortBow.getUnlocalizedName());
+        TinkersRebornRegistry.registerTool(shortBow);
+        TinkersRebornRegistry.registerToolCrafting(shortBow);
 
         mossball = new MaterialItem("Mossball", "mossball");
         slimeCrystal = new MaterialItem("SlimeCrystal", "slimecrystal");
@@ -854,6 +862,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         aluminumFluid = TinkersRebornFluid.createMolten("aluminum", 0xCCCCCC, "aluminum", 330);
 
         this.registerBaseMaterialsStats();
+        this.registerBowMaterialsStats();
 
         this.registerMaterialIntegrations();
     }
@@ -967,6 +976,10 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         featherMaterial.addStats(new FletchingMaterialStats(1.0F, 1.0F));
         leafMaterial.addStats(new FletchingMaterialStats(0.5F, 1.5F));
         slimeleafMaterial.addStats(new FletchingMaterialStats(0.8F, 1.25F));
+    }
+
+    private void registerBowMaterialsStats() {
+        woodMaterial.addStats(new BowMaterialStats(1f, 1f, 0));
     }
 
     private void registerMaterialIntegrations() {

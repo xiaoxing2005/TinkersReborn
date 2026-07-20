@@ -853,8 +853,10 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         boolean foundMatch = false;
 
         for (int index = 0; index < componentsParts.size(); index++) {
-            if (componentsParts.get(index)
-                .statusType() != MaterialStatusType.HEAD) continue;
+            // TODO maybe better way?
+            MaterialStatusType statusType = componentsParts.get(index)
+                .statusType();
+            if (statusType != MaterialStatusType.HEAD || statusType != MaterialStatusType.BOW) continue;
 
             TinkersRebornMaterial material = materials.get(index);
 
@@ -1065,6 +1067,10 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         // modifiers used
             ToolTagsHelper.getToolOriginDataNBTSafe(item1)
                 .equals(ToolTagsHelper.getToolOriginDataNBTSafe(item2)); // unmodified base stats
+    }
+
+    protected void preventSlowDown(Entity entityIn, float originalSpeed) {
+        TinkersReborn.proxy.preventPlayerSlowdown(entityIn, originalSpeed, this);
     }
 
     public final class ToolPartRecord {

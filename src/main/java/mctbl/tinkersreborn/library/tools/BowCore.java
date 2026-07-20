@@ -17,7 +17,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
@@ -38,9 +37,6 @@ public abstract class BowCore extends ToolCore {
 
     protected static final UUID LAUNCHER_BONUS_DAMAGE = UUID.fromString("066b8892-d2ac-4bae-ac22-26f9f91a02ee");
     protected static final UUID LAUNCHER_DAMAGE_MODIFIER = UUID.fromString("4f76565a-3845-4a09-ba8f-92a37937a7c3");
-
-    protected static final ResourceLocation PROPERTY_PULL_PROGRESS = new ResourceLocation("pull");
-    protected static final ResourceLocation PROPERTY_IS_PULLING = new ResourceLocation("pulling");
 
     protected BowCore(String toolTypeName, int partAmount) {
         super(toolTypeName, partAmount);
@@ -288,4 +284,5 @@ public abstract class BowCore extends ToolCore {
                     1));
         }
     }
+
 }
