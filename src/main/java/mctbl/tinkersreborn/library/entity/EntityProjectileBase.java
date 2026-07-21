@@ -7,25 +7,6 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Multimap;
-
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
-import io.netty.buffer.ByteBuf;
-import mctbl.tinkersreborn.library.TinkersRebornRegistry;
-import mctbl.tinkersreborn.library.event.ProjectileEvent;
-import mctbl.tinkersreborn.library.event.ProjectileEvent.TinkerProjectileImpactEvent;
-import mctbl.tinkersreborn.library.event.Sounds;
-import mctbl.tinkersreborn.library.tools.AmmoCore;
-import mctbl.tinkersreborn.library.tools.BowCore;
-import mctbl.tinkersreborn.library.tools.IModifier;
-import mctbl.tinkersreborn.library.tools.ToolCore;
-import mctbl.tinkersreborn.library.tools.traits.IProjectileTrait;
-import mctbl.tinkersreborn.library.utils.BlockPos;
-import mctbl.tinkersreborn.tools.modifiers.ModReinforced;
-import mctbl.tinkersreborn.util.AmmoHelper;
-import mctbl.tinkersreborn.util.TinkersRebornUtils;
-import mctbl.tinkersreborn.util.ToolTagsHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -45,6 +26,26 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+
+import com.google.common.collect.Multimap;
+
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import io.netty.buffer.ByteBuf;
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.event.ProjectileEvent;
+import mctbl.tinkersreborn.library.event.ProjectileEvent.TinkerProjectileImpactEvent;
+import mctbl.tinkersreborn.library.event.Sounds;
+import mctbl.tinkersreborn.library.tools.AmmoCore;
+import mctbl.tinkersreborn.library.tools.BowCore;
+import mctbl.tinkersreborn.library.tools.IModifier;
+import mctbl.tinkersreborn.library.tools.ToolCore;
+import mctbl.tinkersreborn.library.tools.traits.IProjectileTrait;
+import mctbl.tinkersreborn.library.utils.BlockPos;
+import mctbl.tinkersreborn.tools.modifiers.ModReinforced;
+import mctbl.tinkersreborn.util.AmmoHelper;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 // have to base this on EntityArrow, otherwise minecraft does derp things because everything is handled based on class.
 public class EntityProjectileBase extends EntityArrow implements IEntityAdditionalSpawnData {
@@ -97,6 +98,8 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
 
         this.shootingEntity = player;
 
+        this.canBePickedUp = 1;
+
         // stuff from the arrow
         this.setLocationAndAngles(
             player.posX,
@@ -106,18 +109,13 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
             player.rotationPitch);
 
         this.setPosition(this.posX, this.posY, this.posZ);
-        // this.yOffset = 0.0F;
+        this.yOffset = 0.0F;
         this.motionX = -MathHelper.sin(this.rotationYaw / 180.0F * (float) Math.PI)
             * MathHelper.cos(this.rotationPitch / 180.0F * (float) Math.PI);
         this.motionZ = +MathHelper.cos(this.rotationYaw / 180.0F * (float) Math.PI)
             * MathHelper.cos(this.rotationPitch / 180.0F * (float) Math.PI);
         this.motionY = -MathHelper.sin(this.rotationPitch / 180.0F * (float) Math.PI);
         this.setThrowableHeading(this.motionX, this.motionY, this.motionZ, speed, inaccuracy);
-
-//        TinkersReborn.LOG.info("[DEBUG-ARROW] spawn: playerRot=({},{}), speed={}, inaccuracy={}, power={}",
-//            player.rotationYaw, player.rotationPitch, speed, inaccuracy, power);
-//        TinkersReborn.LOG.info("[DEBUG-ARROW] spawn: motion after setThrowableHeading=({}, {}, {})",
-//            this.motionX, this.motionY, this.motionZ);
 
         // our stuff
         this.ammoStack = stack;
@@ -206,10 +204,6 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
         this.posZ -= this.motionZ / speed * 0.05000000074505806D;
 
         playHitBlockSound(speed, block);
-
-//        TinkersReborn.LOG.info("[DEBUG-ARROW] onHitBlock: block={}:{} at ({},{},{}), inGround was={}, inTile was={}, inData was={}, side={}",
-//            Block.getIdFromBlock(block), meta, mop.blockX, mop.blockY, mop.blockZ,
-//            this.inGround, this.inTile, this.inData, mop.sideHit);
 
         ProjectileEvent.OnHitBlock.fireEvent(this, speed, BlockPos.of(mop.blockX, mop.blockY, mop.blockZ), block, meta);
 
@@ -418,11 +412,6 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
                 this.setDead();
             }
         } else {
-//            TinkersReborn.LOG.info("[DEBUG-ARROW] updateInGround: fell out of block! block={}:{}, inTile={}:{}, sameBlock={}, collides={}, pos=({},{},{})",
-//                Block.getIdFromBlock(block), meta, Block.getIdFromBlock(this.inTile), this.inData,
-//                (block == this.inTile && meta == this.inData),
-//                this.worldObj.checkBlockCollision(ON_BLOCK_AABB.offset(this.posX, this.posY, this.posZ)),
-//                this.posX, this.posY, this.posZ);
             this.inGround = false;
             this.motionX *= this.rand.nextFloat() * 0.2F;
             this.motionY *= this.rand.nextFloat() * 0.2F;
@@ -539,19 +528,12 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
         if (isDefused()) {
             return null;
         }
-        AxisAlignedBB searchBox = AxisAlignedBB
-            .getBoundingBox(
-                Math.min(start.xCoord, end.xCoord),
-                Math.min(start.yCoord, end.yCoord),
-                Math.min(start.zCoord, end.zCoord),
-                Math.max(start.xCoord, end.xCoord),
-                Math.max(start.yCoord, end.yCoord),
-                Math.max(start.zCoord, end.zCoord))
-            .expand(1.0, 1.0, 1.0);
 
+        AxisAlignedBB searchBox = this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ)
+            .expand(1.0D, 1.0D, 1.0D);
         List<Entity> entities = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, searchBox);
 
-        if (this.shootingEntity != null && this.ticksInAir < 2) {
+        if (this.shootingEntity != null && this.ticksInAir < 5) {
             entities.remove(this.shootingEntity);
         }
 
@@ -559,16 +541,35 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
         double closestDist = Double.MAX_VALUE;
 
         for (Entity entity : entities) {
-            if (!entity.canBeCollidedWith() || entity == this.shootingEntity) {
+            if (!entity.canBeCollidedWith() || (entity == this.shootingEntity && this.ticksInAir < 5)) {
                 continue;
             }
 
-            AxisAlignedBB aabb = entity.boundingBox.expand(0.3, 0.3, 0.3);
+            AxisAlignedBB aabb = entity.boundingBox.expand(0.3D, 0.3D, 0.3D);
 
             MovingObjectPosition mop = aabb.calculateIntercept(start, end);
-            if (mop != null) {
+            boolean hitViaIntercept = mop != null;
+
+            // Also check if the arrow's physical AABB (swept along motion) intersects
+            // the entity's AABB. This catches grazing hits where the center-line
+            // calculateIntercept misses but the arrow body (0.5 wide) still hits.
+            boolean hitViaBody = !hitViaIntercept && entity.boundingBox
+                .intersectsWith(this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ));
+
+            if (hitViaIntercept) {
                 double dist = start.squareDistanceTo(mop.hitVec);
                 if (dist < closestDist) {
+                    closestEntity = entity;
+                    closestDist = dist;
+                }
+            } else if (hitViaBody) {
+                // For body hit, estimate distance as distance to entity center
+                double dist = start.squareDistanceTo(
+                    Vec3.createVectorHelper(
+                        (entity.boundingBox.minX + entity.boundingBox.maxX) / 2.0,
+                        (entity.boundingBox.minY + entity.boundingBox.maxY) / 2.0,
+                        (entity.boundingBox.minZ + entity.boundingBox.maxZ) / 2.0));
+                if (dist < closestDist || closestDist == 0.0D) {
                     closestEntity = entity;
                     closestDist = dist;
                 }
