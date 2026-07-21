@@ -10,6 +10,7 @@ import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import mctbl.tinkersreborn.tools.entity.EntityArrow;
 import mctbl.tinkersreborn.tools.model.ChestRender;
+import mctbl.tinkersreborn.tools.model.EntityArrowRenderer;
 import mctbl.tinkersreborn.tools.model.TableRender;
 import mctbl.tinkersreborn.tools.model.ToolRender;
 
@@ -33,5 +34,6 @@ public class TinkersRebornToolsProxyClient extends TinkersRebornToolsProxyCommon
         EntityRegistry.registerModEntity(EntityArrow.class, "arrow", 10, TinkersReborn.instance, 64, 1, false);
         // EntityRegistry.registerModEntity(EntityBolt.class, "bolt", 11, TinkersReborn.instance, 64, 1, false);
         // EntityRegistry.registerModEntity(EntityShuriken.class, "shuriken", 12, TinkersReborn.instance, 64, 1, false);
+        RenderingRegistry.registerEntityRenderingHandler(EntityArrow.class, new EntityArrowRenderer());
     }
 }

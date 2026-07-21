@@ -72,7 +72,7 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
 
     public Block inTile;
     public byte inData;
-    
+
     public int xTile;
     public int yTile;
     public int zTile;
@@ -188,13 +188,13 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
     public void onHitBlock(MovingObjectPosition mop) {
         Block block = this.worldObj.getBlock(mop.blockX, mop.blockY, mop.blockZ);
         int meta = this.worldObj.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
-        
+
         this.xTile = mop.blockX;
         this.yTile = mop.blockY;
         this.zTile = mop.blockZ;
         this.inTile = block;
         this.inData = (byte) meta;
-        
+
         this.motionX = ((float) (mop.hitVec.xCoord - this.posX));
         this.motionY = ((float) (mop.hitVec.yCoord - this.posY));
         this.motionZ = ((float) (mop.hitVec.zCoord - this.posZ));
@@ -636,6 +636,10 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
         return 0.05;
     }
 
+    public ItemStack getEntityItem() {
+        return this.ammoStack;
+    }
+
     @Override
     public void writeEntityToNBT(NBTTagCompound tags) {
         super.writeEntityToNBT(tags);
@@ -653,7 +657,7 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
         tag.setByte("inData", this.inData);
         tag.setShort("life", (short) this.ticksInGround);
         tag.setBoolean("noGravity", this.noGravity);
-        
+
         tag.setInteger("xTile", this.xTile);
         tag.setInteger("yTile", this.yTile);
         tag.setInteger("zTile", this.zTile);
@@ -679,7 +683,7 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
         this.inData = nbt.getByte("inData");
         this.ticksInGround = nbt.getShort("life");
         this.noGravity = nbt.getBoolean("noGravity");
-        
+
         this.xTile = nbt.getInteger("xTile");
         this.yTile = nbt.getInteger("yTile");
         this.zTile = nbt.getInteger("zTile");
