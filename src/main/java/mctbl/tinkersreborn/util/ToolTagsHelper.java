@@ -845,7 +845,7 @@ public class ToolTagsHelper {
 
         boolean hit = false;
         if (isProjectile && tool instanceof AmmoCore ammo) {
-            hit = ammo.dealDamageRanged(stack, projectileEntity, attacker, projectileEntity, damage);
+            hit = ammo.dealDamageRanged(stack, projectileEntity, attacker, targetEntity, damage);
         } else {
             hit = tool.dealDamage(stack, attacker, targetEntity, damage);
         }
