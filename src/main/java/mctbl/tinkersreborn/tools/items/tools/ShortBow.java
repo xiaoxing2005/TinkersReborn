@@ -109,7 +109,7 @@ public class ShortBow extends BowCore implements ICustomCrosshairUser {
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         // has to be done in onUpdate because onTickUsing is too early and gets overwritten. bleh.
         // shortbows are more mobile than other bows
-        preventSlowDown(entityIn, 0.5f);
+        this.preventSlowDown(entityIn, 0.5f);
 
         super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
     }
