@@ -101,6 +101,7 @@ import mctbl.tinkersreborn.tools.items.tools.Excavator;
 import mctbl.tinkersreborn.tools.items.tools.Hammer;
 import mctbl.tinkersreborn.tools.items.tools.Hatchet;
 import mctbl.tinkersreborn.tools.items.tools.Kama;
+import mctbl.tinkersreborn.tools.items.tools.LongBow;
 import mctbl.tinkersreborn.tools.items.tools.LongSword;
 import mctbl.tinkersreborn.tools.items.tools.LumberAxe;
 import mctbl.tinkersreborn.tools.items.tools.Mattock;
@@ -313,7 +314,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
             .bus()
             .register(tre);
 
-        MinecraftForge.EVENT_BUS.register(new TinkersRebornCrosshairRenderEvents());
+        MinecraftForge.EVENT_BUS.register(new TinkersRebornProjectileRenderEvents());
 
         toolStation = new ToolStationBlock();
         GameRegistry.registerBlock(toolStation, ToolStationItemBlock.class, toolStation.getUnlocalizedName());
@@ -528,6 +529,11 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(shortBow, shortBow.getUnlocalizedName());
         TinkersRebornRegistry.registerTool(shortBow);
         TinkersRebornRegistry.registerToolCrafting(shortBow);
+
+        longBow = new LongBow();
+        GameRegistry.registerItem(longBow, longBow.getUnlocalizedName());
+        TinkersRebornRegistry.registerTool(longBow);
+        TinkersRebornRegistry.registerToolForgeCrafting(longBow);
 
         mossball = new MaterialItem("Mossball", "mossball");
         slimeCrystal = new MaterialItem("SlimeCrystal", "slimecrystal");

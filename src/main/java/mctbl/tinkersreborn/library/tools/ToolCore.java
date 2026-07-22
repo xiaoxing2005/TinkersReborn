@@ -216,9 +216,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
                 String materialId = renderMaterials.get(renderPass) == null ? null
                     : renderMaterials.get(renderPass).identifier;
                 return getCorrectIcon(this.allIcons.get(iconsIdx), materialId);
-            }
-            // Effects
-            else {
+            } else {
+                // Effects
                 List<NBTTagCompound> modifiersList = ToolTagsHelper.getModifiersList(stack);
                 ModifierNBT tag = ModifierNBT.readTag(modifiersList.get(renderPass - this.partAmount));
                 return this.effectIcons.get(tag.identifier);
@@ -246,7 +245,13 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         step = Math.max(0, step);
 
         String tempKey = id + (step != 0 ? "_" + step : "");
-        return icons.getOrDefault(tempKey, this.getCorrectIcon(icons, id));
+        if (icons.containsKey(tempKey)) {
+            return icons.get(tempKey);
+        } else if (step != 0 && icons.containsKey("_" + step)) {
+            return icons.get("_" + step);
+        } else {
+            return this.getCorrectIcon(icons, id);
+        }
     }
 
     @Override

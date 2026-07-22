@@ -16,7 +16,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
@@ -27,15 +26,12 @@ import net.minecraftforge.event.entity.player.ArrowNockEvent;
 
 import com.google.common.collect.Multimap;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.event.ProjectileEvent;
 import mctbl.tinkersreborn.library.event.Sounds;
 import mctbl.tinkersreborn.library.event.TinkerToolEvent;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
-import mctbl.tinkersreborn.library.tools.modifiers.ModifierNBT;
 import mctbl.tinkersreborn.tools.Category;
 import mctbl.tinkersreborn.util.AmmoHelper;
 import mctbl.tinkersreborn.util.TextureHelper;
@@ -60,6 +56,10 @@ public abstract class BowCore extends ToolCore {
         return false;
     }
 
+    public float getZoomLevel() {
+        return 0.0F;
+    }
+
     @Override
     public void registerIcons(IIconRegister register) {
         String basePath = "tinkersreborn:tools/" + this.toolTypeName + "/";
@@ -72,12 +72,16 @@ public abstract class BowCore extends ToolCore {
                     if (material.hasStats(type)) {
                         String path = basePath + material.identifier + this.componentsParts.get(i).texturePostfix;
 
-                        this.allIcons.get(i)
-                            .put(material.identifier, register.registerIcon(path));
-                        for (int idx = 1; idx <= 3; idx++) {
-                            if (TextureHelper.itemTextureExists(path + "_" + idx)) {
-                                this.allIcons.get(i)
-                                    .put(material.identifier + "_" + idx, register.registerIcon(path + "_" + idx));
+                        if (TextureHelper.itemTextureExists(path)) {
+                            this.allIcons.get(i)
+                                .put(material.identifier, register.registerIcon(path));
+                        }
+                        if (this.animateLayer(i)) {
+                            for (int idx = 1; idx <= 3; idx++) {
+                                if (TextureHelper.itemTextureExists(path + "_" + idx)) {
+                                    this.allIcons.get(i)
+                                        .put(material.identifier + "_" + idx, register.registerIcon(path + "_" + idx));
+                                }
                             }
                         }
                         if (i == 0) {
@@ -93,6 +97,18 @@ public abstract class BowCore extends ToolCore {
                 // standard
                 this.allIcons.get(i)
                     .put(null, register.registerIcon(basePath + this.componentsParts.get(i).texturePostfix));
+                if (this.animateLayer(i)) {
+                    for (int idx = 1; idx <= 3; idx++) {
+                        if (TextureHelper
+                            .itemTextureExists(basePath + this.componentsParts.get(i).texturePostfix + "_" + idx)) {
+                            this.allIcons.get(i)
+                                .put(
+                                    "_" + idx,
+                                    register.registerIcon(
+                                        basePath + this.componentsParts.get(i).texturePostfix + "_" + idx));
+                        }
+                    }
+                }
                 if (i == 0) {
                     this.allIcons.get(this.partAmount)
                         .put(
@@ -116,7 +132,9 @@ public abstract class BowCore extends ToolCore {
 
     @Override
     public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
-        if (animateLayer(renderPass) && usingItem != null && stack == usingItem && !ToolTagsHelper.isBroken(stack)) {
+        if (this.animateLayer(renderPass) && usingItem != null
+            && stack == usingItem
+            && !ToolTagsHelper.isBroken(stack)) {
             List<TinkersRebornMaterial> renderMaterials = ToolTagsHelper.getToolRenderMaterialsList(stack);
             String materialId = renderMaterials.get(renderPass) == null ? null
                 : renderMaterials.get(renderPass).identifier;
@@ -126,28 +144,6 @@ public abstract class BowCore extends ToolCore {
                 this.getDrawbackProgress(stack, player));
         }
         return this.getIcon(stack, renderPass);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(ItemStack stack, int renderPass) {
-        List<TinkersRebornMaterial> renderMaterials = ToolTagsHelper.getToolRenderMaterialsList(stack);
-        if (!renderMaterials.isEmpty()) {
-            if (renderPass < this.partAmount) {
-                int iconsIdx = (renderPass == 0 && ToolTagsHelper.isBroken(stack)) ? this.partAmount : renderPass;
-                String materialId = renderMaterials.get(renderPass) == null ? null
-                    : renderMaterials.get(renderPass).identifier;
-                return getCorrectIcon(this.allIcons.get(iconsIdx), materialId);
-            }
-            // Effects
-            else {
-                List<NBTTagCompound> modifiersList = ToolTagsHelper.getModifiersList(stack);
-                ModifierNBT tag = ModifierNBT.readTag(modifiersList.get(renderPass - this.partAmount));
-                return this.effectIcons.get(tag.identifier);
-            }
-
-        }
-        return emptyIcon;
     }
 
     protected ProjectileLauncherNBT getData(ItemStack stack) {
@@ -180,7 +176,7 @@ public abstract class BowCore extends ToolCore {
     }
 
     protected float getDrawbackProgress(ItemStack itemStack, int timePassed) {
-        float drawProgress = ProjectileLauncherNBT.from(itemStack).drawSpeed * (float) timePassed;
+        float drawProgress = ProjectileLauncherNBT.from(itemStack).drawSpeed * timePassed;
         return Math.min(1f, drawProgress / (getDrawTime() * 1.0F));
     }
 

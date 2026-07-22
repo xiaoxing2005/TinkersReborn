@@ -37,6 +37,10 @@ public class ShortBow extends BowCore implements ICustomCrosshairUser {
         this.componentsParts.add(new ToolPartRecord(TinkersRebornTools.bowLimb, MaterialStatusType.BOW, "_bow_bottom"));
     }
 
+    public ShortBow(String toolTypeName, int partAmount) {
+        super(toolTypeName, partAmount);
+    }
+
     @Override
     protected boolean animateLayer(int renderPass) {
         return renderPass < 3;
