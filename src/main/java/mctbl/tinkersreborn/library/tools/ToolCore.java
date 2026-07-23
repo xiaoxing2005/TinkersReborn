@@ -234,7 +234,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     }
 
     protected IIcon getCorrectIcon(Map<String, IIcon> icons, String id) {
-	return icons.getOrDefault(id, icons.get(null));
+        return icons.getOrDefault(id, icons.get(null));
     }
 
     protected IIcon getCorrectAnimationIcon(Map<String, IIcon> icons, String id, float progress) {
