@@ -29,7 +29,7 @@ public class BoltCore extends TinkersRebornToolPart {
     public List<Map<String, IIcon>> iconMap;
 
     public BoltCore() {
-        super("bolt", "BoltCore", VALUE_Ingot * 2, null);
+        super("bolt", "BoltCore", VALUE_Ingot * 2, MaterialStatusType.SHAFT);
     }
 
     @Override
