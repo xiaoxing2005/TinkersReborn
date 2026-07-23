@@ -165,9 +165,12 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
             if (this.componentsParts.get(i) != null) {
                 MaterialStatusType type = this.componentsParts.get(i)
                     .statusType();
+                String texturePostfix = this.componentsParts.get(i)
+                    .texturePostfix();
+
                 for (TinkersRebornMaterial material : TinkersRebornRegistry.getAllMaterialList()) {
                     if (material.hasStats(type)) {
-                        String path = basePath + material.identifier + this.componentsParts.get(i).texturePostfix;
+                        String path = basePath + material.identifier + texturePostfix;
                         if (TextureHelper.itemTextureExists(path)) {
                             this.allIcons.get(i)
                                 .put(material.identifier, register.registerIcon(path));
@@ -184,12 +187,10 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
                 }
                 // standard
                 this.allIcons.get(i)
-                    .put(null, register.registerIcon(basePath + this.componentsParts.get(i).texturePostfix));
+                    .put(null, register.registerIcon(basePath + texturePostfix));
                 if (i == 0) {
                     this.allIcons.get(this.partAmount)
-                        .put(
-                            null,
-                            register.registerIcon(basePath + this.componentsParts.get(i).texturePostfix + "_broken"));
+                        .put(null, register.registerIcon(basePath + texturePostfix + "_broken"));
 
                 }
             }
@@ -211,18 +212,18 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     public IIcon getIcon(ItemStack stack, int renderPass) {
         List<TinkersRebornMaterial> renderMaterials = ToolTagsHelper.getToolRenderMaterialsList(stack);
         if (!renderMaterials.isEmpty()) {
-            if (renderPass < this.partAmount) {
-                int iconsIdx = (renderPass == 0 && ToolTagsHelper.isBroken(stack)) ? this.partAmount : renderPass;
+            if (renderPass < this.getPartAmonuntForRender()) {
+                int iconsIdx = (renderPass == 0 && ToolTagsHelper.isBroken(stack)) ? this.getPartAmonuntForRender()
+                    : renderPass;
                 String materialId = renderMaterials.get(renderPass) == null ? null
                     : renderMaterials.get(renderPass).identifier;
                 return getCorrectIcon(this.allIcons.get(iconsIdx), materialId);
             } else {
                 // Effects
                 List<NBTTagCompound> modifiersList = ToolTagsHelper.getModifiersList(stack);
-                ModifierNBT tag = ModifierNBT.readTag(modifiersList.get(renderPass - this.partAmount));
+                ModifierNBT tag = ModifierNBT.readTag(modifiersList.get(renderPass - this.getPartAmonuntForRender()));
                 return this.effectIcons.get(tag.identifier);
             }
-
         }
         return emptyIcon;
     }
@@ -257,7 +258,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         NBTTagCompound tags = ToolTagsHelper.getToolBaseNBTSafe(stack);
         if (tags != null && !tags.hasNoTags()) {
             NBTTagList renderMaterials = ToolTagsHelper.getStringTagListSafe(tags, ToolTags.RENDERMATERIALS);
-            if (renderMaterials.tagCount() != 0 && renderPass < this.partAmount) {
+            if (renderMaterials.tagCount() != 0 && renderPass < this.getPartAmonuntForRender()) {
                 return this.getCorrectColor(this.allIcons.get(renderPass), renderMaterials.getStringTagAt(renderPass));
             }
         }
@@ -424,7 +425,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         }
     }
 
-    private ItemStack buildTool(TinkersRebornMaterial material, String toolName) {
+    protected ItemStack buildTool(TinkersRebornMaterial material, String toolName) {
         List<ItemStack> list = new ArrayList<>();
         for (int i = 0; i < this.partAmount; i++) {
             ToolPartRecord toolPartRecord = this.componentsParts.get(i);
@@ -434,7 +435,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
                         .getNewPartWithMaterial(material));
             }
         }
-        return ToolBuilderHelper.buildTool(null, list.toArray(new ItemStack[0]));
+        return ToolBuilderHelper.buildTool(toolName, list.toArray(new ItemStack[0]));
     }
 
     public boolean checkRecipeMatch(List<ItemStack> parts) {
@@ -571,7 +572,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         }
     }
 
-    private NBTTagCompound buildRenderNBT(List<TinkersRebornMaterial> materials) {
+    protected NBTTagCompound buildRenderNBT(List<TinkersRebornMaterial> materials) {
         NBTTagCompound basetag = new NBTTagCompound();
         NBTTagCompound tinkersTag = new NBTTagCompound();
         NBTTagList dataTag = this.buildMaterialListData(materials);
@@ -820,7 +821,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     public ItemStack getToolForRender() {
         // lazy init
         if (this.toolForRender == null) {
-            List<TinkersRebornMaterial> materials = IntStream.range(0, getToolComponentsParts().size())
+            List<TinkersRebornMaterial> materials = IntStream.range(0, this.getPartAmonuntForRender())
                 .mapToObj(this::getMaterialForPartForGuiRendering)
                 .collect(Collectors.toList());
 
@@ -833,7 +834,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     }
 
     @SideOnly(Side.CLIENT)
-    private RenderMaterial getMaterialForPartForGuiRendering(int idx) {
+    protected RenderMaterial getMaterialForPartForGuiRendering(int idx) {
         int correctId = idx % TinkersRebornRegistry.getRenderMaterialMap()
             .size() + 1;
         String renderMaterialName = ToolTags.INTERNALPREFIX + correctId;
@@ -862,7 +863,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
             // TODO maybe better way?
             MaterialStatusType statusType = componentsParts.get(index)
                 .statusType();
-            if (statusType != MaterialStatusType.HEAD || statusType != MaterialStatusType.BOW) continue;
+            if (statusType != MaterialStatusType.HEAD && statusType != MaterialStatusType.BOW) continue;
 
             TinkersRebornMaterial material = materials.get(index);
 
@@ -917,7 +918,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         return item;
     }
 
-    private int calculateRepairAmount(List<TinkersRebornMaterial> materials, List<ItemStack> repairItems) {
+    protected int calculateRepairAmount(List<TinkersRebornMaterial> materials, List<ItemStack> repairItems) {
         Set<TinkersRebornMaterial> materialsMatched = Sets.newHashSet();
         float durability = 0f;
         // try to match each material once
@@ -997,7 +998,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
      * @param repairItems
      * @return
      */
-    private int repairCustom(TinkersRebornMaterial material, List<ItemStack> repairItems) {
+    protected int repairCustom(TinkersRebornMaterial material, List<ItemStack> repairItems) {
         Optional<RecipeMatch.Match> matchOptional = RecipeMatch.of(TinkersRebornTools.sharpeningKit)
             .matches(repairItems);
         if (!matchOptional.isPresent()) {
@@ -1082,11 +1083,15 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         TinkersReborn.proxy.preventPlayerSlowdown(entityIn, originalSpeed, this);
     }
 
+    public int getPartAmonuntForRender() {
+        return this.partAmount;
+    }
+
     public final class ToolPartRecord {
 
-        protected final TinkersRebornToolPart toolPart;
-        protected final MaterialStatusType statusType;
-        protected final String texturePostfix;
+        private final TinkersRebornToolPart toolPart;
+        private final MaterialStatusType statusType;
+        private final String texturePostfix;
 
         public ToolPartRecord(TinkersRebornToolPart toolPart, MaterialStatusType statusType, String texturePostfix) {
             this.toolPart = toolPart;

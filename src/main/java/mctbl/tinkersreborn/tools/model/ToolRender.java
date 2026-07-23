@@ -257,7 +257,7 @@ public class ToolRender implements IItemRenderer {
 
     public int getIcons(ItemStack item, Entity ent, List<IIcon> parts) {
         if (item.getItem() instanceof ToolCore tool) {
-            int idx = tool.partAmount + ToolTagsHelper.getModifiersList(item)
+            int idx = tool.getPartAmonuntForRender() + ToolTagsHelper.getModifiersList(item)
                 .size();
             for (int i = 0; i < idx; i++) {
                 IIcon icon;

@@ -178,6 +178,22 @@ public abstract class AmmoCore extends ToolCore {
         return list;
     }
 
+    @Override
+    public String getItemStackDisplayName(ItemStack stack) {
+        if (stack.hasDisplayName()) {
+            return stack.getTagCompound()
+                .getCompoundTag("display")
+                .getString("Name");
+        }
+
+        String toolBaseName = getLocalizedToolName();
+        String materialName = ToolTagsHelper.getToolBaseMaterialsList(stack)
+            .get(1)
+            .localizedPrefix();
+
+        return String.format(TOOLNAMEFORMATTER, materialName, toolBaseName);
+    }
+
     public static String formatAmmo(int durability, int ref) {
         return String.format(
             "%s: %s%s%s/%s%s",

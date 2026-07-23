@@ -70,7 +70,9 @@ public abstract class BowCore extends ToolCore {
                     .statusType();
                 for (TinkersRebornMaterial material : TinkersRebornRegistry.getAllMaterialList()) {
                     if (material.hasStats(type)) {
-                        String path = basePath + material.identifier + this.componentsParts.get(i).texturePostfix;
+                        String path = basePath + material.identifier
+                            + this.componentsParts.get(i)
+                                .texturePostfix();
 
                         if (TextureHelper.itemTextureExists(path)) {
                             this.allIcons.get(i)
@@ -96,16 +98,22 @@ public abstract class BowCore extends ToolCore {
                 }
                 // standard
                 this.allIcons.get(i)
-                    .put(null, register.registerIcon(basePath + this.componentsParts.get(i).texturePostfix));
+                    .put(
+                        null,
+                        register.registerIcon(
+                            basePath + this.componentsParts.get(i)
+                                .texturePostfix()));
                 if (this.animateLayer(i)) {
                     for (int idx = 1; idx <= 3; idx++) {
-                        if (TextureHelper
-                            .itemTextureExists(basePath + this.componentsParts.get(i).texturePostfix + "_" + idx)) {
+                        if (TextureHelper.itemTextureExists(
+                            basePath + this.componentsParts.get(i)
+                                .texturePostfix() + "_" + idx)) {
                             this.allIcons.get(i)
                                 .put(
                                     "_" + idx,
                                     register.registerIcon(
-                                        basePath + this.componentsParts.get(i).texturePostfix + "_" + idx));
+                                        basePath + this.componentsParts.get(i)
+                                            .texturePostfix() + "_" + idx));
                         }
                     }
                 }
@@ -113,7 +121,9 @@ public abstract class BowCore extends ToolCore {
                     this.allIcons.get(this.partAmount)
                         .put(
                             null,
-                            register.registerIcon(basePath + this.componentsParts.get(i).texturePostfix + "_broken"));
+                            register.registerIcon(
+                                basePath + this.componentsParts.get(i)
+                                    .texturePostfix() + "_broken"));
 
                 }
             }

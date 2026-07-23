@@ -65,6 +65,7 @@ public class BoltCore extends TinkersRebornToolPart {
         // for bolt is bolt/_bolt and bolt/_bolt_2
         String path = basePath + "_" + texture;
         this.defaultIcon = Arrays.asList(iconRegister.registerIcon(path), iconRegister.registerIcon(path + "_2"));
+        this.outlineIcon = iconRegister.registerIcon(basePath + "outline_" + texture);
     }
 
     @Override
