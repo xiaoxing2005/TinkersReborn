@@ -86,7 +86,7 @@ public abstract class BowCore extends ToolCore {
                                 }
                             }
                         }
-                        if (i == 0) {
+                        if (i == this.brokenPartIdx()) {
                             // broken
                             path += "_broken";
                             if (TextureHelper.itemTextureExists(path)) {
@@ -117,7 +117,7 @@ public abstract class BowCore extends ToolCore {
                         }
                     }
                 }
-                if (i == 0) {
+                if (i == this.brokenPartIdx()) {
                     this.allIcons.get(this.partAmount)
                         .put(
                             null,
