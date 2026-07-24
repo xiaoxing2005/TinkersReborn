@@ -33,6 +33,7 @@ public class ProjectileBaseRenderer<T extends EntityProjectileBase> extends Rend
         toolCoreRender.setDepth(1 / 32f);
 
         GL11.glPushMatrix();
+        GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT);
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
         // last step: translate from 0/0/0 to correct position in world
@@ -59,6 +60,7 @@ public class ProjectileBaseRenderer<T extends EntityProjectileBase> extends Rend
         GL11.glTranslatef(0.0f, 0.25f, 0);
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glPopAttrib();
         GL11.glPopMatrix();
     }
 
