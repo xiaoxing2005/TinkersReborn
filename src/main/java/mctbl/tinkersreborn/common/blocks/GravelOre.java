@@ -66,7 +66,7 @@ public class GravelOre extends BlockSand {
     @Override
     public int damageDropped(int meta) {
         /*
-         * if (mode == 1) return 0;
+         * if (meta == 1) return 0;
          */
         return meta;
     }
