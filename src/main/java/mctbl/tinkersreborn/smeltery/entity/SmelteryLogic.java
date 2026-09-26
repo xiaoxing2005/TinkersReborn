@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -19,9 +21,11 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -53,6 +57,7 @@ public class SmelteryLogic extends TinkersRebornSearedMultiBlockLogic implements
 
     public static final DamageSource smelteryDamage = new DamageSource("smeltery").setFireDamage();
 
+    private static final int MAX_SMELTERY_SIZE = 7;
     private static final int BUCKET_INPUT_SLOT = 0;
     private static final int BUCKET_OUTPUT_SLOT = 1;
     public static final int MB_PER_BLOCK_CAPACITY = TinkersRebornMaterial.VALUE_Ingot * 10;
@@ -78,25 +83,231 @@ public class SmelteryLogic extends TinkersRebornSearedMultiBlockLogic implements
     }
 
     @Override
-    protected void tickPost() {
-        if (this.tickCounter == 0) {
+    protected void tickPre() {
+        if (this.tickCounter == 0 && getActive()) {
             this.interactWithEntitiesInside();
-            // called every second, we check every 15s or so
-            if (++this.secondCounter >= 15) {
-                this.secondCounter = 0;
-                this.checkWholeStructureValid();
-            } else {
-                this.checkSteppingingValid();
-            }
         }
-    };
+    }
 
     @Override
+    public void checkWholeStructureValid() {
+        if (this.worldObj.isRemote) return;
+        ForgeDirection opposite = this.getForgeDirection()
+            .getOpposite();
+        BlockPos masterPos = this.getBlockPos();
+        BlockPos center = masterPos.offset(opposite);
+
+        // check x axis
+        int xd1 = 1, xd2 = 1;
+        for (int idx = 1; idx < MAX_SMELTERY_SIZE; idx++) {
+            if (this.worldObj.isAirBlock(center.x - xd1, center.y, center.z)) xd1++;
+            else if (this.worldObj.isAirBlock(center.x + xd2, center.y, center.z)) xd2++;
+
+            // if one side hit a wall and the other didn't we might have to center our
+            // x-position again
+            if (xd1 - xd2 > 1) {
+                // move x and offsets to the -x
+                xd1--;
+                center.x--;
+                xd2++;
+            }
+            // or the right
+            if (xd2 - xd1 > 1) {
+                xd2--;
+                center.x++;
+                xd1++;
+            }
+        }
+
+        // check z axis
+        int zd1 = 1, zd2 = 1;
+        for (int i = 1; i < MAX_SMELTERY_SIZE; i++) {
+            if (this.worldObj.isAirBlock(center.x, center.y, center.z - zd1)) zd1++;
+            else if (this.worldObj.isAirBlock(center.x, center.y, center.z + zd2)) zd2++;
+
+            // if one side hit a wall and the other didn't we might have to center our
+            // x-position again
+            if (zd1 - zd2 > 1) {
+                // move x and offsets to the -x
+                zd1--;
+                center.z--;
+                zd2++;
+            }
+            // or the right
+            if (zd2 - zd1 > 1) {
+                zd2--;
+                center.z++;
+                zd1++;
+            }
+        }
+
+        this.lavaTanks.clear();
+
+        boolean hasBottmLayer = false;
+        boolean hasTopLayer = false;
+        int validLayerCount = 0;
+        int[] range = new int[] { -xd1, xd2, -zd1, zd2 };
+        // upper check this layer at same time
+        boolean checkUpper = true;
+        boolean checkLower = true;
+        int yd1 = 0;
+        int yd2 = 1;
+
+        List<BlockPos> tempValidBlockList = new ArrayList<>();
+        // while (checkUpper || checkLower) {
+        // if (checkUpper && isValidLayer(center, range, center.y + yd1, tempValidBlockList)) {
+        // yd1++;
+        // validLayerCount++;
+        // } else {
+        // checkUpper = false;
+        // }
+        // if (checkLower) {
+        // if (isValidLayer(center, range, center.y - yd2, tempValidBlockList)) {
+        // yd2++;
+        // validLayerCount++;
+        // continue;
+        // } else if (isValidBottom(center, range, center.y - yd2, tempValidBlockList)) {
+        // hasBottmLayer = true;
+        // }
+        // checkLower = false;
+        // }
+        // }
+        //
+        // if (hasBottmLayer && validLayerCount > 0 && !this.lavaTanks.isEmpty()) {
+        // this.activeLavaTank = this.lavaTanks.get(0);
+        // this.setActive(true);
+        //
+        // this.minPos = BlockPos.of(center.x - xd1 + 1, center.y - yd2 + 1, center.z - zd1 + 1);
+        // this.maxPos = BlockPos.of(center.x + xd2 - 1, center.y + yd1 - 1, center.z + zd2 - 1);
+        //
+        // this.adjustLayers();
+        //
+        // for (BlockPos b : tempValidBlockList) {
+        // TileEntity tempEntiry = this.worldObj.getTileEntity(b.x, b.y, b.z);
+        // if (tempEntiry instanceof MultiServantLogic servant) servant.overrideMaster(masterPos);
+        // }
+        // }
+        while (checkUpper || checkLower) {
+            if (checkUpper) {
+                if (isValidLayer(center, range, center.y + yd1, tempValidBlockList)) {
+                    yd1++;
+                    validLayerCount++;
+                } else if (hasTopLayer() && isValidTop(center, range, center.y + yd1, tempValidBlockList)) {
+                    hasTopLayer = true;
+                    checkUpper = false;
+                } else checkUpper = false;
+            }
+            if (checkLower) {
+                if (isValidLayer(center, range, center.y - yd2, tempValidBlockList)) {
+                    yd2++;
+                    validLayerCount++;
+                } else if (isValidBottom(center, range, center.y - yd2, tempValidBlockList)) {
+                    hasBottmLayer = true;
+                    checkLower = false;
+                } else checkLower = false;
+            }
+
+        }
+
+        if (hasTopLayer() == hasTopLayer && hasBottmLayer() == hasBottmLayer
+            && validLayerCount > 0
+            && !this.lavaTanks.isEmpty()) {
+            this.activeLavaTank = this.lavaTanks.get(0);
+            this.setActive(true);
+
+            this.minPos = BlockPos.of(center.x - xd1 + 1, center.y - yd2 + 1, center.z - zd1 + 1);
+            this.maxPos = BlockPos.of(center.x + xd2 - 1, center.y + yd1 - 1, center.z + zd2 - 1);
+
+            this.adjustLayers();
+
+            for (BlockPos b : tempValidBlockList) {
+                TileEntity tempEntiry = this.worldObj.getTileEntity(b.x, b.y, b.z);
+                if (tempEntiry instanceof MultiServantLogic servant) servant.overrideMaster(masterPos);
+            }
+        } else {
+            reset(tempValidBlockList);
+        }
+        worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+    }
+
+    protected boolean isValidLayer(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList) {
+        List<BlockPos> tempList = new ArrayList<>();
+        for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
+            for (int dz = xAndZRange[2]; dz <= xAndZRange[3]; dz++) {
+                if (((dx == xAndZRange[0] || dx == xAndZRange[1]) && (dz == xAndZRange[2] || dz == xAndZRange[3]))) {
+                    // skip 4 corner
+                    continue;
+                } else {
+                    // check otter wall
+                    Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
+                    if (dx == xAndZRange[0] || dx == xAndZRange[1] || dz == xAndZRange[2] || dz == xAndZRange[3]) {
+                        if (!validWallBlock(block)) {
+                            return false;
+                        }
+                        BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
+                        if (validTankBlock(block)) {
+                            tempList.add(newBlockPos);
+                        }
+                        tempValidBlockList.add(newBlockPos);
+                    } else if (block != Blocks.air) {
+                        return false;
+                    }
+                }
+
+            }
+        }
+        this.lavaTanks.addAll(tempList);
+        return true;
+    }
+
+    protected boolean isValidBottom(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList) {
+        for (int dx = xAndZRange[0] + 1; dx <= xAndZRange[1] - 1; dx++) {
+            for (int dz = xAndZRange[2] + 1; dz <= xAndZRange[3] - 1; dz++) {
+                Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
+                if (!validBottomBlock(block)) {
+                    return false;
+                }
+                tempValidBlockList.add(BlockPos.of(center.x + dx, y, center.z + dz));
+            }
+        }
+        return true;
+    }
+
+    protected boolean isValidTop(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList) {
+        for (int dx = xAndZRange[0] + 1; dx <= xAndZRange[1] - 1; dx++) {
+            for (int dz = xAndZRange[2] + 1; dz <= xAndZRange[3] - 1; dz++) {
+                Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
+                if (!validTopBlock(block)) {
+                    return false;
+                }
+                tempValidBlockList.add(BlockPos.of(center.x + dx, y, center.z + dz));
+            }
+        }
+        return true;
+    }
+
+    protected boolean validTopBlock(Block b) {
+        return b == TinkersRebornSmeltery.smelteryBlock;
+    }
+
+    protected boolean validWallBlock(Block b) {
+        return b == this.controller || b == TinkersRebornSmeltery.smelteryDrain
+            || b == TinkersRebornSmeltery.smelteryBlock
+            || b == TinkersRebornSmeltery.lavaTank;
+    }
+
+    protected boolean validBottomBlock(Block b) {
+        return b == TinkersRebornSmeltery.smelteryBlock;
+    }
+
+    protected boolean validTankBlock(Block b) {
+        return b == TinkersRebornSmeltery.lavaTank;
+    }
+
     protected boolean hasTopLayer() {
         return false;
     }
 
-    @Override
     protected boolean hasBottmLayer() {
         return true;
     }

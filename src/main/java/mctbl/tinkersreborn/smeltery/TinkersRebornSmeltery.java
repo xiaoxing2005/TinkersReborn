@@ -1,8 +1,5 @@
 package mctbl.tinkersreborn.smeltery;
 
-import mctbl.tinkersreborn.smeltery.blocks.*;
-import mctbl.tinkersreborn.smeltery.entity.*;
-import mctbl.tinkersreborn.smeltery.itemblocks.*;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -25,6 +22,9 @@ import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.smeltery.CastingRecipe;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
+import mctbl.tinkersreborn.smeltery.blocks.*;
+import mctbl.tinkersreborn.smeltery.entity.*;
+import mctbl.tinkersreborn.smeltery.itemblocks.*;
 import mctbl.tinkersreborn.smeltery.utils.BoltCoreCastingRecipe;
 import mctbl.tinkersreborn.smeltery.utils.MeltingRecipe;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
